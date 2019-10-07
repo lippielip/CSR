@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: csr-webapp-deployment
+  namespace: default
+  labels:
+    app: csr-webapp
+    project: csr
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: csr-webapp
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: csr-webapp
+        project: csr
+    spec:
+      containers:
+      - name: csr-webapp
+        image: registry.gitlab.com/derpitscher/csr/webapp:1.1
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 80
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 80
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 80
+          initialDelaySeconds: 30
+          periodSeconds: 5
+      imagePullSecrets:
+      - name: gitlab-registry

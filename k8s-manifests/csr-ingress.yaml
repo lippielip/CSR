@@ -1,0 +1,45 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: 3dstudis-net-ingress
+  annotations:
+    ingress.kubernetes.io/ssl-redirect: "true"
+    kubernetes.io/ingress.class: "nginx"
+    kubernetes.io/tls-acme: "true"
+    certmanager.k8s.io/cluster-issuer: 3dstudis-net-cluster-issuer
+    nginx.ingress.kubernetes.io/from-to-www-redirect: "true"
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+      server_tokens off;
+      if ($host = 'www.3dstudis.net' ) {
+        rewrite ^ https://3dstudis.net$request_uri permanent;
+      }
+    nginx.ingress.kubernetes.io/enable-cors: "true"
+    nginx.ingress.kubernetes.io/cors-allow-methods: "PUT, GET, POST, OPTIONS"
+    nginx.ingress.kubernetes.io/cors-allow-origin: "https://3dstudis.net"
+    nginx.ingress.kubernetes.io/cors-allow-credentials: "true"
+spec:
+  tls:
+  - hosts:
+    - 3dstudis.net
+    - www.3dstudis.net
+    - api.3dstudis.net
+    secretName: 3dstudis-net
+  rules:
+  - host: 3dstudis.net
+    http:
+      paths:
+      - backend:
+          serviceName: csr-webapp-svc
+          servicePort: 8080
+  - host: www.3dstudis.net
+    http:
+      paths:
+      - backend:
+          serviceName: csr-webapp-svc
+          servicePort: 8080
+  - host: api.3dstudis.net
+    http:
+      paths:
+      - backend:
+          serviceName: csr-api-svc
+          servicePort: 8000

@@ -1,0 +1,61 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: csr-api-deployment
+  namespace: default
+  labels:
+    app: csr-api
+    project: csr
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: csr-api
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: csr-api
+        project: csr
+    spec:
+      containers:
+      - name: csr-api
+        image: registry.gitlab.com/derpitscher/csr/api:1.2
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8000
+          name: csr-api
+        envFrom:
+        - configMapRef:
+            name: csr-api-config
+        env:
+          - name: DB_USER
+            valueFrom:
+              secretKeyRef:
+                name: csr-api-secret
+                key: DB_USER
+          - name: DB_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: csr-api-secret
+                key: DB_PASSWORD
+          - name: API_KEY
+            valueFrom:
+              secretKeyRef:
+                name: csr-api-secret
+                key: API_KEY
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: 8000
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /healthz
+            port: 8000
+          initialDelaySeconds: 30
+          periodSeconds: 5
+      imagePullSecrets:
+      - name: gitlab-registry

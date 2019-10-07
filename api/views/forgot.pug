@@ -1,0 +1,23 @@
+extends layout
+
+block content
+  head
+    link(rel='stylesheet', type='text/css', href='https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css')
+  body
+    div.container
+      div.row
+        div.col-sm-9.col-md-7.col-lg-5.mx-auto
+          div.card.card-signin.my-5
+            div.card-body
+              h5.card-title.text-center New Password
+              form.form-signin(action="/forgotPasswordSubmit", method="post")
+                input.form-control(type='hidden', name='token', value=token)
+                div
+                  input.form-control(type='password', name='password', placeholder='Enter your new Password', required='', autofocus='', pattern="(?=.*\\d)(?=.*[a-z])(?=.*[A-Z]).{6,}",
+								    title="Must contain at least one number, uppercase and lowercase letter, and at least 6 characters")
+                  label Password
+                div
+                  input.form-control(type='password', name='confirmPassword',  placeholder='Confirm your new Password', required='', pattern="(?=.*\\d)(?=.*[a-z])(?=.*[A-Z]).{6,}",
+								    title="Must contain at least one number, one uppercase and lowercase letter, and at least 6 characters")
+                  label Confirm Password
+                button.btn.btn-lg.btn-primary.btn-block.text-uppercase(type='submit') Submit

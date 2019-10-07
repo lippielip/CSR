@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: csr-webapp-svc
+  namespace: default
+  labels:
+    project: csr
+spec:
+  type: ClusterIP
+  selector:
+    app: csr-webapp
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 80
+      name: csr-webapp-svc

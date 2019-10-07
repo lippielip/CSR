@@ -1,0 +1,35 @@
+version: '3.1'
+
+services:
+
+  db:
+    image: mariadb:10.4
+    restart: always
+    environment:
+      MYSQL_ROOT_USER: root
+      MYSQL_ROOT_PASSWORD: password
+    volumes:
+    - "./csr-db-pv:/var/lib/mysql:rw"
+
+  api:
+    image: derpitscher/csr-api
+    restart: always
+    environment:
+      DB_HOST: db
+      DB_USER: root
+      DB_PASSWORD: password
+      DB_DATABASE_NAME: csr_db
+      DB_PORT: 3306
+      API_PORT: 8000
+      FRONTEND_URL: http://localhost:80/
+    ports:
+      - 8000:8000
+    depends_on:
+      - db
+
+
+  webapp:
+    image: derpitscher/csr-webapp
+    restart: always
+    ports:
+      - 80:80

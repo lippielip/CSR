@@ -1,0 +1,41 @@
+var express = require('express');
+var router = express.Router();
+var connection = require('../database').connection;
+
+//function to compare the users local token with serverside token
+router.post('/', async function (req, res) {
+	console.log(`\x1b[36mChecking Token...\x1b[0m`);
+	connection.query(`Select token, Authentication_Level, Pending_Presentation FROM users WHERE Username = '${req.body.username}' `, function (err, result, fields) {
+		if (result.length === 0) {
+			// non existent user
+			res.status(200).send({
+				authenticated        : false,
+				Authentication_Level : null,
+				Pending_Presentation : null
+			});
+			console.log('\x1b[31mFailed!\x1b[0m');
+			return 0;
+		}
+		if (req.body.token === result[0].token) {
+			// successfull authentication
+			res.status(200).send({
+				authenticated        : true,
+				Authentication_Level : result[0].Authentication_Level,
+				Pending_Presentation : result[0].Pending_Presentation
+			});
+			console.log('\x1b[32mSuccess!\x1b[0m');
+			return 1;
+		} else {
+			res.status(200).send({
+				// tampered token
+				authenticated        : false,
+				Authentication_Level : null,
+				Pending_Presentation : null
+			});
+			console.log('\x1b[31mFailed!\x1b[0m');
+			return 0;
+		}
+	});
+});
+
+module.exports = router;

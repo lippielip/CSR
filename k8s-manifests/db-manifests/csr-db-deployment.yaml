@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: csr-db-deployment
+  namespace: default
+  labels:
+    app: csr-db
+    project: csr
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: csr-db
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: csr-db
+        project: csr
+    spec:
+      containers:
+      - name: csr-db
+        image: mariadb:10.4
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 3306
+          name: mariadb
+        env:
+          - name: MYSQL_ROOT_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: csr-db-secret
+                key: MYSQL_ROOT_PASSWORD
+        volumeMounts:
+        - mountPath: /var/lib/mysql
+          name: csr-db-storage
+        livenessProbe:
+          tcpSocket:
+            port: 3306
+          initialDelaySeconds: 60
+          periodSeconds: 15
+        readinessProbe:
+          tcpSocket:
+            port: 3306
+          initialDelaySeconds: 60
+          periodSeconds: 15
+      volumes:
+      - name: csr-db-storage
+        persistentVolumeClaim:
+          claimName: csr-db-pvc

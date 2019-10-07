@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: csr-api-config
+  namespace: default
+  labels:
+    project: csr
+data:
+  NODE_ENV: "production"
+  DB_HOST: "csr-db-svc"
+  DB_DATABASE_NAME: "csr_db"
+  DB_PORT: "3306"
+  MAIL_DOMAIN: "mail.3dstudis.net"
+  MAIL_HOST: "api.eu.mailgun.net"
+  MAIL_SENDER_MAIL: "Colloquium Selector Robot <noreply@mail.3dstudis.net>"
+  API_URL: "https://api.3dstudis.net"
+  FRONTEND_URL: "https://3dstudis.net"

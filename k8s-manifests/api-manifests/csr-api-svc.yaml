@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: csr-api-svc
+  namespace: default
+  labels:
+    project: csr
+spec:
+  type: ClusterIP
+  selector:
+    app: csr-api
+  ports:
+    - protocol: TCP
+      port: 8000
+      targetPort: 8000
+      name: csr-api-svc
