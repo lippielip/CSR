@@ -43,24 +43,24 @@ API:
 
 DB_HOST (default: localhost)
 DB_USER (default: root)
-DB_PASSWORD (default: root)
+DB_PASSWORD 
 DB_DATABASE_NAME (default: csr_db)
 DB_PORT (default: 3306)
-FRONTEND_URL (default: http://localhost:8123/)
+FRONTEND_URL (default: http://localhost:3000/)
 
     Mailgun
 
-API_KEY (default: *redacted*)
-PROXY (default: SIA)
+API_KEY
+PROXY
 DOMAIN (default: mail.domain.tld)
 HOST (default: api.eu.mailgun.net)
-SENDER_MAIL (default: Colloquium Selector Robot <noreply@mail.domain.tld>)
+SENDER_MAIL
 ```
 
 Webapp
 ```
 NODE_ENV (default: development)
-API_URL (default: http://localhost:8080/)
+API_URL (default: http://localhost:8000/)
 ```
 ## Build Version
 Webapp
@@ -74,8 +74,8 @@ API
 3. npm start
 ## Release History
 
-* 0.0.1
-    * Work in progress
+* 1.0
+    * initial release 
 
 ## Meta
 
