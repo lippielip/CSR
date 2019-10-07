@@ -12,6 +12,6 @@ data:
   DB_PORT: "3306"
   MAIL_DOMAIN: "mail.3dstudis.net"
   MAIL_HOST: "api.eu.mailgun.net"
-  MAIL_SENDER_MAIL: "Colloquium Selector Robot <noreply@mail.3dstudis.net>"
+  MAIL_SENDER: "Colloquium Selector Robot <noreply@mail.3dstudis.net>"
   API_URL: "https://api.3dstudis.net"
   FRONTEND_URL: "https://3dstudis.net"
