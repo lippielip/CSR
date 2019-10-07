@@ -51,7 +51,7 @@ router.post('/', async function (req, res) {
 			res.status(200).send();
 		}
 		if (result.length >= 2) {
-			console.log('duplicate emails wut');
+			console.log('duplicate emails');
 			res.status(403).send();
 		}
 	});
