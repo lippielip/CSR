@@ -101,7 +101,7 @@ class AddUserPopup extends React.Component {
 			return <div />;
 		} else {
 			return (
-				<div className="modal fade animated bounceInUp fast" id="AddUserPopup" tabIndex="-1" aria-labelledby="AddUserPopupCenterTile" aria-hidden="true">
+				<div className="modal animated bounceInUp fast" id="AddUserPopup" tabIndex="-1" aria-labelledby="AddUserPopupCenterTile" aria-hidden="true">
 					<div className="modal-dialog modal-dialog-centered" role="document">
 						<form
 							className="modal-content"
