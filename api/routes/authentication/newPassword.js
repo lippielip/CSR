@@ -15,7 +15,7 @@ router.post('/', async function (req, res) {
 			res.status(200).send('Password added Successfully');
 		});
 		connection.release();
-		if (err) throw err;
+		if (err) console.log(err);
 	});
 });
 

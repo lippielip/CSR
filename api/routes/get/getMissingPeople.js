@@ -24,7 +24,7 @@ async function getMissingPeople () {
 			}
 		});
 		connection.release();
-		if (err) throw err;
+		if (err) console.log(err);
 	});
 	await new Promise((resolve) => setTimeout(resolve, 500));
 	return missingID;

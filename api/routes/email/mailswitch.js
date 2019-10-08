@@ -11,7 +11,7 @@ async function sendMail (caseVar, users, moderator, Presentations) {
 			emails = emails = result.map((x) => Object.values(x)).join(', ');
 		});
 		connection.release();
-		if (err) throw err;
+		if (err) console.log(err);
 	});
 	await new Promise((resolve) => setTimeout(resolve, 200));
 	switch (caseVar) {

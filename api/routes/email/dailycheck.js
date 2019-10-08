@@ -96,7 +96,7 @@ async function dailyCheck () {
 			}
 		);
 		connection.release();
-		if (err) throw err;
+		if (err) console.log(err);
 	});
 }
 

@@ -38,7 +38,7 @@ router.post('/', async function (req, res) {
 			}
 		});
 		connection.release();
-		if (err) throw err;
+		if (err) console.log(err);
 	});
 });
 

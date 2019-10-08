@@ -11,7 +11,7 @@ router.post('/', function (req, res) {
 			console.log(`${req.body.tableName}`, '\x1b[32m', `(sent)`, '\x1b[0m');
 		});
 		connection.release();
-		if (err) throw err;
+		if (err) console.log(err);
 	});
 });
 
