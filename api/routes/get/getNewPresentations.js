@@ -12,6 +12,10 @@ async function getNewPresentations () {
 
 	var friday = Date.parse(getNextDayOfWeek(new Date(), 5).toISOString().split('T')[0]);
 	pool.getConnection(async function (err, connection) {
+		if (err) {
+			console.log(err);
+			return res.status(400).send("Couldn't get a connection");
+		}
 		await connection.query(`SELECT Presenter, Date FROM presentations WHERE Date != 'NULL'`, function (err, result, fields) {
 			if (err) console.log(err);
 			for (let i = 0; i < result.length; i++) {

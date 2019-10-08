@@ -20,17 +20,24 @@ router.post('/', function (req, res, next) {
 		'\x1b[0m',
 		`User_ID = ${req.body.Id} `
 	);
-	connection.query(`UPDATE users SET ${category} = ${category} ${sign} 1 WHERE User_ID = ${req.body.Id} `, function (err, result, fields) {
-		if (err) console.log(err);
+	pool.getConnection(function (err, connection) {
+		if (err) {
+			console.log(err);
+			return res.status(400).send("Couldn't get a connection");
+		}
+		connection.query(`UPDATE users SET ${category} = ${category} ${sign} 1 WHERE User_ID = ${req.body.Id} `, function (err, result, fields) {
+			if (err) console.log(err);
+		});
+		console.log(req.body.purpose);
+		connection.query(`UPDATE users SET CancelTokens = CancelTokens ${sign} 1 WHERE User_ID = ${req.body.Id} `, function (err, result, fields) {
+			if (err) console.log(err);
+		});
+		connection.query(`UPDATE users SET CancelTokens = 3 WHERE CancelTokens > 3 `, function (err, result, fields) {
+			if (err) console.log(err);
+		});
+		res.status(200).send();
+		connection.release();
 	});
-	console.log(req.body.purpose);
-	connection.query(`UPDATE users SET CancelTokens = CancelTokens ${sign} 1 WHERE User_ID = ${req.body.Id} `, function (err, result, fields) {
-		if (err) console.log(err);
-	});
-	connection.query(`UPDATE users SET CancelTokens = 3 WHERE CancelTokens > 3 `, function (err, result, fields) {
-		if (err) console.log(err);
-	});
-	res.status(200).send();
 });
 
 module.exports = router;

@@ -35,7 +35,6 @@ async function getPresentations () {
 			Presentations = await result;
 		});
 		connection.release();
-		if (err) console.log(err);
 	});
 	await new Promise((resolve) => setTimeout(resolve, 500));
 	return Presentations;
