@@ -50,7 +50,7 @@ class PasswordPopup extends React.Component {
 	}
 	render () {
 		return (
-			<div className="modal animated bounceInUp fast" id="ForgotPasswordPopup" tabIndex="-1" aria-labelledby="ForgotPasswordPopupCenterTile" aria-hidden="true">
+			<div className="modal fade animated bounceInUp fast" id="ForgotPasswordPopup" tabIndex="-1" aria-labelledby="ForgotPasswordPopupCenterTile" aria-hidden="true">
 				<div className="modal-dialog modal-dialog-centered" role="document">
 					<form
 						className="modal-content"
