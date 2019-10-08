@@ -1,14 +1,10 @@
 var express = require('express');
 var router = express.Router();
-var connection = require('../database').connection;
+var pool = require('../database').connection;
 
 // function to change values
 router.post('/', function (req, res, next) {
-	connection.query(`UPDATE users SET Pending_Presentation = 10 WHERE Username = '${req.body.username}' `, function (
-		err,
-		result,
-		fields
-	) {
+	connection.query(`UPDATE users SET Pending_Presentation = 10 WHERE Username = '${req.body.username}' `, function (err, result, fields) {
 		if (err) console.log(err);
 		console.log(result.message + ')');
 	});

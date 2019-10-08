@@ -1,6 +1,6 @@
 var mysql = require('mysql');
 //Connection Infos for DB change if need be
-var connection = mysql.createConnection({
+var connection = mysql.createPool({
 	host     : process.env.DB_HOST || 'localhost',
 	user     : process.env.DB_USER || 'root',
 	password : process.env.DB_PASSWORD || 'root',
@@ -13,13 +13,6 @@ console.log('password: **** ');
 console.log('database: ' + process.env.DB_DATABASE_NAME);
 console.log('port	: ' + process.env.DB_PORT);
 
-connection.connect(async function (err) {
-	if (err) {
-		console.dir(err);
-	} else {
-		console.log('\x1b[32m', 'Connected to CSR DB!', '\x1b[0m');
-	}
-});
 module.exports.connection = connection;
 
 let API_URL = process.env.API_URL || 'http://localhost:8000';

@@ -6,8 +6,12 @@ const mg = mailgun.mg;
 
 let emails;
 async function sendMail (caseVar, users, moderator, Presentations) {
-	await connection.query(`SELECT E_Mail FROM users WHERE Authentication_Level < 10`, async function (err, result, fields) {
-		emails = emails = result.map((x) => Object.values(x)).join(', ');
+	pool.getConnection(async function (err, connection) {
+		await connection.query(`SELECT E_Mail FROM users WHERE Authentication_Level < 10`, async function (err, result, fields) {
+			emails = emails = result.map((x) => Object.values(x)).join(', ');
+		});
+		connection.release();
+		if (err) throw err;
 	});
 	await new Promise((resolve) => setTimeout(resolve, 200));
 	switch (caseVar) {

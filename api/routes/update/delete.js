@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-var connection = require('../database').connection;
+var pool = require('../database').connection;
 // function to delete entries
 router.post('/', function (req, res, next) {
 	connection.query(

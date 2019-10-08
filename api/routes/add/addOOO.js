@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-var connection = require('../database').connection;
+var pool = require('../database').connection;
 
 router.post('/', function (req, res) {
 	var CategoryAmount = Object.keys(req.body.missing).length;

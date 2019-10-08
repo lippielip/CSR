@@ -1,4 +1,4 @@
-var connection = require('./database').connection;
+var pool = require('./database').connection;
 var mail = require('./email/mailswitch');
 /* Random Function weighting of different Presentation Types */
 const A_WEIGHT = 1;

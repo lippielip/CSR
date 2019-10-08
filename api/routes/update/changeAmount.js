@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-var connection = require('../database').connection;
+var pool = require('../database').connection;
 
 // function to change values
 router.post('/', function (req, res, next) {
@@ -20,20 +20,13 @@ router.post('/', function (req, res, next) {
 		'\x1b[0m',
 		`User_ID = ${req.body.Id} `
 	);
-	connection.query(`UPDATE users SET ${category} = ${category} ${sign} 1 WHERE User_ID = ${req.body.Id} `, function (
-		err,
-		result,
-		fields
-	) {
+	connection.query(`UPDATE users SET ${category} = ${category} ${sign} 1 WHERE User_ID = ${req.body.Id} `, function (err, result, fields) {
 		if (err) console.log(err);
 	});
 	console.log(req.body.purpose);
-	connection.query(
-		`UPDATE users SET CancelTokens = CancelTokens ${sign} 1 WHERE User_ID = ${req.body.Id} `,
-		function (err, result, fields) {
-			if (err) console.log(err);
-		}
-	);
+	connection.query(`UPDATE users SET CancelTokens = CancelTokens ${sign} 1 WHERE User_ID = ${req.body.Id} `, function (err, result, fields) {
+		if (err) console.log(err);
+	});
 	connection.query(`UPDATE users SET CancelTokens = 3 WHERE CancelTokens > 3 `, function (err, result, fields) {
 		if (err) console.log(err);
 	});
