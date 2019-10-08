@@ -1,3 +1,3 @@
-let API_URL = 'http://localhost:8000';
+let API_URL = 'https://api.3dstudis.net';
 
 module.exports = API_URL;
