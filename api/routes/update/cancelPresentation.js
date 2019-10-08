@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-var pool = require('../database').connection;
+var pool = require('../database');
 // simple multipurpose function for fetching data
 router.post('/', function (req, res) {
 	connection.query(`SELECT CancelTokens from users WHERE USER_ID = '${req.body.User_ID}'`, function (err, result, fields) {

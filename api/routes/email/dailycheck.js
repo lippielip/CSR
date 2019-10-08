@@ -1,4 +1,4 @@
-var pool = require('../database').connection;
+var pool = require('../database');
 var mail = require('./mailswitch');
 var getPresentations = require('./getPresentations');
 

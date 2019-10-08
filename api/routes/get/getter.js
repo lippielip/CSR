@@ -1,13 +1,13 @@
 var express = require('express');
 var router = express.Router();
-var pool = require('../database').connection;
+var pool = require('../database');
 // simple multipurpose function for fetching data
 router.post('/', function (req, res) {
 	console.log('\x1b[34m', `SELECT ${req.body.select ? req.body.select : '*'} FROM ${req.body.tableName} ${req.body.selectiveGet ? req.body.selectiveGet : ''}`, '\x1b[0m');
 	pool.getConnection(function (err, connection) {
 		if (err) {
 			console.log(err);
-			return res.send(400, "Couldn't get a connection");
+			return res.status(400).send("Couldn't get a connection");
 		}
 		connection.query(`SELECT ${req.body.select ? req.body.select : '*'} FROM ${req.body.tableName} ${req.body.selectiveGet}`, function (err, result, fields) {
 			if (err) {

@@ -1,4 +1,4 @@
-var pool = require('../database').connection;
+var pool = require('../database');
 
 async function getPresentations () {
 	function getNextDayOfWeek (date, dayOfWeek) {

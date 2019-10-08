@@ -11,7 +11,7 @@ spreading Presentations equally. CSR is meant to streamline and make annoying ta
 On top of the features described above you can run CSR at your own k8s cluster easily. Just take a look at the k8s-manifests folder for further reference.
 Support for "Docker Swarm" is comming soon.
 
-![](header.png)
+![Header Image](header.PNG)
 
 ## Installation
 

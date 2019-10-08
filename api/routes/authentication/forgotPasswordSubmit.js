@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-var pool = require('../database').connection;
+var pool = require('../database');
 var bcrypt = require('bcryptjs');
 /* POST new Password. */
 router.post('/', async function (req, res, next) {

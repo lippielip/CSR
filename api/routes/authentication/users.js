@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-var pool = require('../database').connection;
+var pool = require('../database');
 var generator = require('generate-password');
 var bcrypt = require('bcryptjs');
 

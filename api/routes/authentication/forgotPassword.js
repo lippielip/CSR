@@ -1,14 +1,13 @@
 var express = require('express');
 var router = express.Router();
-var pool = require('../database').connection;
+var pool = require('../database');
 var bcrypt = require('bcryptjs');
 var generator = require('generate-password');
-var API_URL = require('../database').API_URL;
 const html = require('../email/passwordResetTemplate');
 const mailgun = require('../mailgun');
 const SENDER_MAIL = 'CSR Password Bot <noreply.reset@mail.3dstudis.net>';
 const mg = mailgun.mg;
-
+const API_URL = process.env.API_URL;
 //function to compare the users local token with serverside token
 
 router.post('/', async function (req, res) {

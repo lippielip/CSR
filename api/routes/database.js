@@ -8,14 +8,8 @@ var connection = mysql.createPool({
 	port            : process.env.DB_PORT || '3306',
 	connectionLimit : 20
 });
-console.log('Hostname: ' + process.env.DB_HOST);
-console.log('Username: ' + process.env.DB_USER);
-console.log('password: **** ');
+console.log('Hostname: ' + process.env.DB_HOST + ':' + process.env.DB_PORT);
 console.log('database: ' + process.env.DB_DATABASE_NAME);
-console.log('port	: ' + process.env.DB_PORT);
+console.log('Username: ' + process.env.DB_USER);
 
-module.exports.connection = connection;
-
-let API_URL = process.env.API_URL || 'http://localhost:8000';
-
-module.exports.API_URL = API_URL;
+module.exports = connection;
