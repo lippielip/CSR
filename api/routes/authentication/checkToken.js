@@ -6,6 +6,11 @@ var pool = require('../database').connection;
 router.post('/', async function (req, res) {
 	console.log(`\x1b[36mChecking Token...\x1b[0m`);
 	pool.getConnection(function (err, connection) {
+		if (err) {
+			console.log(err);
+			connection.release();
+			return res.send(400, "Couldn't get a connection");
+		}
 		connection.query(`Select token, Authentication_Level, Pending_Presentation FROM users WHERE Username = '${req.body.username}' `, function (err, result, fields) {
 			if (result.length === 0) {
 				// non existent user
@@ -38,7 +43,6 @@ router.post('/', async function (req, res) {
 			}
 		});
 		connection.release();
-		if (err) console.log(err);
 	});
 });
 
