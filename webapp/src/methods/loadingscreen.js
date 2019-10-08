@@ -2,7 +2,7 @@ import React from 'react';
 
 export default function notAuthenticated () {
 	return (
-		<div className="lds" style={{ left: '48%', top: '48%', position: 'absolute' }}>
+		<div className="lds" style={{ left: 'calc(50% - 32px)', top: 'calc(50% - 32px)', position: 'absolute' }}>
 			<div />
 			<div />
 			<div />
