@@ -9,6 +9,10 @@ var bcrypt = require('bcryptjs');
 router.post('/', async function (req, res) {
 	console.log(`\x1b[36mChecking Credentials...\x1b[0m`);
 	pool.getConnection(function (err, connection) {
+		if (err) {
+			console.log(err);
+			return res.status(400).send("Couldn't get a connection");
+		}
 		connection.query(`SELECT Password, TempPassword, Authentication_Level, Pending_Presentation FROM users WHERE Username = '${req.body.username}' `, function (
 			err,
 			result,

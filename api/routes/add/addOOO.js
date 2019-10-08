@@ -9,7 +9,7 @@ router.post('/', function (req, res) {
 	pool.getConnection(function (err, connection) {
 		if (err) {
 			console.log(err);
-			return res.send(400, "Couldn't get a connection");
+			return res.status(400).send("Couldn't get a connection");
 		}
 		connection.query(`SELECT User_ID FROM (users) WHERE Username = '${req.body.missing.User}'`, function (err, result) {
 			if (err) {

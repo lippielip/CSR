@@ -7,6 +7,10 @@ var generator = require('generate-password');
 // function to create new user
 router.post('/', async function (req, res) {
 	pool.getConnection(function (err, connection) {
+		if (err) {
+			console.log(err);
+			return res.status(400).send("Couldn't get a connection");
+		}
 		connection.query(
 			`SELECT Username, E_Mail FROM users`, // get all usernames to compare with
 			function (err, result, fields) {

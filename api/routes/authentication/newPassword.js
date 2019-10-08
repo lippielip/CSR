@@ -11,6 +11,10 @@ router.post('/', async function (req, res) {
 	var Salt = bcrypt.genSaltSync(10); //generate Hash
 	var Password = bcrypt.hashSync(`${req.body.Password}`, Salt);
 	pool.getConnection(function (err, connection) {
+		if (err) {
+			console.log(err);
+			return res.status(400).send("Couldn't get a connection");
+		}
 		connection.query(`UPDATE users SET Password ='${Password}', TempPassword = NULL WHERE Username = '${Username}' `, function (err, result, fields) {
 			res.status(200).send('Password added Successfully');
 		});

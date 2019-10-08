@@ -6,6 +6,10 @@ var pool = require('../database');
 router.post('/', async function (req, res) {
 	console.log(`\x1b[36mChecking Token...\x1b[0m`);
 	pool.getConnection(function (err, connection) {
+		if (err) {
+			console.log(err);
+			return res.status(400).send("Couldn't get a connection");
+		}
 		connection.query(`SELECT ResetToken from users WHERE ResetToken = '${req.body.token}' `, function (err, result, fields) {
 			if (result.length === 0) {
 				// non existent user

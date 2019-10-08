@@ -12,6 +12,10 @@ const API_URL = process.env.API_URL;
 
 router.post('/', async function (req, res) {
 	pool.getConnection(function (err, connection) {
+		if (err) {
+			console.log(err);
+			return res.status(400).send("Couldn't get a connection");
+		}
 		connection.query(`SELECT E_Mail from users WHERE E_Mail = '${req.body.E_Mail}' `, function (err, result, fields) {
 			if (err) {
 				console.log(err);
