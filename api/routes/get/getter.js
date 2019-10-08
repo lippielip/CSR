@@ -7,7 +7,6 @@ router.post('/', function (req, res) {
 	pool.getConnection(function (err, connection) {
 		if (err) {
 			console.log(err);
-			connection.release();
 			return res.send(400, "Couldn't get a connection");
 		}
 		connection.query(`SELECT ${req.body.select ? req.body.select : '*'} FROM ${req.body.tableName} ${req.body.selectiveGet}`, function (err, result, fields) {

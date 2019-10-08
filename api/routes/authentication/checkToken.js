@@ -8,7 +8,6 @@ router.post('/', async function (req, res) {
 	pool.getConnection(function (err, connection) {
 		if (err) {
 			console.log(err);
-			connection.release();
 			return res.send(400, "Couldn't get a connection");
 		}
 		connection.query(`Select token, Authentication_Level, Pending_Presentation FROM users WHERE Username = '${req.body.username}' `, function (err, result, fields) {
