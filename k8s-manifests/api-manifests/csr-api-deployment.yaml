@@ -21,7 +21,7 @@ spec:
     spec:
       containers:
       - name: csr-api
-        image: registry.gitlab.com/derpitscher/csr/api:1.0
+        image: registry.gitlab.com/derpitscher/csr/api:1.1
         imagePullPolicy: Always
         ports:
         - containerPort: 8000
