@@ -34,12 +34,12 @@ var NewPasswordRouter = require('./routes/authentication/newPassword');
 var ForgotPassword = require('./routes/authentication/forgotPassword');
 var ForgotPasswordSubmit = require('./routes/authentication/forgotPasswordSubmit');
 var app = express();
-i = schedule.scheduleJob('00 5 * * Mon', async function MondayJob () {
+i = schedule.scheduleJob('00 5 * * mon', async function MondayJob () {
 	console.log('executing weekly event...');
 	PickWeeklyPresenters(await MissingPeople(), await GetNewPresentations());
 });
 
-var j = schedule.scheduleJob('30 5 * * Mon', function DailyCheck () {
+var j = schedule.scheduleJob('30 5 * * *', function DailyCheck () {
 	console.log('Fetching Presentation Status...');
 	CheckPresentationStatus();
 });
