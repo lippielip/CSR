@@ -245,7 +245,7 @@ class Routes extends React.Component {
 							</form>
 							<PasswordPopup Username={this.state.username} />
 							<ForgotPassword />
-							<Router>
+							<Router history={browserHistory}>
 								<Switch>
 									<Route path={'/forgot'} component={forgotPassword} />
 									<Route component={NoMatch} />
