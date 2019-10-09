@@ -122,6 +122,7 @@ class Routes extends React.Component {
 	async componentDidMount () {
 		await checkToken();
 		await this.setState({ isLoading: false });
+		await console.dir(navigator.platform);
 	}
 
 	render () {
