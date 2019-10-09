@@ -57,7 +57,7 @@ function getPresenters (combList, list_length) {
 
 	var weighed_list = generateWeighedList(list, weights);
 	var random_num = rand(0, weighed_list.length - 1);
-	pool.getConnection(async function (err, connection) {
+	pool.getConnection(function (err, connection) {
 		if (err) {
 			console.log(err);
 			return res.status(400).send("Couldn't get a connection");
@@ -78,7 +78,7 @@ function getModerator (combList) {
 		return entry.User_ID;
 	});
 	let UserIndex = Math.floor(Math.random() * list.length);
-	pool.getConnection(async function (err, connection) {
+	pool.getConnection(function (err, connection) {
 		if (err) {
 			console.log(err);
 			return res.status(400).send("Couldn't get a connection");
