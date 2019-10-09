@@ -28,7 +28,6 @@ router.post('/', function (req, res, next) {
 		connection.query(`UPDATE users SET ${category} = ${category} ${sign} 1 WHERE User_ID = ${req.body.Id} `, function (err, result, fields) {
 			if (err) console.log(err);
 		});
-		console.log(req.body.purpose);
 		connection.query(`UPDATE users SET CancelTokens = CancelTokens ${sign} 1 WHERE User_ID = ${req.body.Id} `, function (err, result, fields) {
 			if (err) console.log(err);
 		});
