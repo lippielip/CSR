@@ -73,6 +73,7 @@ export default class Login extends React.Component {
 					}
 				});
 		}
+		window.location.reload();
 	}
 
 	handleOnChange (e) {
