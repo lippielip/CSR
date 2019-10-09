@@ -122,7 +122,14 @@ class Routes extends React.Component {
 	async componentDidMount () {
 		await checkToken();
 		await this.setState({ isLoading: false });
-		await console.dir(navigator.platform);
+		var ua = navigator.userAgent.toLowerCase();
+		if (ua.indexOf('safari') !== -1) {
+			if (ua.indexOf('chrome') > -1) {
+				alert('1'); // Chrome
+			} else {
+				alert('2'); // Safari
+			}
+		}
 	}
 
 	render () {
