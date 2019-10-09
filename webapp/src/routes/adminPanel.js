@@ -52,15 +52,6 @@ class AdminPanel extends React.Component {
 	async componentDidMount () {
 		await checkToken();
 		await this.setState({ isLoading: false });
-		let ua = navigator.userAgent.toLowerCase();
-		if (ua.indexOf('safari') !== -1) {
-			if (ua.indexOf('chrome') <= -1) {
-				let faded = document.getElementsByClassName('fade');
-				while (faded.length) {
-					faded[0].classList.remove('fade');
-				}
-			}
-		}
 	}
 
 	render () {

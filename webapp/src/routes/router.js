@@ -125,7 +125,6 @@ class Routes extends React.Component {
 		let ua = navigator.userAgent.toLowerCase();
 		if (ua.indexOf('safari') !== -1) {
 			if (ua.indexOf('chrome') <= -1) {
-				alert('Safari');
 				let faded = document.getElementsByClassName('fade');
 				while (faded.length) {
 					faded[0].classList.remove('fade');
