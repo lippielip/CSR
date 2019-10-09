@@ -4,7 +4,7 @@ import { Router, Link } from 'react-router-dom';
 import jQuery from 'jquery';
 import * as history from 'history';
 import ContentPane from './contentpane';
-import login from './login';
+import Login from './login';
 import checkToken from '../methods/checktoken';
 import loading from '../methods/loadingscreen';
 import API_URL from '../variables';
@@ -175,7 +175,7 @@ class Routes extends React.Component {
 							<ContentPane />
 						</Router>
 					) : (
-						<login />
+						<Login />
 					)}
 				</div>
 			);
