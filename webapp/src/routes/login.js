@@ -14,7 +14,6 @@ export default class Login extends React.Component {
 
 		this.state = {
 			wrongField    : [],
-			isLoggedIn    : false,
 			isLoading     : true,
 			username      : '',
 			passwordInput : '',
@@ -49,9 +48,9 @@ export default class Login extends React.Component {
 						sessionStorage.setItem('Pending_Presentation', response.Pending_Presentation);
 						sessionStorage.setItem('authenticated', response.authenticated);
 						this.setState({
-							isLoggedIn    : true,
 							passwordInput : ''
 						});
+						window.location.reload();
 					}
 					if (response.authenticated === false) {
 						document.getElementById('error').innerHTML = 'Login failed. Please check your credentials.';
@@ -60,9 +59,6 @@ export default class Login extends React.Component {
 						sessionStorage.setItem('Authentication_Level', null);
 						sessionStorage.setItem('Pending_Presentation', null);
 						sessionStorage.setItem('authenticated', response.authenticated);
-						this.setState({
-							isLoggedIn : false
-						});
 					}
 					if (response.authenticated === 'newUser') {
 						sessionStorage.setItem('username', this.state.username);
@@ -73,7 +69,6 @@ export default class Login extends React.Component {
 					}
 				});
 		}
-		window.location.reload();
 	}
 
 	handleOnChange (e) {
@@ -111,7 +106,6 @@ export default class Login extends React.Component {
 		sessionStorage.setItem('token', null);
 		sessionStorage.setItem('username', null);
 		sessionStorage.setItem('Authentication_Level', null);
-		this.setState({ isLoggedIn: false });
 	}
 
 	async componentDidMount () {
