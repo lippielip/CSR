@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Redirect } from 'react-router';
-import { Router, Link } from 'react-router-dom';
+import { Switch, Route, Router, Link } from 'react-router-dom';
 import jQuery from 'jquery';
 import * as history from 'history';
 import ContentPane from './contentpane';
@@ -11,6 +11,19 @@ import ForgotPassword from '../popups/ForgotPasswordPopup';
 import checkToken from '../methods/checktoken';
 import loading from '../methods/loadingscreen';
 import API_URL from '../variables';
+import forgotPassword from './forgotPassword';
+
+function NoMatch ({ location }) {
+	return (
+		<div>
+			<h3>
+				<br />
+				Error 404: <code>{location.pathname}</code> does not exist
+			</h3>
+		</div>
+	);
+}
+
 export var browserHistory = history.createBrowserHistory();
 
 class Routes extends React.Component {
@@ -232,6 +245,12 @@ class Routes extends React.Component {
 							</form>
 							<PasswordPopup Username={this.state.username} />
 							<ForgotPassword />
+							<Router>
+								<Switch>
+									<Route path={'/forgot'} component={forgotPassword} />
+									<Route component={NoMatch} />
+								</Switch>
+							</Router>
 						</div>
 					)}
 				</div>
