@@ -1,4 +1,4 @@
-const connection = require('../database');
+const pool = require('../database');
 const html = require('./mailtemplate');
 const mailgun = require('../mailgun');
 const SENDER_MAIL = mailgun.sender;
