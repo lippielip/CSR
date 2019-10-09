@@ -122,6 +122,15 @@ class Routes extends React.Component {
 	async componentDidMount () {
 		await checkToken();
 		await this.setState({ isLoading: false });
+		let ua = navigator.userAgent.toLowerCase();
+		if (ua.indexOf('safari') !== -1) {
+			if (ua.indexOf('chrome') <= -1) {
+				let faded = document.getElementsByClassName('fade');
+				while (faded.length) {
+					faded[0].classList.remove('fade');
+				}
+			}
+		}
 	}
 
 	render () {
@@ -184,11 +193,11 @@ class Routes extends React.Component {
 									this.handleSubmit();
 								}}>
 								<div className="container">
-									<h1 style={{ paddingTop: '40px' }}>Colloquium Sacrifice Roulette</h1>
+									<h1 style={{ paddingTop: '40px' }}>Colloquium Selector Robot</h1>
 									<br />
-									<img src={logo} className="App-link App-logo" alt="logo" style={{ maxHeight: '180px', marginTop: '30px' }} />
+									<img src={logo} className="App-link " alt="logo" style={{ maxHeight: '180px', marginTop: '30px', marginBottom: '30px' }} />
 									<br />
-									<img src={altar} style={{ maxHeight: '300px' }} alt="altar" />
+									{/*<img src={altar} style={{ maxHeight: '300px' }} alt="altar" />*/}
 									<div id="error" className="invalidText" />
 
 									<div className="form-group centered">

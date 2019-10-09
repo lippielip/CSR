@@ -1,4 +1,4 @@
-var pool = require('./database').connection;
+var pool = require('./database');
 var mail = require('./email/mailswitch');
 /* Random Function weighting of different Presentation Types */
 const A_WEIGHT = 1;
@@ -57,13 +57,19 @@ function getPresenters (combList, list_length) {
 
 	var weighed_list = generateWeighedList(list, weights);
 	var random_num = rand(0, weighed_list.length - 1);
-
-	connection.query(
-		`UPDATE users SET Pending_Presentation = 1, Last_Probability = ${probability[list.indexOf(weighed_list[random_num])]} WHERE User_ID = ${weighed_list[random_num]} `,
-		function (err, result, fields) {
-			if (err) console.log(err);
+	pool.getConnection(function (err, connection) {
+		if (err) {
+			console.log(err);
+			return res.status(400).send("Couldn't get a connection");
 		}
-	);
+		connection.query(
+			`UPDATE users SET Pending_Presentation = 1, Last_Probability = ${probability[list.indexOf(weighed_list[random_num])]} WHERE User_ID = ${weighed_list[random_num]} `,
+			function (err, result, fields) {
+				if (err) console.log(err);
+			}
+		);
+		connection.release();
+	});
 	return list.indexOf(weighed_list[random_num]);
 }
 
@@ -72,8 +78,15 @@ function getModerator (combList) {
 		return entry.User_ID;
 	});
 	let UserIndex = Math.floor(Math.random() * list.length);
-	connection.query(`UPDATE users SET Pending_Presentation = 2 WHERE User_ID = ${list[UserIndex]} `, function (err, result, fields) {
-		if (err) console.log(err);
+	pool.getConnection(function (err, connection) {
+		if (err) {
+			console.log(err);
+			return res.status(400).send("Couldn't get a connection");
+		}
+		connection.query(`UPDATE users SET Pending_Presentation = 2 WHERE User_ID = ${list[UserIndex]} `, function (err, result, fields) {
+			if (err) console.log(err);
+		});
+		connection.release();
 	});
 	return UserIndex;
 }
