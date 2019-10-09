@@ -127,7 +127,10 @@ class Routes extends React.Component {
 			if (ua.indexOf('chrome') > -1) {
 				alert('1'); // Chrome
 			} else {
-				alert('2'); // Safari
+				let faded = document.getElementsByClassName('fade');
+				while (faded.length) {
+					faded[0].classList.remove('fade');
+				}
 			}
 		}
 	}
