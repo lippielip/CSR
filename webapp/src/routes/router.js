@@ -193,11 +193,11 @@ class Routes extends React.Component {
 									this.handleSubmit();
 								}}>
 								<div className="container">
-									<h1 style={{ paddingTop: '40px' }}>Colloquium Sacrifice Roulette</h1>
+									<h1 style={{ paddingTop: '40px' }}>Colloquium Selector Robot</h1>
 									<br />
 									<img src={logo} className="App-link App-logo" alt="logo" style={{ maxHeight: '180px', marginTop: '30px' }} />
 									<br />
-									<img src={altar} style={{ maxHeight: '300px' }} alt="altar" />
+									{/*<img src={altar} style={{ maxHeight: '300px' }} alt="altar" />*/}
 									<div id="error" className="invalidText" />
 
 									<div className="form-group centered">
