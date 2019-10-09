@@ -34,17 +34,14 @@ var NewPasswordRouter = require('./routes/authentication/newPassword');
 var ForgotPassword = require('./routes/authentication/forgotPassword');
 var ForgotPasswordSubmit = require('./routes/authentication/forgotPasswordSubmit');
 var app = express();
-//i = schedule.scheduleJob('20 * * * * *',
-async function MondayJob () {
+i = schedule.scheduleJob('20 * * * * *', async function MondayJob () {
 	console.log('executing weekly event...');
-	//PickWeeklyPresenters(await MissingPeople(), await GetNewPresentations());
-}
-MondayJob();
-//});
+	PickWeeklyPresenters(await MissingPeople(), await GetNewPresentations());
+});
 
 var j = schedule.scheduleJob('00 * * * * *', function DailyCheck () {
 	console.log('Fetching Presentation Status...');
-	//CheckPresentationStatus();
+	CheckPresentationStatus();
 });
 
 // view engine setup
