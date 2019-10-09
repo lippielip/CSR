@@ -94,16 +94,6 @@ class AddUserPopup extends React.Component {
 	async componentDidMount () {
 		await this.fetchData();
 		await this.setState({ isLoading: false });
-		let ua = navigator.userAgent.toLowerCase();
-		if (ua.indexOf('safari') !== -1) {
-			if (ua.indexOf('chrome') <= -1) {
-				alert('Safari');
-				let faded = document.getElementsByClassName('fade');
-				while (faded.length) {
-					faded[0].classList.remove('fade');
-				}
-			}
-		}
 	}
 
 	render () {
