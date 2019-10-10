@@ -6,6 +6,7 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var cors = require('cors');
 var schedule = require('node-schedule');
+var CronJob = require('cron').CronJob;
 
 // allow cross origin post and get
 var corsOptions = {
@@ -34,15 +35,26 @@ var NewPasswordRouter = require('./routes/authentication/newPassword');
 var ForgotPassword = require('./routes/authentication/forgotPassword');
 var ForgotPasswordSubmit = require('./routes/authentication/forgotPasswordSubmit');
 var app = express();
-var i = schedule.scheduleJob('0 5 * * mon', async function MondayJob () {
+
+new CronJob = ('0 5 * * mon',async function() {
 	console.log('executing weekly event...');
 	PickWeeklyPresenters(await MissingPeople(), await GetNewPresentations());
-});
+}, null, true, 'Europe/Berlin');
 
-var j = schedule.scheduleJob('30 5 * * *', function DailyCheck () {
+/*var i = schedule.scheduleJob('0 5 * * mon', async function MondayJob () {
+	console.log('executing weekly event...');
+	PickWeeklyPresenters(await MissingPeople(), await GetNewPresentations());
+});*/
+
+new CronJob = ('30 5 * * *',function() {
 	console.log('Fetching Presentation Status...');
 	CheckPresentationStatus();
-});
+}, null, true, 'Europe/Berlin');
+
+/*var j = schedule.scheduleJob('30 5 * * *', function DailyCheck () {
+	console.log('Fetching Presentation Status...');
+	CheckPresentationStatus();
+});*/
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
