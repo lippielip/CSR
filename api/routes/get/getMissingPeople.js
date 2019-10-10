@@ -9,7 +9,7 @@ function getNextDayOfWeek (date, dayOfWeek) {
 	return resultDate;
 }
 
-async function getMissingPeople () {
+function getMissingPeople () {
 	let missingID = [];
 	new Promise(function (resolve, reject) {
 		var friday = Date.parse(getNextDayOfWeek(new Date(), 5).toISOString().split('T')[0]);
