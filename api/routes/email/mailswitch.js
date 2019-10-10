@@ -89,6 +89,7 @@ function onTime () {
 
 	mg.messages().send(data, function (error, body) {
 		if (error) console.log(error);
+		console.log(body);
 	});
 }
 
@@ -107,6 +108,7 @@ function onelate (lateUser, goodUser) {
 
 	mg.messages().send(data, function (error, body) {
 		if (error) console.log(error);
+		console.log(body);
 	});
 }
 
@@ -125,6 +127,7 @@ function bothlate (users) {
 
 	mg.messages().send(data, function (error, body) {
 		if (error) console.log(error);
+		console.log(body);
 	});
 }
 function wednesday (users, moderator, Presentations) {
@@ -158,6 +161,7 @@ function wednesday (users, moderator, Presentations) {
 
 	mg.messages().send(data, function (error, body) {
 		if (error) console.log(error);
+		console.log(body);
 	});
 }
 
@@ -177,6 +181,7 @@ function canceled () {
 
 	mg.messages().send(data, function (error, body) {
 		if (error) console.log(error);
+		console.log(body);
 	});
 }
 
