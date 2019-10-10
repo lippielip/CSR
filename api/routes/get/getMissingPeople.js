@@ -13,7 +13,7 @@ async function getMissingPeople () {
 	new Promise(function (resolve, reject) {
 		let missingID = [];
 		var friday = Date.parse(getNextDayOfWeek(new Date(), 5).toISOString().split('T')[0]);
-		pool.getConnection(async function (err, connection) {
+		pool.getConnection(function (err, connection) {
 			if (err) {
 				console.log(err);
 				return res.status(400).send("Couldn't get a connection");
@@ -27,7 +27,6 @@ async function getMissingPeople () {
 						missingID.push(result[i].User);
 					}
 				}
-				console.log(missingID);
 				resolve(missingID);
 			});
 			connection.release();
