@@ -7,6 +7,8 @@ const C_WEIGHT = 2;
 const WEIGHT_FACTOR = 10000;
 
 let probability;
+let IDmap = [];
+let voluntaryCount = 0;
 
 function rand (min, max) {
 	return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -104,10 +106,7 @@ async function getModerator (combList) {
 	return UserIndex;
 }
 
-async function PickWeeklyPresenters (MissingPeople, NewPresentations) {
-	console.log('\x1b[33m', 'Picking Presenters...', '\x1b[0m');
-	var IDmap = [];
-	let voluntaryCount = 0;
+async function GetPresentPeople (MissingPeople, NewPresentations) {
 	pool.getConnection(async function (err, connection) {
 		if (err) {
 			console.log(err);
@@ -181,62 +180,67 @@ async function PickWeeklyPresenters (MissingPeople, NewPresentations) {
 						}
 					}
 				}
-				//Check if enough people are present, regardless of if they had a presentation last week
-				if (IDmap.length <= 3) {
-					mail(-1);
-				} else {
-					const USER_AMOUNT = IDmap.length;
-					let Presenter1;
-					let Presenter2;
-
-					if (voluntaryCount === 1) {
-						let IdIndex1 = getObjectIndex(IDmap, 'User_ID', NewPresentations[0]);
-						Presenter1 = IDmap[IdIndex1];
-						Presenter1.probability = 1;
-						IDmap.splice(IdIndex1, 1);
-						let IdIndex2 = await getPresenters(IDmap, USER_AMOUNT);
-						Presenter2 = IDmap[IdIndex2];
-						console.log(IdIndex2);
-						Presenter2.probability = probability[IdIndex2];
-						IDmap.splice(IdIndex2, 1);
-					}
-
-					if (voluntaryCount >= 2) {
-						let IdIndex1 = getObjectIndex(IDmap, 'User_ID', NewPresentations[0]);
-						Presenter1 = IDmap[IdIndex1];
-						Presenter1.probability = 1;
-						IDmap.splice(IdIndex1, 1);
-
-						let IdIndex2 = getObjectIndex(IDmap, 'User_ID', NewPresentations[1]);
-						Presenter2 = IDmap[IdIndex2];
-						Presenter2.probability = 1;
-						IDmap.splice(IdIndex2, 1);
-						if (voluntaryCount >= 3) {
-							console.log('\x1b[31m', 'ERROR : EXCESSIVE_PRESENTATION_AMOUNT', '\x1b[0m');
-						}
-					}
-
-					if (voluntaryCount === 0) {
-						let IdIndex1 = await getPresenters(IDmap, USER_AMOUNT);
-						Presenter1 = IDmap[IdIndex1];
-						Presenter1.probability = probability[IdIndex1];
-						IDmap.splice(IdIndex1, 1);
-
-						let IdIndex2 = await getPresenters(IDmap, USER_AMOUNT);
-						Presenter2 = IDmap[IdIndex2];
-						Presenter2.probability = probability[IdIndex2];
-						IDmap.splice(IdIndex2, 1);
-					}
-					let IdIndex3 = await getModerator(IDmap);
-					let Moderator = IDmap[IdIndex3];
-					let users = [ Presenter1, Presenter2 ];
-					mail(0, users, Moderator);
-					console.log('\x1b[33m', 'Success!', '\x1b[0m');
-				}
 			}
 		);
 		connection.release();
 	});
+}
+
+async function PickWeeklyPresenters (MissingPeople, NewPresentations) {
+	console.log('\x1b[33m', 'Picking Presenters...', '\x1b[0m');
+	//Check if enough people are present, regardless of if they had a presentation last week
+	await GetPresentPeople();
+	if (IDmap.length <= 3) {
+		mail(-1);
+	} else {
+		const USER_AMOUNT = IDmap.length;
+		let Presenter1;
+		let Presenter2;
+
+		if (voluntaryCount === 1) {
+			let IdIndex1 = getObjectIndex(IDmap, 'User_ID', NewPresentations[0]);
+			Presenter1 = IDmap[IdIndex1];
+			Presenter1.probability = 1;
+			IDmap.splice(IdIndex1, 1);
+			let IdIndex2 = await getPresenters(IDmap, USER_AMOUNT);
+			Presenter2 = IDmap[IdIndex2];
+			console.log(IdIndex2);
+			Presenter2.probability = probability[IdIndex2];
+			IDmap.splice(IdIndex2, 1);
+		}
+
+		if (voluntaryCount >= 2) {
+			let IdIndex1 = getObjectIndex(IDmap, 'User_ID', NewPresentations[0]);
+			Presenter1 = IDmap[IdIndex1];
+			Presenter1.probability = 1;
+			IDmap.splice(IdIndex1, 1);
+
+			let IdIndex2 = getObjectIndex(IDmap, 'User_ID', NewPresentations[1]);
+			Presenter2 = IDmap[IdIndex2];
+			Presenter2.probability = 1;
+			IDmap.splice(IdIndex2, 1);
+			if (voluntaryCount >= 3) {
+				console.log('\x1b[31m', 'ERROR : EXCESSIVE_PRESENTATION_AMOUNT', '\x1b[0m');
+			}
+		}
+
+		if (voluntaryCount === 0) {
+			let IdIndex1 = await getPresenters(IDmap, USER_AMOUNT);
+			Presenter1 = IDmap[IdIndex1];
+			Presenter1.probability = probability[IdIndex1];
+			IDmap.splice(IdIndex1, 1);
+
+			let IdIndex2 = await getPresenters(IDmap, USER_AMOUNT);
+			Presenter2 = IDmap[IdIndex2];
+			Presenter2.probability = probability[IdIndex2];
+			IDmap.splice(IdIndex2, 1);
+		}
+		let IdIndex3 = await getModerator(IDmap);
+		let Moderator = IDmap[IdIndex3];
+		let users = [ Presenter1, Presenter2 ];
+		mail(0, users, Moderator);
+		console.log('\x1b[33m', 'Success!', '\x1b[0m');
+	}
 }
 
 module.exports = PickWeeklyPresenters;
