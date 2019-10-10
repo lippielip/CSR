@@ -137,6 +137,7 @@ async function GetPresentPeople (MissingPeople, NewPresentations) {
 								fields
 							) {
 								if (err) console.log(err);
+								console.log('HI3');
 							});
 							IDmap.push({
 								User_ID            : result[i].User_ID,
@@ -161,6 +162,7 @@ async function GetPresentPeople (MissingPeople, NewPresentations) {
 								});
 								await connection.query(`UPDATE users SET Pending_Presentation = 0 WHERE User_ID = ${result[i].User_ID} `, function (err, result, fields) {
 									if (err) console.log(err);
+									console.log('HI2');
 								});
 							} else {
 								//low prob of getting picked
@@ -175,7 +177,6 @@ async function GetPresentPeople (MissingPeople, NewPresentations) {
 								});
 								await connection.query(`UPDATE users SET Pending_Presentation = 0 WHERE User_ID = ${result[i].User_ID} `, function (err, result, fields) {
 									if (err) console.log(err);
-									console.log('HI2');
 								});
 							}
 						}
