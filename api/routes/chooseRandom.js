@@ -198,7 +198,9 @@ async function GetPresentPeople (MissingPeople, NewPresentations) {
 async function PickWeeklyPresenters () {
 	console.log('\x1b[33m', 'Picking Presenters...', '\x1b[0m');
 	//Check if enough people are present, regardless of if they had a presentation last week
-	await GetPresentPeople(await getMissingPeople(), await getNewPresentations());
+	let MissingPeople = await getMissingPeople();
+	let NewPresentations = await getNewPresentations();
+	await GetPresentPeople(MissingPeople, NewPresentations);
 
 	if (IDmap.length <= 3) {
 		mail(-1);
