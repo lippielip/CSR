@@ -63,7 +63,7 @@ async function getNewPresentations () {
 						NewPresentations.push(result[i].Presenter);
 					}
 				}
-				resolve(NewPresentations);
+				return resolve(NewPresentations);
 			});
 
 			connection.release();
@@ -100,7 +100,6 @@ function generateWeighedList (list, weight) {
 		if (multiples <= 0) multiples = 1;
 		probability.push(multiples / sum);
 	}
-	console.log('rawraw prob:' + probability);
 	return weighed_list;
 }
 
@@ -120,13 +119,7 @@ async function getPresenters (combList, list_length) {
 
 		let weighed_list = generateWeighedList(list, weights);
 		let random_num = rand(0, weighed_list.length - 1);
-		console.log('Random Number:' + random_num);
-		console.log('weighed list length:' + weighed_list.length);
-		console.log('probIndex:' + list.indexOf(weighed_list[random_num]));
-		console.log('probLength:' + probability.length);
-		console.log('raw prob:' + probability);
-		console.log('probability:' + probability[list.indexOf(weighed_list[random_num])]);
-		console.log(' ');
+
 		pool.getConnection(function (err, connection) {
 			if (err) {
 				console.log(err);
@@ -158,11 +151,10 @@ async function getModerator (combList) {
 			}
 			connection.query(`UPDATE users SET Pending_Presentation = 2 WHERE User_ID = ${list[UserIndex]} `, function (err, result, fields) {
 				if (err) console.log(err);
-				resolve(UserIndex);
+				return resolve(UserIndex);
 			});
 			connection.release();
 		});
-		return;
 	});
 }
 
@@ -241,12 +233,11 @@ async function GetPresentPeople (MissingPeople, NewPresentations) {
 							}
 						}
 					}
-					resolve(IDmap);
+					return resolve(IDmap);
 				}
 			);
 			connection.release();
 		});
-		return;
 	});
 }
 
