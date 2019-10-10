@@ -25,11 +25,13 @@ async function getNewPresentations () {
 						PresenterID.push(result[i].Presenter);
 					}
 				}
-				resolve(PresenterID);
+				let wait = setTimeout(() => {
+					clearTimeout(wait);
+					resolve(PresenterID);
+				}, 500);
 			});
 			connection.release();
 		});
-		return PresenterID;
 	});
 }
 
