@@ -36,10 +36,14 @@ var ForgotPasswordSubmit = require('./routes/authentication/forgotPasswordSubmit
 var app = express();
 i = schedule.scheduleJob('0 5 * * mon', async function MondayJob () {
 	console.log('executing weekly event...');
-	let Missing = await MissingPeople();
-	let Presentations = await GetNewPresentations();
-	console.log(await MissingPeople());
-	console.log(await GetNewPresentations());
+	const Missing = async () => {
+		return await MissingPeople();
+	};
+	const Presentations = async () => {
+		return await GetNewPresentations();
+	};
+	console.log(Missing);
+	console.log(Presentations);
 	await PickWeeklyPresenters(Missing, Presentations);
 });
 

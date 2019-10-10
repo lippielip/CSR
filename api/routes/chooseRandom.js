@@ -109,9 +109,7 @@ async function getModerator (combList) {
 	});
 }
 
-async function GetPresentPeople (Missing, Presentations) {
-	let MissingPeople = await Missing;
-	let NewPresentations = await Presentations;
+async function GetPresentPeople (MissingPeople, NewPresentations) {
 	return new Promise(function (resolve, reject) {
 		pool.getConnection(async function (err, connection) {
 			if (err) {
