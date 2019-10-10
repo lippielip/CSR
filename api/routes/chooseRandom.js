@@ -43,11 +43,11 @@ function generateWeighedList (list, weight) {
 }
 
 function getPresenters (combList, list_length) {
-	var list = combList.map(function (entry) {
+	let list = combList.map(function (entry) {
 		return entry.User_ID;
 	});
 
-	var weights = combList.map(function (entry) {
+	let weights = combList.map(function (entry) {
 		if (entry.Presentations_held > 99) {
 			return 0;
 		} else {
@@ -55,8 +55,8 @@ function getPresenters (combList, list_length) {
 		}
 	});
 
-	var weighed_list = generateWeighedList(list, weights);
-	var random_num = rand(0, weighed_list.length - 1);
+	let weighed_list = generateWeighedList(list, weights);
+	let random_num = rand(0, weighed_list.length - 1);
 	pool.getConnection(function (err, connection) {
 		if (err) {
 			console.log(err);
@@ -64,8 +64,9 @@ function getPresenters (combList, list_length) {
 		}
 		console.log('we:' + weighed_list);
 		console.log('ran:' + random_num);
-		console.log('probability:' + probability[list.indexOf(weighed_list[random_num])]);
 		console.log('number:' + list.indexOf(weighed_list[random_num]));
+		console.log('probability:' + probability[list.indexOf(weighed_list[random_num])]);
+
 		connection.query(
 			`UPDATE users SET Pending_Presentation = 1, Last_Probability = ${probability[list.indexOf(weighed_list[random_num])]} WHERE User_ID = ${weighed_list[random_num]} `,
 			function (err, result, fields) {
@@ -78,7 +79,7 @@ function getPresenters (combList, list_length) {
 }
 
 function getModerator (combList) {
-	var list = combList.map(function (entry) {
+	let list = combList.map(function (entry) {
 		return entry.User_ID;
 	});
 	let UserIndex = Math.floor(Math.random() * list.length);
