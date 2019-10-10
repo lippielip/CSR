@@ -86,6 +86,7 @@ async function getPresenters (combList, list_length) {
 			);
 			connection.release();
 		});
+		return;
 	});
 }
 
@@ -100,13 +101,13 @@ async function getModerator (combList) {
 				console.log(err);
 				return res.status(400).send("Couldn't get a connection");
 			}
-			console.log('testoutside');
 			connection.query(`UPDATE users SET Pending_Presentation = 2 WHERE User_ID = ${list[UserIndex]} `, function (err, result, fields) {
 				if (err) console.log(err);
 				resolve(UserIndex);
 			});
 			connection.release();
 		});
+		return;
 	});
 }
 
@@ -191,14 +192,15 @@ async function GetPresentPeople (MissingPeople, NewPresentations) {
 			);
 			connection.release();
 		});
+		return;
 	});
 }
 
 async function PickWeeklyPresenters (MissingPeople, NewPresentations) {
 	console.log('\x1b[33m', 'Picking Presenters...', '\x1b[0m');
 	//Check if enough people are present, regardless of if they had a presentation last week
-
 	await GetPresentPeople(MissingPeople, NewPresentations);
+
 	if (IDmap.length <= 3) {
 		mail(-1);
 	} else {
