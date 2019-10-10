@@ -8,7 +8,7 @@ function getNextDayOfWeek (date, dayOfWeek) {
 }
 
 async function getNewPresentations () {
-	new Promise(function (resolve, reject) {
+	return new Promise(function (resolve, reject) {
 		let PresenterID = [];
 
 		var friday = Date.parse(getNextDayOfWeek(new Date(), 5).toISOString().split('T')[0]);

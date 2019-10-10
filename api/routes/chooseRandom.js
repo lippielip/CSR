@@ -1,5 +1,7 @@
 var pool = require('./database');
 var mail = require('./email/mailswitch');
+var getMissingPeople = require('./get/getMissingPeople');
+var getNewPresentations = require('./get/getNewPresentations');
 /* Random Function weighting of different Presentation Types */
 const A_WEIGHT = 1;
 const B_WEIGHT = 1.5;
@@ -8,71 +10,10 @@ const WEIGHT_FACTOR = 10000;
 
 let probability;
 let IDmap = [];
-let MissingPeople = [];
-let NewPresentations = [];
 let voluntaryCount = 0;
 
 function rand (min, max) {
 	return Math.floor(Math.random() * (max - min + 1)) + min;
-}
-
-function getNextDayOfWeek (date, dayOfWeek) {
-	var resultDate = date;
-	resultDate.setDate(date.getDate() + (7 + dayOfWeek - date.getDay()) % 7);
-
-	return resultDate;
-}
-
-async function getMissingPeople () {
-	return new Promise(function (resolve, reject) {
-		var friday = Date.parse(getNextDayOfWeek(new Date(), 5).toISOString().split('T')[0]);
-		pool.getConnection(async function (err, connection) {
-			if (err) {
-				console.log(err);
-				return res.status(400).send("Couldn't get a connection");
-			}
-			connection.query(`SELECT User, start, end FROM outofoffice `, function (err, result, fields) {
-				if (err) return reject(err);
-				for (let i = 0; i < result.length; i++) {
-					let start = Date.parse(result[i].start);
-					let end = Date.parse(result[i].end);
-					if (start <= friday && friday <= end) {
-						MissingPeople.push(result[i].User);
-					}
-				}
-				setTimeout(() => {
-					resolve('resolved');
-				}, 2000);
-			});
-			connection.release();
-		});
-	});
-}
-
-async function getNewPresentations () {
-	return new Promise(function (resolve, reject) {
-		var friday = Date.parse(getNextDayOfWeek(new Date(), 5).toISOString().split('T')[0]);
-		pool.getConnection(async function (err, connection) {
-			if (err) {
-				console.log(err);
-				return res.status(400).send("Couldn't get a connection");
-			}
-			connection.query(`SELECT Presenter, Date FROM presentations WHERE Date != 'NULL'`, function (err, result, fields) {
-				if (err) console.log(err);
-				for (let i = 0; i < result.length; i++) {
-					let PresentationDate = Date.parse(result[i].Date.split('T')[0]);
-					if (PresentationDate === friday) {
-						NewPresentations.push(result[i].Presenter);
-					}
-				}
-				setTimeout(() => {
-					resolve('resolved');
-				}, 2000);
-			});
-
-			connection.release();
-		});
-	});
 }
 
 function getObjectIndex (array, attr, value) {
@@ -104,6 +45,7 @@ function generateWeighedList (list, weight) {
 		if (multiples <= 0) multiples = 1;
 		probability.push(multiples / sum);
 	}
+	console.log('rawraw prob:' + probability);
 	return weighed_list;
 }
 
@@ -123,7 +65,13 @@ async function getPresenters (combList, list_length) {
 
 		let weighed_list = generateWeighedList(list, weights);
 		let random_num = rand(0, weighed_list.length - 1);
-
+		console.log('Random Number:' + random_num);
+		console.log('weighed list length:' + weighed_list.length);
+		console.log('probIndex:' + list.indexOf(weighed_list[random_num]));
+		console.log('probLength:' + probability.length);
+		console.log('raw prob:' + probability);
+		console.log('probability:' + probability[list.indexOf(weighed_list[random_num])]);
+		console.log(' ');
 		pool.getConnection(function (err, connection) {
 			if (err) {
 				console.log(err);
@@ -155,26 +103,21 @@ async function getModerator (combList) {
 			}
 			connection.query(`UPDATE users SET Pending_Presentation = 2 WHERE User_ID = ${list[UserIndex]} `, function (err, result, fields) {
 				if (err) console.log(err);
-				return resolve(UserIndex);
+				resolve(UserIndex);
 			});
 			connection.release();
 		});
+		return;
 	});
 }
 
 async function GetPresentPeople (MissingPeople, NewPresentations) {
-	console.log('before' + MissingPeople);
-	console.log('before' + NewPresentations);
 	return new Promise(function (resolve, reject) {
-		console.log('first' + MissingPeople);
-		console.log('first' + NewPresentations);
 		pool.getConnection(async function (err, connection) {
 			if (err) {
 				console.log(err);
 				return res.status(400).send("Couldn't get a connection");
 			}
-			console.log('pool' + MissingPeople);
-			console.log('pool' + NewPresentations);
 			connection.query(
 				`SELECT User_ID, Username, E_Mail, Pending_Presentation, Authentication_Level, FirstName, LastName, Amount_A, Amount_B, Amount_C FROM users`,
 				async function (err, result, fields) {
@@ -184,15 +127,11 @@ async function GetPresentPeople (MissingPeople, NewPresentations) {
 							console.log('\x1b[35m', 'Ignoring User with preferred Matchmaking: ' + result[i].Username, '\x1b[0m');
 							continue;
 						}
-						console.log('middle' + MissingPeople);
-						console.log('middle' + NewPresentations);
 						//if someone is not present, then they are not added to the roulette
 						if (MissingPeople.includes(result[i].User_ID)) {
 							console.log('\x1b[35m', 'Ignoring user: ' + result[i].Username + ' (absent)', '\x1b[0m');
 							connection.query(`UPDATE users SET Pending_Presentation = 0 WHERE User_ID = ${result[i].User_ID} `, function (err, result, fields) {
 								if (err) console.log(err);
-								console.log('while' + MissingPeople);
-								console.log('while' + NewPresentations);
 							});
 						} else {
 							if (NewPresentations.includes(result[i].User_ID)) {
@@ -247,21 +186,20 @@ async function GetPresentPeople (MissingPeople, NewPresentations) {
 							}
 						}
 					}
-					console.log('end' + MissingPeople);
-					console.log('end' + NewPresentations);
-					return resolve(IDmap);
+					resolve(IDmap);
 				}
 			);
 			connection.release();
 		});
+		return;
 	});
 }
 
 async function PickWeeklyPresenters () {
 	console.log('\x1b[33m', 'Picking Presenters...', '\x1b[0m');
 	//Check if enough people are present, regardless of if they had a presentation last week
-	await getMissingPeople();
-	await getNewPresentations();
+	let MissingPeople = await getMissingPeople();
+	let NewPresentations = await getNewPresentations();
 	await GetPresentPeople(MissingPeople, NewPresentations);
 
 	if (IDmap.length <= 3) {
@@ -278,6 +216,7 @@ async function PickWeeklyPresenters () {
 			IDmap.splice(IdIndex1, 1);
 			let IdIndex2 = await getPresenters(IDmap, USER_AMOUNT);
 			Presenter2 = IDmap[IdIndex2];
+			console.log(IdIndex2);
 			Presenter2.probability = probability[IdIndex2];
 			IDmap.splice(IdIndex2, 1);
 		}
