@@ -39,6 +39,7 @@ function generateWeighedList (list, weight) {
 		if (multiples <= 0) multiples = 1;
 		probability.push(multiples / sum);
 	}
+	console.log('rawraw prob:' + probability);
 	return weighed_list;
 }
 
