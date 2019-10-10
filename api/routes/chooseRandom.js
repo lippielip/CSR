@@ -40,7 +40,6 @@ async function getMissingPeople () {
 						MissingPeople.push(result[i].User);
 					}
 				}
-				console.log(i);
 				return resolve(MissingPeople);
 			});
 			connection.release();
@@ -64,7 +63,6 @@ async function getNewPresentations () {
 						NewPresentations.push(result[i].Presenter);
 					}
 				}
-				console.log(i);
 				return resolve(NewPresentations);
 			});
 
