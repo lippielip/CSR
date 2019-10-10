@@ -28,6 +28,7 @@ async function getMissingPeople () {
 						missingID.push(result[i].User);
 					}
 				}
+				console.log(missingID);
 				resolve(missingID);
 			});
 
