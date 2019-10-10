@@ -109,7 +109,9 @@ async function getModerator (combList) {
 	});
 }
 
-async function GetPresentPeople (MissingPeople, NewPresentations) {
+async function GetPresentPeople (Missing, Presentations) {
+	let MissingPeople = await Missing;
+	let NewPresentations = await Presentations;
 	return new Promise(function (resolve, reject) {
 		pool.getConnection(async function (err, connection) {
 			if (err) {
@@ -196,7 +198,7 @@ async function GetPresentPeople (MissingPeople, NewPresentations) {
 async function PickWeeklyPresenters (MissingPeople, NewPresentations) {
 	console.log('\x1b[33m', 'Picking Presenters...', '\x1b[0m');
 	//Check if enough people are present, regardless of if they had a presentation last week
-	await GetPresentPeople(await MissingPeople, await NewPresentations);
+	await GetPresentPeople(MissingPeople, NewPresentations);
 
 	if (IDmap.length <= 3) {
 		mail(-1);
