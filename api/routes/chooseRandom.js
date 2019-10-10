@@ -256,8 +256,8 @@ async function PickWeeklyPresenters () {
 	try {
 		await getMissingPeople();
 		await getNewPresentations();
-		console.log(MissingPeople);
-		console.log(NewPresentations);
+		console.log(await getMissingPeople());
+		console.log(await getNewPresentations());
 		await GetPresentPeople(MissingPeople, NewPresentations);
 	} catch (error) {
 		console.log(error);
