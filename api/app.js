@@ -40,7 +40,7 @@ i = schedule.scheduleJob('0 5 * * mon', async function MondayJob () {
 	let Presentations = await GetNewPresentations();
 	console.log(await MissingPeople());
 	console.log(await GetNewPresentations());
-	PickWeeklyPresenters(Missing, Presentations);
+	await PickWeeklyPresenters(Missing, Presentations);
 });
 
 var j = schedule.scheduleJob('30 5 * * *', function DailyCheck () {
