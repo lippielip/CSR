@@ -163,7 +163,6 @@ async function GetPresentPeople (MissingPeople, NewPresentations) {
 									});
 									connection.query(`UPDATE users SET Pending_Presentation = 0 WHERE User_ID = ${result[i].User_ID} `, function (err, result, fields) {
 										if (err) console.log(err);
-										console.log(IDmap);
 									});
 								} else {
 									//low prob of getting picked
