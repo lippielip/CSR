@@ -12,6 +12,10 @@ let MissingPeople = [];
 let NewPresentations = [];
 let voluntaryCount = 0;
 
+function rand (min, max) {
+	return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
 function getNextDayOfWeek (date, dayOfWeek) {
 	var resultDate = date;
 	resultDate.setDate(date.getDate() + (7 + dayOfWeek - date.getDay()) % 7);
@@ -36,7 +40,6 @@ async function getMissingPeople () {
 						MissingPeople.push(result[i].User);
 					}
 				}
-				console.log(MissingPeople);
 				return resolve(MissingPeople);
 			});
 			connection.release();
@@ -66,10 +69,6 @@ async function getNewPresentations () {
 			connection.release();
 		});
 	});
-}
-
-function rand (min, max) {
-	return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
 function getObjectIndex (array, attr, value) {
@@ -258,6 +257,7 @@ async function PickWeeklyPresenters () {
 		await getMissingPeople();
 		await getNewPresentations();
 		console.log(MissingPeople);
+		console.log(NewPresentations);
 		await GetPresentPeople(MissingPeople, NewPresentations);
 	} catch (error) {
 		console.log(error);
