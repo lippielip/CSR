@@ -244,15 +244,11 @@ async function GetPresentPeople (MissingPeople, NewPresentations) {
 async function PickWeeklyPresenters () {
 	console.log('\x1b[33m', 'Picking Presenters...', '\x1b[0m');
 	//Check if enough people are present, regardless of if they had a presentation last week
-	try {
-		await getMissingPeople();
-		await getNewPresentations();
-		console.log(await MissingPeople);
-		console.log(await NewPresentations);
-		await GetPresentPeople(MissingPeople, NewPresentations);
-	} catch (error) {
-		console.log(error);
-	}
+	await getMissingPeople();
+	await getNewPresentations();
+	console.log(await MissingPeople);
+	console.log(await NewPresentations);
+	await GetPresentPeople(MissingPeople, NewPresentations);
 
 	if (IDmap.length <= 3) {
 		mail(-1);
@@ -268,7 +264,6 @@ async function PickWeeklyPresenters () {
 			IDmap.splice(IdIndex1, 1);
 			let IdIndex2 = await getPresenters(IDmap, USER_AMOUNT);
 			Presenter2 = IDmap[IdIndex2];
-			console.log(IdIndex2);
 			Presenter2.probability = probability[IdIndex2];
 			IDmap.splice(IdIndex2, 1);
 		}
