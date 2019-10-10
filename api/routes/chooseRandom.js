@@ -106,88 +106,89 @@ async function getModerator (combList) {
 	return UserIndex;
 }
 
-async function GetPresentPeople (MissingPeople, NewPresentations) {
-	await pool.getConnection(async function (err, connection) {
-		if (err) {
-			console.log(err);
-			return res.status(400).send("Couldn't get a connection");
-		}
-		await connection.query(
-			`SELECT User_ID, Username, E_Mail, Pending_Presentation, Authentication_Level, FirstName, LastName, Amount_A, Amount_B, Amount_C FROM users`,
-			await async function (err, result, fields) {
-				if (err) console.log(err);
-				for (let i = 0; i < result.length; i++) {
-					if (result[i].Authentication_Level > 5) {
-						console.log('\x1b[35m', 'Ignoring User with preferred Matchmaking: ' + result[i].Username, '\x1b[0m');
-						continue;
-					}
-					//if someone is not present, then they are not added to the roulette
-					if (MissingPeople.includes(result[i].User_ID)) {
-						console.log('\x1b[35m', 'Ignoring user: ' + result[i].Username + ' (absent)', '\x1b[0m');
-						await connection.query(`UPDATE users SET Pending_Presentation = 0 WHERE User_ID = ${result[i].User_ID} `, function (err, result, fields) {
-							if (err) console.log(err);
-						});
-					} else {
-						if (NewPresentations.includes(result[i].User_ID)) {
-							voluntaryCount++;
-							console.log('\x1b[35m', 'voluntary Presentation : ' + result[i].Username, '\x1b[0m');
-							await connection.query(`UPDATE users SET Pending_Presentation = 10, Last_Probability = 1 WHERE User_ID = ${result[i].User_ID} `, function (
-								err,
-								result,
-								fields
-							) {
+async function GetPresentPeople(MissingPeople, NewPresentations) {
+	return new Promise(function (resolve, reject) {
+		await pool.getConnection(async function (err, connection) {
+			if (err) {
+				console.log(err);
+				return res.status(400).send("Couldn't get a connection");
+			}
+			await connection.query(
+				`SELECT User_ID, Username, E_Mail, Pending_Presentation, Authentication_Level, FirstName, LastName, Amount_A, Amount_B, Amount_C FROM users`,
+				await async function (err, result, fields) {
+					if (err) console.log(err);
+					for (let i = 0; i < result.length; i++) {
+						if (result[i].Authentication_Level > 5) {
+							console.log('\x1b[35m', 'Ignoring User with preferred Matchmaking: ' + result[i].Username, '\x1b[0m');
+							continue;
+						}
+						//if someone is not present, then they are not added to the roulette
+						if (MissingPeople.includes(result[i].User_ID)) {
+							console.log('\x1b[35m', 'Ignoring user: ' + result[i].Username + ' (absent)', '\x1b[0m');
+							await connection.query(`UPDATE users SET Pending_Presentation = 0 WHERE User_ID = ${result[i].User_ID} `, function (err, result, fields) {
 								if (err) console.log(err);
-								console.log('HI3');
-							});
-							IDmap.push({
-								User_ID            : result[i].User_ID,
-								Username           : result[i].Username,
-								Presentations_held : result[i].Amount_A * A_WEIGHT + result[i].Amount_B * B_WEIGHT + result[i].Amount_C * C_WEIGHT,
-								E_Mail             : result[i].E_Mail,
-								FirstName          : result[i].FirstName,
-								LastName           : result[i].LastName
 							});
 						} else {
-							/*if someoneone is present, then if they havent held a presentation last week, get the sum of the presentations they have held this year
-                              if they had to present last week, then their presentation amount is set to 100 so they have the lowest prob of getting picked again
-                              normal probability*/
-							if (result[i].Pending_Presentation != 10) {
-								IDmap.push({
-									User_ID            : result[i].User_ID,
-									Username           : result[i].Username,
-									Presentations_held : result[i].Amount_A * A_WEIGHT + result[i].Amount_B * B_WEIGHT + result[i].Amount_C * C_WEIGHT,
-									E_Mail             : result[i].E_Mail,
-									FirstName          : result[i].FirstName,
-									LastName           : result[i].LastName
-								});
-								await connection.query(`UPDATE users SET Pending_Presentation = 0 WHERE User_ID = ${result[i].User_ID} `, function (err, result, fields) {
+							if (NewPresentations.includes(result[i].User_ID)) {
+								voluntaryCount++;
+								console.log('\x1b[35m', 'voluntary Presentation : ' + result[i].Username, '\x1b[0m');
+								await connection.query(`UPDATE users SET Pending_Presentation = 10, Last_Probability = 1 WHERE User_ID = ${result[i].User_ID} `, function (
+									err,
+									result,
+									fields
+								) {
 									if (err) console.log(err);
-									console.log(IDmap);
+									console.log('HI3');
+								});
+								IDmap.push({
+									User_ID: result[i].User_ID,
+									Username: result[i].Username,
+									Presentations_held: result[i].Amount_A * A_WEIGHT + result[i].Amount_B * B_WEIGHT + result[i].Amount_C * C_WEIGHT,
+									E_Mail: result[i].E_Mail,
+									FirstName: result[i].FirstName,
+									LastName: result[i].LastName
 								});
 							} else {
-								//low prob of getting picked
-								console.log('\x1b[36m', 'Ignoring user: ' + result[i].Username + ' (last presenter)', '\x1b[0m');
-								IDmap.push({
-									User_ID            : result[i].User_ID,
-									Username           : result[i].Username,
-									Presentations_held : 100,
-									E_Mail             : result[i].E_Mail,
-									FirstName          : result[i].FirstName,
-									LastName           : result[i].LastName
-								});
-								await connection.query(`UPDATE users SET Pending_Presentation = 0 WHERE User_ID = ${result[i].User_ID} `, function (err, result, fields) {
-									if (err) console.log(err);
-								});
+								/*if someoneone is present, then if they havent held a presentation last week, get the sum of the presentations they have held this year
+								  if they had to present last week, then their presentation amount is set to 100 so they have the lowest prob of getting picked again
+								  normal probability*/
+								if (result[i].Pending_Presentation != 10) {
+									IDmap.push({
+										User_ID: result[i].User_ID,
+										Username: result[i].Username,
+										Presentations_held: result[i].Amount_A * A_WEIGHT + result[i].Amount_B * B_WEIGHT + result[i].Amount_C * C_WEIGHT,
+										E_Mail: result[i].E_Mail,
+										FirstName: result[i].FirstName,
+										LastName: result[i].LastName
+									});
+									await connection.query(`UPDATE users SET Pending_Presentation = 0 WHERE User_ID = ${result[i].User_ID} `, function (err, result, fields) {
+										if (err) console.log(err);
+										console.log(IDmap);
+									});
+								} else {
+									//low prob of getting picked
+									console.log('\x1b[36m', 'Ignoring user: ' + result[i].Username + ' (last presenter)', '\x1b[0m');
+									IDmap.push({
+										User_ID: result[i].User_ID,
+										Username: result[i].Username,
+										Presentations_held: 100,
+										E_Mail: result[i].E_Mail,
+										FirstName: result[i].FirstName,
+										LastName: result[i].LastName
+									});
+									await connection.query(`UPDATE users SET Pending_Presentation = 0 WHERE User_ID = ${result[i].User_ID} `, function (err, result, fields) {
+										if (err) console.log(err);
+									});
+								}
 							}
 						}
 					}
 				}
-			}
-		);
-		connection.release();
-	});
-	console.log('HI');
-	return 1;
+			);
+			connection.release();
+		});
+		resolve(IDmap);
+	})
 }
 
 async function PickWeeklyPresenters (MissingPeople, NewPresentations) {
