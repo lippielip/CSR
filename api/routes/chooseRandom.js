@@ -1,7 +1,5 @@
 var pool = require('./database');
 var mail = require('./email/mailswitch');
-var getMissingPeople = require('./get/getMissingPeople');
-var getNewPresentations = require('./get/getNewPresentations');
 /* Random Function weighting of different Presentation Types */
 const A_WEIGHT = 1;
 const B_WEIGHT = 1.5;
@@ -10,7 +8,65 @@ const WEIGHT_FACTOR = 10000;
 
 let probability;
 let IDmap = [];
+let MissingPeople = [];
+let NewPresentations = [];
 let voluntaryCount = 0;
+
+function getNextDayOfWeek (date, dayOfWeek) {
+	var resultDate = date;
+	resultDate.setDate(date.getDate() + (7 + dayOfWeek - date.getDay()) % 7);
+
+	return resultDate;
+}
+
+async function getMissingPeople () {
+	new Promise(function (resolve, reject) {
+		var friday = Date.parse(getNextDayOfWeek(new Date(), 5).toISOString().split('T')[0]);
+		pool.getConnection(async function (err, connection) {
+			if (err) {
+				console.log(err);
+				return res.status(400).send("Couldn't get a connection");
+			}
+			connection.query(`SELECT User, start, end FROM outofoffice `, function (err, result, fields) {
+				if (err) return reject(err);
+				for (let i = 0; i < result.length; i++) {
+					start = Date.parse(result[i].start);
+					end = Date.parse(result[i].end);
+					if (start <= friday && friday <= end) {
+						MissingPeople.push(result[i].User);
+					}
+				}
+				console.log(MissingPeople);
+				return resolve(MissingPeople);
+			});
+			connection.release();
+		});
+	});
+}
+
+async function getNewPresentations () {
+	new Promise(function (resolve, reject) {
+		var friday = Date.parse(getNextDayOfWeek(new Date(), 5).toISOString().split('T')[0]);
+		pool.getConnection(async function (err, connection) {
+			if (err) {
+				console.log(err);
+				return res.status(400).send("Couldn't get a connection");
+			}
+			connection.query(`SELECT Presenter, Date FROM presentations WHERE Date != 'NULL'`, function (err, result, fields) {
+				if (err) console.log(err);
+				for (let i = 0; i < result.length; i++) {
+					PresentationDate = Date.parse(result[i].Date.split('T')[0]);
+					if (PresentationDate === friday) {
+						NewPresentations.push(result[i].Presenter);
+					}
+				}
+				resolve(NewPresentations);
+			});
+
+			connection.release();
+		});
+	});
+}
 
 function rand (min, max) {
 	return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -199,8 +255,8 @@ async function PickWeeklyPresenters () {
 	console.log('\x1b[33m', 'Picking Presenters...', '\x1b[0m');
 	//Check if enough people are present, regardless of if they had a presentation last week
 	try {
-		let MissingPeople = await getMissingPeople();
-		let NewPresentations = await getNewPresentations();
+		await getMissingPeople();
+		await getNewPresentations();
 		console.log(MissingPeople);
 		await GetPresentPeople(MissingPeople, NewPresentations);
 	} catch (error) {

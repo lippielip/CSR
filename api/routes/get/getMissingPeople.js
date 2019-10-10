@@ -29,6 +29,7 @@ async function getMissingPeople () {
 				console.log(missingID);
 				return resolve(missingID);
 			});
+
 			connection.release();
 		});
 	});
