@@ -45,7 +45,6 @@ function generateWeighedList (list, weight) {
 		if (multiples <= 0) multiples = 1;
 		probability.push(multiples / sum);
 	}
-	console.log('rawraw prob:' + probability);
 	return weighed_list;
 }
 
@@ -65,13 +64,6 @@ async function getPresenters (combList, list_length) {
 
 		let weighed_list = generateWeighedList(list, weights);
 		let random_num = rand(0, weighed_list.length - 1);
-		console.log('Random Number:' + random_num);
-		console.log('weighed list length:' + weighed_list.length);
-		console.log('probIndex:' + list.indexOf(weighed_list[random_num]));
-		console.log('probLength:' + probability.length);
-		console.log('raw prob:' + probability);
-		console.log('probability:' + probability[list.indexOf(weighed_list[random_num])]);
-		console.log(' ');
 		pool.getConnection(function (err, connection) {
 			if (err) {
 				console.log(err);
@@ -216,7 +208,6 @@ async function PickWeeklyPresenters () {
 			IDmap.splice(IdIndex1, 1);
 			let IdIndex2 = await getPresenters(IDmap, USER_AMOUNT);
 			Presenter2 = IDmap[IdIndex2];
-			console.log(IdIndex2);
 			Presenter2.probability = probability[IdIndex2];
 			IDmap.splice(IdIndex2, 1);
 		}
