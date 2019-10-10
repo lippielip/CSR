@@ -27,11 +27,11 @@ async function getMissingPeople () {
 						missingID.push(result[i].User);
 					}
 				}
-				resolve(missingID);
 			});
 			connection.release();
 			if (err) console.log(err);
 		});
+		resolve(missingID);
 		return;
 	});
 }
