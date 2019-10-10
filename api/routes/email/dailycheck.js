@@ -25,9 +25,9 @@ let canceledUser = {
 };
 //This function checks daily for new Presentation inputs and sends out emails accordingly using the switch in the mailswitch.js file
 async function dailyCheck () {
-	var day = weekday[d.getDay()];
+	var currentDay = d.getDay();
+	var day = weekday[currentDay];
 	let Presentations = await getPresentations();
-	console.log(d.getDay());
 	console.log('Today is: ' + day);
 	pool.getConnection(async function (err, connection) {
 		await connection.query(

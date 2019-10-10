@@ -8,28 +8,29 @@ function getNextDayOfWeek (date, dayOfWeek) {
 }
 
 async function getNewPresentations () {
-	let PresenterID = [];
+	return new Promise(function (resolve, reject) {
+		let PresenterID = [];
 
-	var friday = Date.parse(getNextDayOfWeek(new Date(), 5).toISOString().split('T')[0]);
-	pool.getConnection(async function (err, connection) {
-		if (err) {
-			console.log(err);
-			return res.status(400).send("Couldn't get a connection");
-		}
-		await connection.query(`SELECT Presenter, Date FROM presentations WHERE Date != 'NULL'`, function (err, result, fields) {
-			if (err) console.log(err);
-			for (let i = 0; i < result.length; i++) {
-				PresentationDate = Date.parse(result[i].Date.split('T')[0]);
-				if (PresentationDate === friday) {
-					PresenterID.push(result[i].Presenter);
-				}
+		var friday = Date.parse(getNextDayOfWeek(new Date(), 5).toISOString().split('T')[0]);
+		pool.getConnection(async function (err, connection) {
+			if (err) {
+				console.log(err);
+				return res.status(400).send("Couldn't get a connection");
 			}
+			connection.query(`SELECT Presenter, Date FROM presentations WHERE Date != 'NULL'`, function (err, result, fields) {
+				if (err) console.log(err);
+				for (let i = 0; i < result.length; i++) {
+					PresentationDate = Date.parse(result[i].Date.split('T')[0]);
+					if (PresentationDate === friday) {
+						PresenterID.push(result[i].Presenter);
+					}
+				}
+				resolve(PresenterID);
+			});
+
+			connection.release();
 		});
-		connection.release();
-		if (err) console.log(err);
 	});
-	await new Promise((resolve) => setTimeout(resolve, 500));
-	return PresenterID;
 }
 
 module.exports = getNewPresentations;
