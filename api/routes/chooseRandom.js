@@ -159,7 +159,11 @@ async function getModerator (combList) {
 }
 
 async function GetPresentPeople (MissingPeople, NewPresentations) {
+	console.log('before' + MissingPeople);
+	console.log('before' + NewPresentations);
 	return new Promise(function (resolve, reject) {
+		console.log('first' + MissingPeople);
+		console.log('first' + NewPresentations);
 		pool.getConnection(async function (err, connection) {
 			if (err) {
 				console.log(err);
@@ -174,11 +178,15 @@ async function GetPresentPeople (MissingPeople, NewPresentations) {
 							console.log('\x1b[35m', 'Ignoring User with preferred Matchmaking: ' + result[i].Username, '\x1b[0m');
 							continue;
 						}
+						console.log('middle' + MissingPeople);
+						console.log('middle' + NewPresentations);
 						//if someone is not present, then they are not added to the roulette
 						if (MissingPeople.includes(result[i].User_ID)) {
 							console.log('\x1b[35m', 'Ignoring user: ' + result[i].Username + ' (absent)', '\x1b[0m');
 							connection.query(`UPDATE users SET Pending_Presentation = 0 WHERE User_ID = ${result[i].User_ID} `, function (err, result, fields) {
 								if (err) console.log(err);
+								console.log('while' + MissingPeople);
+								console.log('while' + NewPresentations);
 							});
 						} else {
 							if (NewPresentations.includes(result[i].User_ID)) {
@@ -233,6 +241,8 @@ async function GetPresentPeople (MissingPeople, NewPresentations) {
 							}
 						}
 					}
+					console.log('end' + MissingPeople);
+					console.log('end' + NewPresentations);
 					return resolve(IDmap);
 				}
 			);
@@ -246,8 +256,6 @@ async function PickWeeklyPresenters () {
 	//Check if enough people are present, regardless of if they had a presentation last week
 	await getMissingPeople();
 	await getNewPresentations();
-	console.log(MissingPeople);
-	console.log(NewPresentations);
 	await GetPresentPeople(MissingPeople, NewPresentations);
 
 	if (IDmap.length <= 3) {
