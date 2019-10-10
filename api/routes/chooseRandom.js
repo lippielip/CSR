@@ -11,6 +11,7 @@ let probability;
 function rand (min, max) {
 	return Math.floor(Math.random() * (max - min + 1)) + min;
 }
+
 function getObjectIndex (array, attr, value) {
 	for (var i = 0; i < array.length; i += 1) {
 		if (array[i][attr] === value) {
@@ -19,6 +20,7 @@ function getObjectIndex (array, attr, value) {
 	}
 	return -1;
 }
+
 function generateWeighedList (list, weight) {
 	var weighed_list = [];
 	var sum = 0;
@@ -70,6 +72,7 @@ async function getPresenters (combList, list_length) {
 			console.log(err);
 			return res.status(400).send("Couldn't get a connection");
 		}
+
 		console.log('testoutsidepresenter');
 		await connection.query(
 			`UPDATE users SET Pending_Presentation = 1, Last_Probability = ${probability[list.indexOf(weighed_list[random_num])]} WHERE User_ID = ${weighed_list[random_num]} `,
@@ -191,7 +194,7 @@ async function PickWeeklyPresenters (MissingPeople, NewPresentations) {
 						Presenter1 = IDmap[IdIndex1];
 						Presenter1.probability = 1;
 						IDmap.splice(IdIndex1, 1);
-						let IdIndex2 = getPresenters(IDmap, USER_AMOUNT);
+						let IdIndex2 = await getPresenters(IDmap, USER_AMOUNT);
 						Presenter2 = IDmap[IdIndex2];
 						console.log(IdIndex2);
 						Presenter2.probability = probability[IdIndex2];
@@ -214,17 +217,17 @@ async function PickWeeklyPresenters (MissingPeople, NewPresentations) {
 					}
 
 					if (voluntaryCount === 0) {
-						let IdIndex1 = getPresenters(IDmap, USER_AMOUNT);
+						let IdIndex1 = await getPresenters(IDmap, USER_AMOUNT);
 						Presenter1 = IDmap[IdIndex1];
 						Presenter1.probability = probability[IdIndex1];
 						IDmap.splice(IdIndex1, 1);
 
-						let IdIndex2 = getPresenters(IDmap, USER_AMOUNT);
+						let IdIndex2 = await getPresenters(IDmap, USER_AMOUNT);
 						Presenter2 = IDmap[IdIndex2];
 						Presenter2.probability = probability[IdIndex2];
 						IDmap.splice(IdIndex2, 1);
 					}
-					let IdIndex3 = getModerator(IDmap);
+					let IdIndex3 = await getModerator(IDmap);
 					let Moderator = IDmap[IdIndex3];
 					let users = [ Presenter1, Presenter2 ];
 					mail(0, users, Moderator);
