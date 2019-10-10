@@ -1,5 +1,3 @@
-var express = require('express');
-var router = express.Router();
 var pool = require('../database');
 
 function getNextDayOfWeek (date, dayOfWeek) {
@@ -9,9 +7,9 @@ function getNextDayOfWeek (date, dayOfWeek) {
 	return resultDate;
 }
 
-function getMissingPeople () {
-	let missingID = [];
+async function getMissingPeople () {
 	new Promise(function (resolve, reject) {
+		let missingID = [];
 		var friday = Date.parse(getNextDayOfWeek(new Date(), 5).toISOString().split('T')[0]);
 		pool.getConnection(function (err, connection) {
 			if (err) {
