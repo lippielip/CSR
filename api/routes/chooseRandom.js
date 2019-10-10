@@ -182,11 +182,11 @@ async function GetPresentPeople (MissingPeople, NewPresentations) {
 							}
 						}
 					}
+					resolve(IDmap);
 				}
 			);
 			connection.release();
 		});
-		resolve(IDmap);
 	});
 }
 
