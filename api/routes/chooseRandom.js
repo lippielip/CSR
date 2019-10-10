@@ -110,8 +110,8 @@ async function getModerator (combList) {
 }
 
 async function GetPresentPeople (MissingPeople, NewPresentations) {
-	console.log(MissingPeople);
-	console.log(NewPresentations);
+	console.log(await MissingPeople);
+	console.log(await NewPresentations);
 	return new Promise(function (resolve, reject) {
 		pool.getConnection(async function (err, connection) {
 			if (err) {
