@@ -62,7 +62,6 @@ function getPresenters (combList, list_length) {
 			console.log(err);
 			return res.status(400).send("Couldn't get a connection");
 		}
-		console.log('we:' + weighed_list);
 		console.log('ran:' + random_num);
 		console.log('weighe_list_length:' + weighed_list.length);
 		console.log('probIndex:' + list.indexOf(weighed_list[random_num]));
