@@ -3,17 +3,24 @@ const html = require('./mailtemplate');
 const mailgun = require('../mailgun');
 const SENDER_MAIL = mailgun.sender;
 const mg = mailgun.mg;
+let emails = '';
 
-let emails;
-async function sendMail (caseVar, users, moderator, Presentations) {
-	pool.getConnection(async function (err, connection) {
-		await connection.query(`SELECT E_Mail FROM users WHERE Authentication_Level < 10`, async function (err, result, fields) {
-			emails = emails = result.map((x) => Object.values(x)).join(', ');
+function getEmails () {
+	return new Promise(function (resolve, reject) {
+		pool.getConnection(async function (err, connection) {
+			await connection.query(`SELECT E_Mail FROM users WHERE Authentication_Level < 10`, async function (err, result, fields) {
+				let emails = result.map((x) => Object.values(x)).join(', ');
+				resolve(emails);
+			});
+			connection.release();
+			if (err) console.log(err);
 		});
-		connection.release();
-		if (err) console.log(err);
+		return;
 	});
-	await new Promise((resolve) => setTimeout(resolve, 200));
+}
+
+async function sendMail (caseVar, users, moderator, Presentations) {
+	emails = await getEmails();
 	switch (caseVar) {
 		case -1:
 			canceled();
@@ -89,6 +96,7 @@ function onTime () {
 
 	mg.messages().send(data, function (error, body) {
 		if (error) console.log(error);
+		console.log(body);
 	});
 }
 
@@ -107,6 +115,7 @@ function onelate (lateUser, goodUser) {
 
 	mg.messages().send(data, function (error, body) {
 		if (error) console.log(error);
+		console.log(body);
 	});
 }
 
@@ -125,6 +134,7 @@ function bothlate (users) {
 
 	mg.messages().send(data, function (error, body) {
 		if (error) console.log(error);
+		console.log(body);
 	});
 }
 function wednesday (users, moderator, Presentations) {
@@ -158,6 +168,7 @@ function wednesday (users, moderator, Presentations) {
 
 	mg.messages().send(data, function (error, body) {
 		if (error) console.log(error);
+		console.log(body);
 	});
 }
 
@@ -177,6 +188,7 @@ function canceled () {
 
 	mg.messages().send(data, function (error, body) {
 		if (error) console.log(error);
+		console.log(body);
 	});
 }
 
