@@ -25,7 +25,6 @@ let canceledUser = {
 };
 //This function checks daily for new Presentation inputs and sends out emails accordingly using the switch in the mailswitch.js file
 async function dailyCheck () {
-	let currentDay = 3;
 	var day = weekday[d.getDay()];
 	let Presentations = await getPresentations();
 	console.log(d.getDay());
