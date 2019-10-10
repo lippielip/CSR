@@ -29,7 +29,7 @@ async function getNewPresentations () {
 			});
 			connection.release();
 		});
-		return;
+		return PresenterID;
 	});
 }
 

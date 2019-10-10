@@ -30,7 +30,7 @@ async function getMissingPeople () {
 			});
 			connection.release();
 		});
-		return;
+		return missingID;
 	});
 }
 
