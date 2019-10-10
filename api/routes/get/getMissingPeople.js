@@ -19,20 +19,18 @@ async function getMissingPeople () {
 				console.log(err);
 				return res.status(400).send("Couldn't get a connection");
 			}
-			connection.query(`SELECT User, start, end FROM outofoffice `, function (err, result, fields) {
-				if (err) console.log(err);
-				for (let i = 0; i < result.length; i++) {
-					start = Date.parse(result[i].start);
-					end = Date.parse(result[i].end);
-					if (start <= friday && friday <= end) {
-						missingID.push(result[i].User);
+			connection
+				.query(`SELECT User, start, end FROM outofoffice `, function (err, result, fields) {
+					if (err) console.log(err);
+					for (let i = 0; i < result.length; i++) {
+						start = Date.parse(result[i].start);
+						end = Date.parse(result[i].end);
+						if (start <= friday && friday <= end) {
+							missingID.push(result[i].User);
+						}
 					}
-				}
-				let wait = setTimeout(() => {
-					clearTimeout(wait);
-					resolve(missingID);
-				}, 500);
-			});
+				})
+				.then(resolve(missingID));
 			connection.release();
 			if (err) console.log(err);
 		});
