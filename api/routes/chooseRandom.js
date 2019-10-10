@@ -24,7 +24,7 @@ function getNextDayOfWeek (date, dayOfWeek) {
 }
 
 async function getMissingPeople () {
-	new Promise(function (resolve, reject) {
+	return new Promise(function (resolve, reject) {
 		var friday = Date.parse(getNextDayOfWeek(new Date(), 5).toISOString().split('T')[0]);
 		pool.getConnection(async function (err, connection) {
 			if (err) {
@@ -50,7 +50,7 @@ async function getMissingPeople () {
 }
 
 async function getNewPresentations () {
-	new Promise(function (resolve, reject) {
+	return new Promise(function (resolve, reject) {
 		var friday = Date.parse(getNextDayOfWeek(new Date(), 5).toISOString().split('T')[0]);
 		pool.getConnection(async function (err, connection) {
 			if (err) {
@@ -262,7 +262,7 @@ async function PickWeeklyPresenters () {
 	//Check if enough people are present, regardless of if they had a presentation last week
 	await getMissingPeople();
 	await getNewPresentations();
-	await GetPresentPeople(await MissingPeople, await NewPresentations);
+	await GetPresentPeople(MissingPeople, NewPresentations);
 
 	if (IDmap.length <= 3) {
 		mail(-1);
