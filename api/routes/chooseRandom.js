@@ -58,18 +58,18 @@ function getPresenters (combList, list_length) {
 
 	let weighed_list = generateWeighedList(list, weights);
 	let random_num = rand(0, weighed_list.length - 1);
+	console.log('Random Number:' + random_num);
+	console.log('weighed list length:' + weighed_list.length);
+	console.log('probIndex:' + list.indexOf(weighed_list[random_num]));
+	console.log('probLength:' + probability.length);
+	console.log('raw prob:' + probability);
+	console.log('probability:' + probability[list.indexOf(weighed_list[random_num])]);
+	console.log(' ');
 	pool.getConnection(function (err, connection) {
 		if (err) {
 			console.log(err);
 			return res.status(400).send("Couldn't get a connection");
 		}
-		console.log('Random Number:' + random_num);
-		console.log('weighed list length:' + weighed_list.length);
-		console.log('probIndex:' + list.indexOf(weighed_list[random_num]));
-		console.log('probLength:' + probability.length);
-		console.log('raw prob:' + probability);
-		console.log('probability:' + probability[list.indexOf(weighed_list[random_num])]);
-		console.log(' ');
 
 		connection.query(
 			`UPDATE users SET Pending_Presentation = 1, Last_Probability = ${probability[list.indexOf(weighed_list[random_num])]} WHERE User_ID = ${weighed_list[random_num]} `,
