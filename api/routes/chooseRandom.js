@@ -40,7 +40,9 @@ async function getMissingPeople () {
 						MissingPeople.push(result[i].User);
 					}
 				}
-				return resolve(MissingPeople);
+				setTimeout(() => {
+					resolve('resolved');
+				}, 2000);
 			});
 			connection.release();
 		});
@@ -63,7 +65,9 @@ async function getNewPresentations () {
 						NewPresentations.push(result[i].Presenter);
 					}
 				}
-				return resolve(NewPresentations);
+				setTimeout(() => {
+					resolve('resolved');
+				}, 2000);
 			});
 
 			connection.release();
