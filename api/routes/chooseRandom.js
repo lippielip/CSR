@@ -87,7 +87,8 @@ async function getPresenters (combList, list_length) {
 	return list.indexOf(weighed_list[random_num]);
 }
 
-async function getModerator (combList) {
+async function getModerator(combList) {
+	return new Promise(function (resolve, reject) {
 	let list = combList.map(function (entry) {
 		return entry.User_ID;
 	});
@@ -100,10 +101,10 @@ async function getModerator (combList) {
 		console.log('testoutside');
 		await connection.query(`UPDATE users SET Pending_Presentation = 2 WHERE User_ID = ${list[UserIndex]} `, function (err, result, fields) {
 			if (err) console.log(err);
+			resolve(UserIndex)
 		});
 		connection.release();
 	});
-	return UserIndex;
 }
 
 async function GetPresentPeople (MissingPeople, NewPresentations) {
