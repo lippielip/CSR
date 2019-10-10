@@ -107,7 +107,7 @@ async function getModerator (combList) {
 }
 
 async function GetPresentPeople (MissingPeople, NewPresentations) {
-	pool.getConnection(async function (err, connection) {
+	await pool.getConnection(async function (err, connection) {
 		if (err) {
 			console.log(err);
 			return res.status(400).send("Couldn't get a connection");
@@ -184,12 +184,14 @@ async function GetPresentPeople (MissingPeople, NewPresentations) {
 		);
 		connection.release();
 	});
+	return 1;
 }
 
 async function PickWeeklyPresenters (MissingPeople, NewPresentations) {
 	console.log('\x1b[33m', 'Picking Presenters...', '\x1b[0m');
 	//Check if enough people are present, regardless of if they had a presentation last week
 	await GetPresentPeople(MissingPeople, NewPresentations);
+	console.log(IDmap);
 	if (IDmap.length <= 3) {
 		mail(-1);
 	} else {
