@@ -34,8 +34,8 @@ async function getMissingPeople () {
 			connection.query(`SELECT User, start, end FROM outofoffice `, function (err, result, fields) {
 				if (err) return reject(err);
 				for (let i = 0; i < result.length; i++) {
-					start = Date.parse(result[i].start);
-					end = Date.parse(result[i].end);
+					let start = Date.parse(result[i].start);
+					let end = Date.parse(result[i].end);
 					if (start <= friday && friday <= end) {
 						MissingPeople.push(result[i].User);
 					}
@@ -59,7 +59,7 @@ async function getNewPresentations () {
 			connection.query(`SELECT Presenter, Date FROM presentations WHERE Date != 'NULL'`, function (err, result, fields) {
 				if (err) console.log(err);
 				for (let i = 0; i < result.length; i++) {
-					PresentationDate = Date.parse(result[i].Date.split('T')[0]);
+					let PresentationDate = Date.parse(result[i].Date.split('T')[0]);
 					if (PresentationDate === friday) {
 						NewPresentations.push(result[i].Presenter);
 					}
