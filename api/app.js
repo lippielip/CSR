@@ -5,7 +5,6 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var cors = require('cors');
-var schedule = require('node-schedule');
 var CronJob = require('cron').CronJob;
 
 // allow cross origin post and get
@@ -45,11 +44,6 @@ const job1 = new CronJob(
 	'Europe/Berlin'
 );
 
-/*var i = schedule.scheduleJob('0 5 * * mon', async function MondayJob () {
-	console.log('executing weekly event...');
-	PickWeeklyPresenters(await MissingPeople(), await GetNewPresentations());
-});*/
-
 const job2 = new CronJob(
 	'30 5 * * *',
 	function () {
@@ -63,10 +57,6 @@ const job2 = new CronJob(
 
 job1.start();
 job2.start();
-/*var j = schedule.scheduleJob('30 5 * * *', function DailyCheck () {
-	console.log('Fetching Presentation Status...');
-	CheckPresentationStatus();
-});*/
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
