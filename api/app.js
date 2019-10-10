@@ -36,7 +36,7 @@ var ForgotPassword = require('./routes/authentication/forgotPassword');
 var ForgotPasswordSubmit = require('./routes/authentication/forgotPasswordSubmit');
 var app = express();
 
-new CronJob(
+const job1 = new CronJob(
 	'0 5 * * mon',
 	async function () {
 		console.log('executing weekly event...');
@@ -52,7 +52,7 @@ new CronJob(
 	PickWeeklyPresenters(await MissingPeople(), await GetNewPresentations());
 });*/
 
-new CronJob(
+const job2 = new CronJob(
 	'30 5 * * *',
 	function () {
 		console.log('Fetching Presentation Status...');
@@ -62,7 +62,8 @@ new CronJob(
 	true,
 	'Europe/Berlin'
 );
-
+job1.start();
+job2.start();
 /*var j = schedule.scheduleJob('30 5 * * *', function DailyCheck () {
 	console.log('Fetching Presentation Status...');
 	CheckPresentationStatus();
