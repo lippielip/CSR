@@ -17,7 +17,7 @@ async function getNewPresentations () {
 				console.log(err);
 				return res.status(400).send("Couldn't get a connection");
 			}
-			await connection.query(`SELECT Presenter, Date FROM presentations WHERE Date != 'NULL'`, function (err, result, fields) {
+			connection.query(`SELECT Presenter, Date FROM presentations WHERE Date != 'NULL'`, function (err, result, fields) {
 				if (err) console.log(err);
 				for (let i = 0; i < result.length; i++) {
 					PresentationDate = Date.parse(result[i].Date.split('T')[0]);
