@@ -36,20 +36,32 @@ var ForgotPassword = require('./routes/authentication/forgotPassword');
 var ForgotPasswordSubmit = require('./routes/authentication/forgotPasswordSubmit');
 var app = express();
 
-new CronJob = ('0 5 * * mon',async function() {
-	console.log('executing weekly event...');
-	PickWeeklyPresenters(await MissingPeople(), await GetNewPresentations());
-}, null, true, 'Europe/Berlin');
+new CronJob(
+	'0 5 * * mon',
+	async function () {
+		console.log('executing weekly event...');
+		PickWeeklyPresenters(await MissingPeople(), await GetNewPresentations());
+	},
+	null,
+	true,
+	'Europe/Berlin'
+);
 
 /*var i = schedule.scheduleJob('0 5 * * mon', async function MondayJob () {
 	console.log('executing weekly event...');
 	PickWeeklyPresenters(await MissingPeople(), await GetNewPresentations());
 });*/
 
-new CronJob = ('30 5 * * *',function() {
-	console.log('Fetching Presentation Status...');
-	CheckPresentationStatus();
-}, null, true, 'Europe/Berlin');
+new CronJob(
+	'30 5 * * *',
+	function () {
+		console.log('Fetching Presentation Status...');
+		CheckPresentationStatus();
+	},
+	null,
+	true,
+	'Europe/Berlin'
+);
 
 /*var j = schedule.scheduleJob('30 5 * * *', function DailyCheck () {
 	console.log('Fetching Presentation Status...');
