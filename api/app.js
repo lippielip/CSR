@@ -26,8 +26,6 @@ var MariaDbdelete = require('./routes/update/delete');
 var usersRouter = require('./routes/authentication/users');
 var TokenRouter = require('./routes/authentication/checkToken');
 var PickWeeklyPresenters = require('./routes/chooseRandom');
-var MissingPeople = require('./routes/get/getMissingPeople');
-var GetNewPresentations = require('./routes/get/getNewPresentations');
 var CheckPresentationStatus = require('./routes/email/dailycheck');
 var CancelPresentation = require('./routes/update/cancelPresentation');
 var NewUserRouter = require('./routes/authentication/newUser');
@@ -40,7 +38,7 @@ const job1 = new CronJob(
 	'0 5 * * mon',
 	async function () {
 		console.log('executing weekly event...');
-		PickWeeklyPresenters(await MissingPeople(), await GetNewPresentations());
+		PickWeeklyPresenters();
 	},
 	null,
 	true,
@@ -62,6 +60,7 @@ const job2 = new CronJob(
 	true,
 	'Europe/Berlin'
 );
+
 job1.start();
 job2.start();
 /*var j = schedule.scheduleJob('30 5 * * *', function DailyCheck () {
