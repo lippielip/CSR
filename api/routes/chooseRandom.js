@@ -87,23 +87,24 @@ async function getPresenters (combList, list_length) {
 	return list.indexOf(weighed_list[random_num]);
 }
 
-async function getModerator(combList) {
+async function getModerator (combList) {
 	return new Promise(function (resolve, reject) {
-	let list = combList.map(function (entry) {
-		return entry.User_ID;
-	});
-	let UserIndex = Math.floor(Math.random() * list.length);
-	await pool.getConnection(async function (err, connection) {
-		if (err) {
-			console.log(err);
-			return res.status(400).send("Couldn't get a connection");
-		}
-		console.log('testoutside');
-		await connection.query(`UPDATE users SET Pending_Presentation = 2 WHERE User_ID = ${list[UserIndex]} `, function (err, result, fields) {
-			if (err) console.log(err);
-			resolve(UserIndex)
+		let list = combList.map(function (entry) {
+			return entry.User_ID;
 		});
-		connection.release();
+		let UserIndex = Math.floor(Math.random() * list.length);
+		pool.getConnection(function (err, connection) {
+			if (err) {
+				console.log(err);
+				return res.status(400).send("Couldn't get a connection");
+			}
+			console.log('testoutside');
+			connection.query(`UPDATE users SET Pending_Presentation = 2 WHERE User_ID = ${list[UserIndex]} `, function (err, result, fields) {
+				if (err) console.log(err);
+				resolve(UserIndex);
+			});
+			connection.release();
+		});
 	});
 }
 
