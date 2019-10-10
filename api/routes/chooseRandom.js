@@ -258,7 +258,7 @@ async function PickWeeklyPresenters () {
 	//Check if enough people are present, regardless of if they had a presentation last week
 	await getMissingPeople();
 	await getNewPresentations();
-	await GetPresentPeople(MissingPeople, NewPresentations);
+	await GetPresentPeople(await MissingPeople, await NewPresentations);
 
 	if (IDmap.length <= 3) {
 		mail(-1);
