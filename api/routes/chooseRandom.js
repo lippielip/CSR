@@ -65,7 +65,9 @@ function getPresenters (combList, list_length) {
 		console.log('we:' + weighed_list);
 		console.log('ran:' + random_num);
 		console.log('weighe_list_length:' + weighed_list.length);
-		console.log('number:' + list.indexOf(weighed_list[random_num]));
+		console.log('probIndex:' + list.indexOf(weighed_list[random_num]));
+		console.log('raw prob:' + probability);
+		console.log('probLength:' + probability.length);
 		console.log('probability:' + probability[list.indexOf(weighed_list[random_num])]);
 
 		connection.query(
