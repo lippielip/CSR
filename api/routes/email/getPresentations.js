@@ -36,7 +36,6 @@ async function getPresentations () {
 				Presentations = await result;
 				resolve(Presentations);
 			});
-			console.log('HI');
 			connection.release();
 		});
 		return;
