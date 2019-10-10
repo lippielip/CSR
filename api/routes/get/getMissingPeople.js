@@ -10,8 +10,8 @@ function getNextDayOfWeek (date, dayOfWeek) {
 }
 
 async function getMissingPeople () {
+	let missingID = [];
 	new Promise(function (resolve, reject) {
-		let missingID = [];
 		var friday = Date.parse(getNextDayOfWeek(new Date(), 5).toISOString().split('T')[0]);
 		pool.getConnection(function (err, connection) {
 			if (err) {
@@ -27,11 +27,10 @@ async function getMissingPeople () {
 						missingID.push(result[i].User);
 					}
 				}
+				resolve(missingID);
 			});
 			connection.release();
-			if (err) console.log(err);
 		});
-		resolve(missingID);
 		return;
 	});
 }
