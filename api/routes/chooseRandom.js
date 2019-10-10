@@ -169,6 +169,8 @@ async function GetPresentPeople (MissingPeople, NewPresentations) {
 				console.log(err);
 				return res.status(400).send("Couldn't get a connection");
 			}
+			console.log('pool' + MissingPeople);
+			console.log('pool' + NewPresentations);
 			connection.query(
 				`SELECT User_ID, Username, E_Mail, Pending_Presentation, Authentication_Level, FirstName, LastName, Amount_A, Amount_B, Amount_C FROM users`,
 				async function (err, result, fields) {
