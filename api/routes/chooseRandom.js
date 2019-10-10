@@ -62,6 +62,10 @@ function getPresenters (combList, list_length) {
 			console.log(err);
 			return res.status(400).send("Couldn't get a connection");
 		}
+		console.log('we:' + weighed_list);
+		console.log('ran:' + random_num);
+		console.log('probability:' + probability[list.indexOf(weighed_list[random_num])]);
+		console.log('number:' + list.indexOf(weighed_list[random_num]));
 		connection.query(
 			`UPDATE users SET Pending_Presentation = 1, Last_Probability = ${probability[list.indexOf(weighed_list[random_num])]} WHERE User_ID = ${weighed_list[random_num]} `,
 			function (err, result, fields) {
