@@ -18,11 +18,10 @@ function getEmails () {
 	});
 }
 
-let emails = await getEmails();
+let emails = getEmails();
 console.log(emails);
 
 async function sendMail (caseVar, users, moderator, Presentations) {
-	
 	switch (caseVar) {
 		case -1:
 			canceled();
