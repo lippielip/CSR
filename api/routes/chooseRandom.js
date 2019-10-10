@@ -184,6 +184,7 @@ async function PickWeeklyPresenters (MissingPeople, NewPresentations) {
 			}
 		);
 		connection.release();
+		await new Promise((resolve) => setTimeout(resolve, 500));
 	});
 	//Check if enough people are present, regardless of if they had a presentation last week
 	if (IDmap.length <= 3) {
