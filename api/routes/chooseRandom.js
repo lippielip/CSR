@@ -246,8 +246,8 @@ async function PickWeeklyPresenters () {
 	//Check if enough people are present, regardless of if they had a presentation last week
 	await getMissingPeople();
 	await getNewPresentations();
-	console.log(await MissingPeople);
-	console.log(await NewPresentations);
+	console.log(MissingPeople);
+	console.log(NewPresentations);
 	await GetPresentPeople(MissingPeople, NewPresentations);
 
 	if (IDmap.length <= 3) {
