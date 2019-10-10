@@ -43,7 +43,7 @@ function generateWeighedList (list, weight) {
 	return weighed_list;
 }
 
-function getPresenters (combList, list_length) {
+async function getPresenters (combList, list_length) {
 	let list = combList.map(function (entry) {
 		return entry.User_ID;
 	});
@@ -65,27 +65,35 @@ function getPresenters (combList, list_length) {
 	console.log('raw prob:' + probability);
 	console.log('probability:' + probability[list.indexOf(weighed_list[random_num])]);
 	console.log(' ');
-
-	connection.query(
-		`UPDATE users SET Pending_Presentation = 1, Last_Probability = ${probability[list.indexOf(weighed_list[random_num])]} WHERE User_ID = ${weighed_list[random_num]} `,
-		function (err, result, fields) {
-			if (err) console.log(err);
-		}
-	);
-	return list.indexOf(weighed_list[random_num]);
-}
-
-function getModerator (combList) {
-	let list = combList.map(function (entry) {
-		return entry.User_ID;
-	});
-	let UserIndex = Math.floor(Math.random() * list.length);
-	pool.getConnection(function (err, connection) {
+	await pool.getConnection(async function (err, connection) {
 		if (err) {
 			console.log(err);
 			return res.status(400).send("Couldn't get a connection");
 		}
-		connection.query(`UPDATE users SET Pending_Presentation = 2 WHERE User_ID = ${list[UserIndex]} `, function (err, result, fields) {
+		console.log('testoutsidepresenter');
+		await connection.query(
+			`UPDATE users SET Pending_Presentation = 1, Last_Probability = ${probability[list.indexOf(weighed_list[random_num])]} WHERE User_ID = ${weighed_list[random_num]} `,
+			function (err, result, fields) {
+				if (err) console.log(err);
+			}
+		);
+		connection.release();
+	});
+	return list.indexOf(weighed_list[random_num]);
+}
+
+async function getModerator (combList) {
+	let list = combList.map(function (entry) {
+		return entry.User_ID;
+	});
+	let UserIndex = Math.floor(Math.random() * list.length);
+	await pool.getConnection(async function (err, connection) {
+		if (err) {
+			console.log(err);
+			return res.status(400).send("Couldn't get a connection");
+		}
+		console.log('testoutside');
+		await connection.query(`UPDATE users SET Pending_Presentation = 2 WHERE User_ID = ${list[UserIndex]} `, function (err, result, fields) {
 			if (err) console.log(err);
 		});
 		connection.release();
