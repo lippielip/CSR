@@ -38,8 +38,8 @@ i = schedule.scheduleJob('0 5 * * mon', async function MondayJob () {
 	console.log('executing weekly event...');
 	let Missing = await MissingPeople();
 	let Presentations = await GetNewPresentations();
-	console.log(Missing);
-	console.log(Presentations);
+	console.log(await Missing);
+	console.log(await Presentations);
 	PickWeeklyPresenters(Missing, Presentations);
 });
 
