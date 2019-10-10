@@ -25,6 +25,7 @@ async function getNewPresentations () {
 						PresenterID.push(result[i].Presenter);
 					}
 				}
+				console.log(PresenterID);
 				resolve(PresenterID);
 			});
 			connection.release();
