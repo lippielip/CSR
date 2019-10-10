@@ -1,15 +1,19 @@
 #!/bin/bash
 
+# Created by Hannes G.
+# aka. Pitscher
+# https://github.com/pitscher
+
 ### Insert your values here
 
 # The URL of your container registry
-REGISTRY_URL="registry.gitlab.com"
+REGISTRY_URL=""
 # The path of your project where the Dockerfile is located
-WEBAPP_PATH="/home/hannes/colloquium-selector-robot/webapp"
+WEBAPP_PATH=""
 # The name you want to give the Docker image you build and push
-WEBAPP_IMAGE_NAME="registry.gitlab.com/derpitscher/csr/webapp"
-API_PATH="/home/hannes/colloquium-selector-robot/api"
-API_IMAGE_NAME="registry.gitlab.com/derpitscher/csr/api"
+WEBAPP_IMAGE_NAME=""
+API_PATH=""
+API_IMAGE_NAME=""
 
 ##############################################################
 ##         FROZEN ZONE - DONT CHANGE THE CODE BELOW         ##
@@ -23,7 +27,6 @@ function fnc_DockerWebapp () {
     clear
     # Display sticky header
     echo "D o c k e r - A u t o m a t e"
-    echo "https://github.com/pitscher"
     echo "- - - - - - - - - - - - - - - - -"
     echo ""
     echo "Your selection: WEBAPP"
@@ -44,14 +47,14 @@ function fnc_DockerWebapp () {
         echo "Ok. Set tag/version to >>> $WEBAPP_TAG <<<"
         echo "STEP 1 --> Docker build"
         # Performing Docker commands
-        echo "docker build -t $WEBAPP_IMAGE_NAME:$WEBAPP_TAG $WEBAPP_PATH"
+        docker build -t $WEBAPP_IMAGE_NAME:$WEBAPP_TAG $WEBAPP_PATH
         echo "STEP 1 --> Done."
-        #clear
+        clear
         echo "STEP 2 --> Docker push"
-        echo "docker push $WEBAPP_IMAGE_NAME:$WEBAPP_TAG"
+        docker push $WEBAPP_IMAGE_NAME:$WEBAPP_TAG
         echo "STEP 2 --> Done."
         echo "All done. Ending the script..."
-        #clear
+        clear
         echo "Bye."
         sleep 1
         clear
@@ -63,7 +66,6 @@ function fnc_DockerApi () {
     clear
     # Display sticky header
     echo "D o c k e r - A u t o m a t e"
-    echo "https://github.com/pitscher"
     echo "- - - - - - - - - - - - - - - - -"
     echo ""
     echo "Your selection: API"
@@ -84,14 +86,14 @@ function fnc_DockerApi () {
         echo "Ok. Set tag/version to >>> $API_TAG <<<"
         echo "STEP 1 --> Docker build"
         # Performing Docker commands
-        echo "docker build -t $API_IMAGE_NAME:$API_TAG $API_PATH"
+        docker build -t $API_IMAGE_NAME:$API_TAG $API_PATH
         echo "STEP 1 --> Done."
-        #clear
+        clear
         echo "STEP 2 --> Docker push"
-        echo "docker push $API_IMAGE_NAME:$API_TAG"
+        docker push $API_IMAGE_NAME:$API_TAG
         echo "STEP 2 --> Done."
         echo "All done. Ending the script..."
-        #clear
+        clear
         echo "Bye."
         sleep 1
         clear
@@ -103,7 +105,6 @@ function fnc_DockerWebappApi () {
     clear
     # Display sticky header
     echo "D o c k e r - A u t o m a t e"
-    echo "https://github.com/pitscher"
     echo "- - - - - - - - - - - - - - - - -"
     echo ""
     echo "Your selection: WEBAPP + API"
@@ -129,15 +130,15 @@ function fnc_DockerWebappApi () {
         echo "Ok. Set tag/version of API to >>> $API_TAG <<<"
         # Performing Docker commands
         echo "STEP 1 --> Docker build"
-        echo "docker build -t $WEBAPP_IMAGE_NAME:$WEBAPP_TAG $WEBAPP_PATH"
+        docker build -t $WEBAPP_IMAGE_NAME:$WEBAPP_TAG $WEBAPP_PATH
         clear
-        echo "docker build -t $API_IMAGE_NAME:$API_TAG $API_PATH"
+        docker build -t $API_IMAGE_NAME:$API_TAG $API_PATH
         echo "STEP 1 --> Done."
         clear
         echo "STEP 2 --> Docker push"
-        echo "docker push $WEBAPP_IMAGE_NAME:$WEBAPP_TAG"
+        docker push $WEBAPP_IMAGE_NAME:$WEBAPP_TAG
         clear
-        echo "docker push $API_IMAGE_NAME:$API_TAG"
+        docker push $API_IMAGE_NAME:$API_TAG
         echo "STEP 2 --> Done."
         echo "All done. Ending the script..."
         clear
@@ -152,7 +153,6 @@ function fnc_DockerClean () {
     clear
     # Display sticky header
     echo "D o c k e r - A u t o m a t e"
-    echo "https://github.com/pitscher"
     echo "- - - - - - - - - - - - - - - - -"
     echo ""
     echo "Your selection: Delete unused Docker images"
@@ -164,7 +164,6 @@ function fnc_DockerClean () {
 clear
 # Display sticky header
 echo "D o c k e r - A u t o m a t e"
-echo "https://github.com/pitscher"
 echo "- - - - - - - - - - - - - - - - -"
 echo ""
 echo "Checking requirements..."
@@ -258,7 +257,6 @@ sleep 1
 clear
 
 echo "D o c k e r - A u t o m a t e"
-echo "https://github.com/pitscher"
 echo "- - - - - - - - - - - - - - - - -"
 echo ""
 
