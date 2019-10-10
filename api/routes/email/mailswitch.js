@@ -4,6 +4,7 @@ const mailgun = require('../mailgun');
 const SENDER_MAIL = mailgun.sender;
 const mg = mailgun.mg;
 let emails = '';
+
 function getEmails () {
 	return new Promise(function (resolve, reject) {
 		pool.getConnection(async function (err, connection) {
@@ -20,7 +21,6 @@ function getEmails () {
 
 async function sendMail (caseVar, users, moderator, Presentations) {
 	emails = await getEmails();
-	console.log(emails);
 	switch (caseVar) {
 		case -1:
 			canceled();
