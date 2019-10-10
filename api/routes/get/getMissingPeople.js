@@ -1,5 +1,3 @@
-var express = require('express');
-var router = express.Router();
 var pool = require('../database');
 
 function getNextDayOfWeek (date, dayOfWeek) {
@@ -20,7 +18,7 @@ async function getMissingPeople () {
 				return res.status(400).send("Couldn't get a connection");
 			}
 			connection.query(`SELECT User, start, end FROM outofoffice `, function (err, result, fields) {
-				if (err) console.log(err);
+				if (err) return reject(err);
 				for (let i = 0; i < result.length; i++) {
 					start = Date.parse(result[i].start);
 					end = Date.parse(result[i].end);
@@ -29,13 +27,10 @@ async function getMissingPeople () {
 					}
 				}
 				console.log(missingID);
-				resolve(missingID);
+				return resolve(missingID);
 			});
-
 			connection.release();
-			if (err) console.log(err);
 		});
-		return;
 	});
 }
 
