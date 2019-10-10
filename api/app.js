@@ -42,9 +42,9 @@ i = schedule.scheduleJob('0 5 * * mon', async function MondayJob () {
 	const Presentations = async () => {
 		return await GetNewPresentations();
 	};
-	console.log(Missing);
-	console.log(Presentations);
-	await PickWeeklyPresenters(Missing, Presentations);
+	console.log(await Missing);
+	console.log(await Presentations);
+	await PickWeeklyPresenters(await Missing, await Presentations);
 });
 
 var j = schedule.scheduleJob('30 5 * * *', function DailyCheck () {
