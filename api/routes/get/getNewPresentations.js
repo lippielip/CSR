@@ -17,17 +17,17 @@ async function getNewPresentations () {
 				console.log(err);
 				return res.status(400).send("Couldn't get a connection");
 			}
-			connection
-				.query(`SELECT Presenter, Date FROM presentations WHERE Date != 'NULL'`, function (err, result, fields) {
-					if (err) console.log(err);
-					for (let i = 0; i < result.length; i++) {
-						PresentationDate = Date.parse(result[i].Date.split('T')[0]);
-						if (PresentationDate === friday) {
-							PresenterID.push(result[i].Presenter);
-						}
+			connection.query(`SELECT Presenter, Date FROM presentations WHERE Date != 'NULL'`, function (err, result, fields) {
+				if (err) console.log(err);
+				for (let i = 0; i < result.length; i++) {
+					PresentationDate = Date.parse(result[i].Date.split('T')[0]);
+					if (PresentationDate === friday) {
+						PresenterID.push(result[i].Presenter);
 					}
-				})
-				.then(resolve(PresenterID));
+				}
+				resolve(PresenterID);
+			});
+
 			connection.release();
 		});
 	});
