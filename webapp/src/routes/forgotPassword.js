@@ -100,6 +100,7 @@ class forgotPassword extends React.Component {
 					</div>
 				);
 			} catch (error) {
+				console.dir('all according to keikaku');
 				return <div>{error}</div>;
 			}
 		}
