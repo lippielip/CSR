@@ -12,10 +12,7 @@ class forgotPassword extends React.Component {
 		};
 	}
 	async handleSubmit () {
-		if (
-			document.getElementById('forgotPasswordInput').value === document.getElementById('forgotConfirmPasswordInput').value &&
-			document.getElementById('forgotPasswordInput').value !== ''
-		) {
+		if (document.getElementById('forgotPasswordInput').value === document.getElementById('forgotConfirmPasswordInput').value) {
 			await fetch(API_URL + '/forgotPasswordSubmit', {
 				method  : 'POST',
 				headers : {
@@ -28,7 +25,11 @@ class forgotPassword extends React.Component {
 				})
 			});
 		} else {
-			document.getElementById('ResetPasswordError').innerHTML = "Passwords don't match";
+			if (document.getElementById('forgotPasswordInput').value === '') {
+				document.getElementById('ResetPasswordError').innerHTML = 'Nothing to submit';
+			} else {
+				document.getElementById('ResetPasswordError').innerHTML = "Passwords don't match";
+			}
 		}
 	}
 
@@ -58,7 +59,7 @@ class forgotPassword extends React.Component {
 										method="post">
 										<input className="form-control" type="hidden" name="token" />
 										<div>
-											<div id="ResetPasswordError" className="invalidText" />
+											<div id="ResetPasswordError" className="invalidText mb-5" />
 											<input
 												className="form-control"
 												type="password"
