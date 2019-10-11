@@ -13,17 +13,17 @@ router.post('/', async function (req, res) {
 		connection.query(`SELECT ResetToken from users WHERE ResetToken = '${req.body.token}' `, function (err, result, fields) {
 			if (result.length === 0) {
 				// non existent user
-				res.status(404).end();
+				res.status(404).send('failed');
 				console.log('\x1b[31mFailed!\x1b[0m');
 				return 0;
 			}
 			if (req.body.token === result[0].token) {
 				// successfull authentication
-				res.status(200).end();
+				res.status(200).send('success');
 				console.log('\x1b[32mSuccess!\x1b[0m');
 				return 1;
 			} else {
-				res.status(401).end();
+				res.status(401).send('failed');
 				console.log('\x1b[31mFailed!\x1b[0m');
 				return 0;
 			}
