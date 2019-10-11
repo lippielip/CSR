@@ -63,7 +63,7 @@ class forgotPassword extends React.Component {
 										<input className="form-control" type="hidden" name="token" />
 										<div>
 											<input
-												className="form-control mb-3"
+												className="form-control mb-2"
 												type="password"
 												name="password"
 												id="forgotPasswordInput"
@@ -74,11 +74,11 @@ class forgotPassword extends React.Component {
 												title="Must contain at least one number, uppercase and lowercase letter, and at least 8 characters"
 												onChange={this.handleChange}
 											/>
-											<label className="text-dark mb-2">Password</label>
+											<label className="text-dark mb-5">Password</label>
 										</div>
 										<div>
 											<input
-												className="form-control mb-3"
+												className="form-control mb-2"
 												type="password"
 												name="confirmPassword"
 												id="forgotConfirmPasswordInput"
@@ -89,7 +89,7 @@ class forgotPassword extends React.Component {
 												onChange={this.handleChange}
 											/>
 
-											<label className="text-dark mb-2">Confirm Password</label>
+											<label className="text-dark mb-3">Confirm Password</label>
 										</div>
 										<div id="ResetPasswordError" className="invalidText" />
 										<button className="btn btn-lg btn-primary btn-block text-uppercase" type="submit">
