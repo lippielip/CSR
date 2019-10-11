@@ -17,6 +17,8 @@ router.post('/', async function (req, res) {
 				console.log('\x1b[31mFailed!\x1b[0m');
 				return 0;
 			} else {
+				console.log(req.body.token);
+				console.log(result[0].token);
 				if (req.body.token === result[0].token) {
 					// successfull authentication
 					res.status(200).send('success');
