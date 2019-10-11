@@ -12,7 +12,10 @@ class forgotPassword extends React.Component {
 		};
 	}
 	async handleSubmit () {
-		if (document.getElementById('forgotPasswordInput').value === document.getElementById('forgotConfirmPasswordInput').value) {
+		if (
+			document.getElementById('forgotPasswordInput').value === document.getElementById('forgotConfirmPasswordInput').value &&
+			document.getElementById('forgotPasswordInput').value !== ''
+		) {
 			await fetch(API_URL + '/forgotPasswordSubmit', {
 				method  : 'POST',
 				headers : {
