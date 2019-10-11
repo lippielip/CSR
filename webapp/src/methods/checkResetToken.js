@@ -12,6 +12,6 @@ export default async function checkResetToken (token) {
 		})
 	}).then((res) => {
 		const response = res;
-		sessionStorage.setItem('test', response);
+		return response;
 	});
 }
