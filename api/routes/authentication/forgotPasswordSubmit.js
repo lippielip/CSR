@@ -22,7 +22,7 @@ router.post('/', async function (req, res, next) {
 						result,
 						fields
 					) {
-						console.log('Password successfully changed');
+						console.log('Password successfully changed!');
 					});
 				}
 				res.status(200).send();
@@ -31,7 +31,6 @@ router.post('/', async function (req, res, next) {
 				res.status(404).send();
 			}
 			connection.release();
-			if (err) throw err;
 		});
 	});
 });

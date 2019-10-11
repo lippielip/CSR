@@ -31,6 +31,7 @@ var NewUserRouter = require('./routes/authentication/newUser');
 var NewPasswordRouter = require('./routes/authentication/newPassword');
 var ForgotPassword = require('./routes/authentication/forgotPassword');
 var ForgotPasswordSubmit = require('./routes/authentication/forgotPasswordSubmit');
+var checkResetToken = require('./routes/authentication/checkResetToken');
 var app = express();
 
 const job1 = new CronJob(
@@ -76,6 +77,7 @@ app.use('/add', MariaDbAdd);
 app.use('/addOOO', MariaDbAddOOO);
 app.use('/users', usersRouter);
 app.use('/checkToken', TokenRouter);
+app.use('/checkResetToken', checkResetToken);
 app.use('/PendingState', MariaDbPendingState);
 app.use('/update', MariaDbUpdate);
 app.use('/change', MariaDbchange);

@@ -23,7 +23,7 @@ router.post('/', async function (req, res) {
 				console.log('\x1b[32mSuccess!\x1b[0m');
 				return 1;
 			} else {
-				res.status(200).send();
+				res.status(401).end();
 				console.log('\x1b[31mFailed!\x1b[0m');
 				return 0;
 			}

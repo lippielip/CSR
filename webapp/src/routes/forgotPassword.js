@@ -1,6 +1,7 @@
 import * as React from 'react';
 import loading from '../methods/loadingscreen';
 import API_URL from '../variables';
+import checkResetToken from '../methods/checkResetToken';
 
 class forgotPassword extends React.Component {
 	constructor (props) {
@@ -11,21 +12,25 @@ class forgotPassword extends React.Component {
 		};
 	}
 	async handleSubmit () {
-		console.dir(document.getElementById('forgotPasswordInput').value);
-		await fetch(API_URL + '/forgotPasswordSubmit', {
-			method  : 'POST',
-			headers : {
-				'Content-Type' : 'application/json'
-			},
-			body    : JSON.stringify({
-				password        : document.getElementById('forgotPasswordInput').value,
-				confirmPassword : document.getElementById('forgotConfirmPasswordInput').value,
-				token           : new URLSearchParams(window.location.search).get('token')
-			})
-		});
+		if (document.getElementById('forgotPasswordInput').value === document.getElementById('forgotConfirmPasswordInput').value) {
+			await fetch(API_URL + '/forgotPasswordSubmit', {
+				method  : 'POST',
+				headers : {
+					'Content-Type' : 'application/json'
+				},
+				body    : JSON.stringify({
+					password        : document.getElementById('forgotPasswordInput').value,
+					confirmPassword : document.getElementById('forgotConfirmPasswordInput').value,
+					token           : new URLSearchParams(window.location.search).get('token')
+				})
+			});
+		} else {
+			document.getElementById('ResetPasswordError').innerHTML = "Passwords don't match!";
+		}
 	}
 
 	async componentDidMount () {
+		console.dir(await checkResetToken());
 		await this.setState({ isLoading: false });
 	}
 	render () {
@@ -48,6 +53,7 @@ class forgotPassword extends React.Component {
 										method="post">
 										<input className="form-control" type="hidden" name="token" />
 										<div>
+											<div id="ResetPasswordError" className="invalidText" />
 											<input
 												className="form-control"
 												type="password"
