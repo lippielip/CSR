@@ -10,10 +10,8 @@ export default async function checkResetToken (token) {
 			username : sessionStorage.getItem('username'),
 			token    : token
 		})
-	})
-		.then((response) => response.json())
-		.then((res) => {
-			const response = res;
-			sessionStorage.setItem('test', response);
-		});
+	}).then((res) => {
+		const response = res;
+		sessionStorage.setItem('test', response);
+	});
 }
