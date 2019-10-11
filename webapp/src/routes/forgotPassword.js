@@ -91,7 +91,7 @@ class forgotPassword extends React.Component {
 
 											<label className="text-dark mb-3">Confirm Password</label>
 										</div>
-										<div id="ResetPasswordError mb-3" className="invalidText" />
+										<div id="ResetPasswordError" className="invalidText  mb-3" />
 										<button className="btn btn-lg btn-primary btn-block text-uppercase" type="submit">
 											Submit
 										</button>
