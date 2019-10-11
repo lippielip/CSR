@@ -74,7 +74,7 @@ class forgotPassword extends React.Component {
 												title="Must contain at least one number, uppercase and lowercase letter, and at least 8 characters"
 												onChange={this.handleChange}
 											/>
-											<label className="text-dark mb-5">Password</label>
+											<label className="text-dark mb-3">Password</label>
 										</div>
 										<div>
 											<input
@@ -91,7 +91,7 @@ class forgotPassword extends React.Component {
 
 											<label className="text-dark mb-3">Confirm Password</label>
 										</div>
-										<div id="ResetPasswordError" className="invalidText" />
+										<div id="ResetPasswordError mb-3" className="invalidText" />
 										<button className="btn btn-lg btn-primary btn-block text-uppercase" type="submit">
 											Submit
 										</button>
