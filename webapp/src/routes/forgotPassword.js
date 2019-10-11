@@ -30,7 +30,7 @@ class forgotPassword extends React.Component {
 	}
 
 	async componentDidMount () {
-		console.dir(await checkResetToken());
+		console.dir(await checkResetToken(new URLSearchParams(window.location.search).get('token')));
 		await this.setState({ isLoading: false });
 	}
 	render () {
