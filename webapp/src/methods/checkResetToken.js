@@ -1,6 +1,7 @@
 import API_URL from '../variables';
 
 export default async function checkResetToken (token) {
+	console.dir(token);
 	await fetch(API_URL + '/checkResetToken', {
 		method  : 'POST',
 		headers : {
