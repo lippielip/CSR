@@ -25,7 +25,7 @@ class forgotPassword extends React.Component {
 				})
 			});
 		} else {
-			document.getElementById('ResetPasswordError').innerHTML = "Passwords don't match!";
+			document.getElementById('ResetPasswordError').innerHTML = "Passwords don't match";
 		}
 	}
 
