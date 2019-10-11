@@ -18,8 +18,8 @@ router.post('/', async function (req, res) {
 				return 0;
 			} else {
 				console.log(req.body.token);
-				console.log(result[0]);
-				if (req.body.token === result[0]) {
+				console.log(result[0].ResetToken);
+				if (req.body.token === result[0].ResetToken) {
 					// successfull authentication
 					res.status(200).send('success');
 					console.log('\x1b[32mSuccess!\x1b[0m');
