@@ -11,6 +11,9 @@ class forgotPassword extends React.Component {
 			isLoading : true
 		};
 	}
+	handleChange () {
+		document.getElementById('ResetPasswordError').innerHTML = '';
+	}
 	async handleSubmit () {
 		if (document.getElementById('forgotPasswordInput').value === document.getElementById('forgotConfirmPasswordInput').value) {
 			if (document.getElementById('forgotPasswordInput').value === '') {
@@ -49,7 +52,7 @@ class forgotPassword extends React.Component {
 						<div className="col-sm-9 col-md-7 col-lg-5 mx-auto">
 							<div className="card card-signin my-5">
 								<div className="card-body">
-									<h5 className="card-title text-center">New Password</h5>
+									<h5 className="card-title text-center text-dark">New Password</h5>
 									<form
 										className="form-signin"
 										onSubmit={(e) => {
@@ -60,6 +63,7 @@ class forgotPassword extends React.Component {
 										<input className="form-control" type="hidden" name="token" />
 										<div>
 											<div id="ResetPasswordError" className="invalidText" />
+											<br />
 											<input
 												className="form-control"
 												type="password"
@@ -70,6 +74,7 @@ class forgotPassword extends React.Component {
 												autoFocus=""
 												pattern="^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?!.*\s).{8,}$"
 												title="Must contain at least one number, uppercase and lowercase letter, and at least 8 characters"
+												onChange={this.handleChange}
 											/>
 											<label>Password</label>
 										</div>
@@ -83,6 +88,7 @@ class forgotPassword extends React.Component {
 												required=""
 												pattern="^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?!.*\s).{8,}$"
 												title="Must contain at least one number, one uppercase and lowercase letter, and at least 8 characters"
+												onChange={this.handleChange}
 											/>
 											<label>Confirm Password</label>
 										</div>
