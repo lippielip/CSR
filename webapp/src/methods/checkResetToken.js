@@ -1,7 +1,6 @@
 import API_URL from '../variables';
 
 export default async function checkResetToken (token) {
-	console.dir(token);
 	await fetch(API_URL + '/checkResetToken', {
 		method  : 'POST',
 		headers : {
@@ -15,7 +14,6 @@ export default async function checkResetToken (token) {
 		.then((response) => response.json())
 		.then((res) => {
 			const response = res;
-			console.dir(response);
-			return response;
+			sessionStorage.setItem('test', response);
 		});
 }
