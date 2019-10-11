@@ -175,7 +175,6 @@ class Routes extends React.Component {
 								{sessionStorage.getItem('Pending_Presentation') === '1' ? <Redirect to="/user" /> : null}
 								<ContentPane />
 							</Router>
-							<div>Test Footer</div>
 						</div>
 					) : (
 						<Login />
