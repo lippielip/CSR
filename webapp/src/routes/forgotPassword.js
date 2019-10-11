@@ -67,8 +67,8 @@ class forgotPassword extends React.Component {
 												placeholder="Enter your new Password"
 												required=""
 												autoFocus=""
-												pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}"
-												title="Must contain at least one number, uppercase and lowercase letter, and at least 6 characters"
+												pattern="^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?!.*\s).{8,}$"
+												title="Must contain at least one number, uppercase and lowercase letter, and at least 8 characters"
 											/>
 											<label>Password</label>
 										</div>
@@ -80,8 +80,8 @@ class forgotPassword extends React.Component {
 												id="forgotConfirmPasswordInput"
 												placeholder="Confirm your new Password"
 												required=""
-												pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}"
-												title="Must contain at least one number, one uppercase and lowercase letter, and at least 6 characters"
+												pattern="^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?!.*\s).{8,}$"
+												title="Must contain at least one number, one uppercase and lowercase letter, and at least 8 characters"
 											/>
 											<label>Confirm Password</label>
 										</div>
