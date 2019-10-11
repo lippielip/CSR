@@ -16,16 +16,17 @@ router.post('/', async function (req, res) {
 				res.status(404).send('failed');
 				console.log('\x1b[31mFailed!\x1b[0m');
 				return 0;
-			}
-			if (req.body.token === result[0].token) {
-				// successfull authentication
-				res.status(200).send('success');
-				console.log('\x1b[32mSuccess!\x1b[0m');
-				return 1;
 			} else {
-				res.status(401).send('failed');
-				console.log('\x1b[31mFailed!\x1b[0m');
-				return 0;
+				if (req.body.token === result[0].token) {
+					// successfull authentication
+					res.status(200).send('success');
+					console.log('\x1b[32mSuccess!\x1b[0m');
+					return 1;
+				} else {
+					res.status(401).send('failed');
+					console.log('\x1b[31mFailed!\x1b[0m');
+					return 0;
+				}
 			}
 		});
 		connection.release();
