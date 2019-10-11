@@ -12,6 +12,7 @@ export default async function checkResetToken (token) {
 		})
 	}).then((res) => {
 		const response = res;
+		console.dir(response);
 		return response;
 	});
 }
