@@ -99,8 +99,8 @@ class forgotPassword extends React.Component {
 						</div>
 					</div>
 				);
-			} catch (Error) {
-				return <div>Bad Token</div>;
+			} catch (error) {
+				return <div>{error}</div>;
 			}
 		}
 	}
