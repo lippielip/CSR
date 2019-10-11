@@ -14,6 +14,7 @@ export default async function checkResetToken (token) {
 		.then((response) => response.json())
 		.then((res) => {
 			const response = res;
+			console.dir(response);
 			return response;
 		});
 }
