@@ -88,7 +88,7 @@ class forgotPassword extends React.Component {
 												onChange={this.handleChange}
 											/>
 										</div>
-										<div id="ResetPasswordError" className="invalidText  mb-3" />
+										<div id="ResetPasswordError" className="invalidText mt-2 mb-3" />
 										<button className="btn btn-lg btn-primary btn-block text-uppercase" type="submit">
 											Submit
 										</button>
