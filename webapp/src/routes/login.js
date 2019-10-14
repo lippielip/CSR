@@ -102,13 +102,6 @@ export default class Login extends React.Component {
 		document.getElementById('ForgotPasswordError').innerHTML = '';
 	}
 
-	logout () {
-		sessionStorage.setItem('authenticated', false);
-		sessionStorage.setItem('token', null);
-		sessionStorage.setItem('username', null);
-		sessionStorage.setItem('Authentication_Level', null);
-	}
-
 	async componentDidMount () {
 		await checkToken();
 		await this.setState({ isLoading: false });

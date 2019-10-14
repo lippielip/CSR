@@ -20,90 +20,8 @@ class Routes extends React.Component {
 			isLoggedIn : false,
 			isLoading  : true
 		};
-		//this.handleOnChange = this.handleOnChange.bind(this);
-		//this.handleSubmit = this.handleSubmit.bind(this);
-	}
-	/*
-	async handleSubmit () {
-		if (!(this.state.wrongField.length === 0)) {
-			alert(`Please Check your Input in ${this.state.wrongField.join(', ').replace(/_/g, ' ')}`);
-		} else {
-			await fetch(API_URL + '/users', {
-				method  : 'POST',
-				headers : {
-					'Content-Type' : 'application/json'
-				},
-				body    : JSON.stringify({
-					username : this.state.username,
-					password : this.state.passwordInput
-				})
-			})
-				.then((response) => response.json()) //Authentication
-				.then((res) => {
-					const response = res;
-					if (response.authenticated === true) {
-						//good Login
-						sessionStorage.setItem('username', this.state.username);
-						sessionStorage.setItem('token', response.token);
-						sessionStorage.setItem('Authentication_Level', response.Authentication_Level);
-						sessionStorage.setItem('Pending_Presentation', response.Pending_Presentation);
-						sessionStorage.setItem('authenticated', response.authenticated);
-						this.setState({
-							isLoggedIn    : true,
-							passwordInput : ''
-						});
-					}
-					if (response.authenticated === false) {
-						document.getElementById('error').innerHTML = 'Login failed. Please check your credentials.';
-						sessionStorage.setItem('token', null);
-						sessionStorage.setItem('username', null);
-						sessionStorage.setItem('Authentication_Level', null);
-						sessionStorage.setItem('Pending_Presentation', null);
-						sessionStorage.setItem('authenticated', response.authenticated);
-						this.setState({
-							isLoggedIn : false
-						});
-					}
-					if (response.authenticated === 'newUser') {
-						sessionStorage.setItem('username', this.state.username);
-						sessionStorage.setItem('token', response.token);
-						(function ($) {
-							$('#PasswordPopup').modal('toggle');
-						})(jQuery);
-					}
-				});
-		}
-	}
-
-	handleOnChange (e) {
-		document.getElementById('error').innerHTML = '';
-		sessionStorage.setItem('token', null);
-		this.setState({ authenticated: false });
-		this.setState({ [e.target.name]: e.target.value });
-		if (e.target.value.includes("'")) {
-			if (!e.target.className.includes('invalid')) {
-				e.target.className = e.target.className + ' invalid';
-				this.state.wrongField.push(e.target.name);
-			}
-		} else {
-			if (e.target.className.includes('invalid')) {
-				this.state.wrongField.splice(
-					this.state.wrongField.findIndex((element) => {
-						return element === e.target.name;
-					}),
-					1
-				);
-				e.target.className = e.target.className.replace('invalid', '');
-			}
-		}
-	}
-
-	toggleForgotPassword () {
-		(function ($) {
-			$('#ForgotPasswordPopup').modal('toggle');
-		})(jQuery);
-		document.getElementById('forgotPasswordForm').reset();
-		document.getElementById('ForgotPasswordError').innerHTML = '';
+		this.handleOnChange = this.handleOnChange.bind(this);
+		this.handleSubmit = this.handleSubmit.bind(this);
 	}
 
 	logout () {
@@ -112,7 +30,7 @@ class Routes extends React.Component {
 		sessionStorage.setItem('username', null);
 		sessionStorage.setItem('Authentication_Level', null);
 		this.setState({ isLoggedIn: false });
-	}*/
+	}
 
 	async componentDidMount () {
 		await checkToken();
