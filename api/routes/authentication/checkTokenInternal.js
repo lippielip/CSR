@@ -1,7 +1,7 @@
 var pool = require('../database');
 
 //function to compare the users local token with serverside token
-function checkTokenInternal (req) {
+async function checkTokenInternal (req) {
 	console.log(req.body);
 	console.log(`\x1b[36mChecking Token...\x1b[0m`);
 	pool.getConnection(function (err, connection) {
