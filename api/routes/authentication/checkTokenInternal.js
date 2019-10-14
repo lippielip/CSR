@@ -4,6 +4,7 @@ var pool = require('../database');
 async function checkTokenInternal (req) {
 	return new Promise(function (resolve, reject) {
 		console.log(`\x1b[36mChecking Token...\x1b[0m`);
+		console.log(req.body);
 		pool.getConnection(function (err, connection) {
 			if (err) {
 				console.log(err);
