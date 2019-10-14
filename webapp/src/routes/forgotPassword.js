@@ -3,6 +3,7 @@ import loading from '../methods/loadingscreen';
 import API_URL from '../variables';
 import checkResetToken from '../methods/checkResetToken';
 import notAuthenticated from '../methods/loadingscreen';
+
 let statusCode;
 class forgotPassword extends React.Component {
 	constructor (props) {
@@ -40,6 +41,7 @@ class forgotPassword extends React.Component {
 
 	async componentDidMount () {
 		statusCode = await checkResetToken(new URLSearchParams(window.location.search).get('token'));
+		console.dir(statusCode);
 		this.setState({ isLoading: false });
 	}
 
