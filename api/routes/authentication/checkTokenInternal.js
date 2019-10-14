@@ -3,7 +3,6 @@ var pool = require('../database');
 //function to compare the users local token with serverside token
 async function checkTokenInternal (req) {
 	return new Promise(function (resolve, reject) {
-		console.log(req.body);
 		console.log(`\x1b[36mChecking Token...\x1b[0m`);
 		pool.getConnection(function (err, connection) {
 			if (err) {
