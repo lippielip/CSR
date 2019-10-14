@@ -4,7 +4,7 @@ var pool = require('../database');
 var checkToken = require('../authentication/checkToken');
 // simple multipurpose function for fetching data
 router.post('/', function (req, res) {
-	console.log('token' + checkToken());
+	console.log('token' + checkToken(req));
 	console.log('\x1b[34m', `SELECT ${req.body.select ? req.body.select : '*'} FROM ${req.body.tableName} ${req.body.selectiveGet ? req.body.selectiveGet : ''}`, '\x1b[0m');
 	pool.getConnection(function (err, connection) {
 		if (err) {

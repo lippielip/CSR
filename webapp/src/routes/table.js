@@ -205,10 +205,13 @@ class Table extends React.Component {
            headers: {
              'Content-Type': 'application/json'
            },
-      body: JSON.stringify({
-             select:'Presentation_ID, Topic, Presentation_Category, Date, Last_Changed, FirstName, LastName, User_ID,Username, Presentation_Held, Amount_A, Amount_B, Amount_C, CancelTokens, Pending_Presentation ',
-             tableName: 'presentations',
-             selectiveGet: 'INNER JOIN users ON presentations.Presenter = users.User_ID'
+          body: JSON.stringify({
+            username: sessionStorage.getItem('username'),
+            token: sessionStorage.getItem('token'),
+            select:'Presentation_ID, Topic, Presentation_Category, Date, Last_Changed, FirstName, LastName, User_ID,Username, Presentation_Held, Amount_A, Amount_B, Amount_C, CancelTokens, Pending_Presentation ',
+            tableName: 'presentations',
+            selectiveGet: 'INNER JOIN users ON presentations.Presenter = users.User_ID',
+
            })
          })
           .then(response => response.json())
