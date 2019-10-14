@@ -331,14 +331,12 @@ username: sessionStorage.getItem('username'),
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-username: sessionStorage.getItem('username'),
-            token: sessionStorage.getItem('token'),
+          username: sessionStorage.getItem('username'),
+          token: sessionStorage.getItem('token'),
           DeleteTables: [table],
           IDName: [ID],
           tableIDs: [deleteValue.id],
-          username: sessionStorage.getItem('username'),
           deleteUser: deleteValue.extendedProps.username,
-          token: sessionStorage.getItem('token'),
           held: deleteValue.extendedProps.Pending_Presentation
         })
       })
@@ -349,7 +347,7 @@ username: sessionStorage.getItem('username'),
             'Content-Type': 'application/json'
           },
           body: JSON.stringify({
-username: sessionStorage.getItem('username'),
+            username: sessionStorage.getItem('username'),
             token: sessionStorage.getItem('token'),
             categoryName: `Amount_${deleteValue.extendedProps.type}`,
             sign: "-",
