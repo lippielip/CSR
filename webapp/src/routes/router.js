@@ -1,12 +1,10 @@
 import * as React from 'react';
 import { Redirect } from 'react-router';
 import { Router, Link } from 'react-router-dom';
-import jQuery from 'jquery';
 import * as history from 'history';
 import ContentPane from './contentpane';
 import Login from './login';
 import checkToken from '../methods/checktoken';
-import API_URL from '../variables';
 import loadingScreen from '../methods/loadingscreen';
 
 export var browserHistory = history.createBrowserHistory();
@@ -20,8 +18,6 @@ class Routes extends React.Component {
 			isLoggedIn : false,
 			isLoading  : true
 		};
-		this.handleOnChange = this.handleOnChange.bind(this);
-		this.handleSubmit = this.handleSubmit.bind(this);
 	}
 
 	logout () {
