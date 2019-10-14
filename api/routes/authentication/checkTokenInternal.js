@@ -21,6 +21,7 @@ function checkTokenInternal (req) {
 			if (result.length === 0) {
 				// non existent user
 				console.log('\x1b[31mFailed!\x1b[0m');
+				console.log(0);
 				return 0;
 			}
 			if (req.body.token === result[0].token) {
@@ -29,6 +30,7 @@ function checkTokenInternal (req) {
 				return 1;
 			} else {
 				console.log('\x1b[31mFailed!\x1b[0m');
+				console.log(0);
 				return 0;
 			}
 		});
