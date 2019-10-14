@@ -1,7 +1,7 @@
 import * as React from 'react';
 import jQuery from 'jquery';
 import checkToken from '../methods/checktoken';
-import loading from '../methods/loadingscreen';
+import loadingScreen from '../methods/loadingscreen';
 //import altar from '../images/altar.svg';
 import logo from '../images/ppLogo.svg';
 import PasswordPopup from '../popups/PasswordPopup';
@@ -124,7 +124,7 @@ export default class Login extends React.Component {
 
 	render () {
 		if (this.state.isLoading) {
-			return loading();
+			return loadingScreen();
 		} else {
 			return (
 				<div>

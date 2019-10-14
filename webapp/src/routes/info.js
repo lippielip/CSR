@@ -2,7 +2,7 @@ import * as React from 'react';
 import categories from '../images/categoryTable.png';
 import checkToken from '../methods/checktoken';
 import notAuthenticated from '../methods/notAuthenticated';
-import loading from '../methods/loadingscreen';
+import loadingScreen from '../methods/loadingscreen';
 class Info extends React.Component {
 	constructor (props) {
 		super(props);
@@ -17,7 +17,7 @@ class Info extends React.Component {
 	}
 	render () {
 		if (this.state.isLoading) {
-			return loading();
+			return loadingScreen();
 		} else {
 			if (sessionStorage.getItem('authenticated') !== 'true') {
 				return notAuthenticated();

@@ -4,7 +4,7 @@ import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction"; // needed for dayClick
 import checkToken from '../methods/checktoken';
-import loading from '../methods/loadingscreen'
+import loadingScreen from '../methods/loadingscreen'
 import '../App.css';
 import trash from '../images/trash.png';
 import "@fullcalendar/core/main.css";
@@ -365,7 +365,7 @@ export default class DemoApp extends React.Component {
 }
   render() {
     if (this.state.isLoading) {
-      return loading();
+      return loadingScreen();
     } else {
       if (sessionStorage.getItem('authenticated') !== "true") {
         return notAuthenticated();

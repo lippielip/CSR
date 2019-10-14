@@ -6,8 +6,8 @@ import * as history from 'history';
 import ContentPane from './contentpane';
 import Login from './login';
 import checkToken from '../methods/checktoken';
-import loading from '../methods/loadingscreen';
 import API_URL from '../variables';
+import loadingScreen from '../methods/loadingscreen';
 
 export var browserHistory = history.createBrowserHistory();
 
@@ -124,7 +124,7 @@ class Routes extends React.Component {
 
 	render () {
 		if (this.state.isLoading) {
-			return loading();
+			return loadingScreen();
 		} else {
 			return (
 				<div>

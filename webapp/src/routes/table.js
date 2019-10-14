@@ -6,6 +6,7 @@ import jQuery from 'jquery'
 import checkToken from '../methods/checktoken';
 import notAuthenticated from '../methods/notAuthenticated';
 import API_URL from '../variables'
+import loadingScreen from '../methods/loadingscreen';
 require('bootstrap');
 
 
@@ -224,9 +225,7 @@ class Table extends React.Component {
     
     render() {
         if (this.state.isLoading) {
-            return (
-                <div className="lds" style={{ left: '45%', top: '45%', position: 'absolute' }}><div></div><div></div><div></div></div>
-            )
+          return loadingScreen()
         } else {
           if (sessionStorage.getItem('authenticated') !== "true") {
             return notAuthenticated();

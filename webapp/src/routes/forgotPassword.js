@@ -1,8 +1,8 @@
 import * as React from 'react';
-import loading from '../methods/loadingscreen';
+import loadingScreen from '../methods/loadingscreen';
 import API_URL from '../variables';
 import checkResetToken from '../methods/checkResetToken';
-import notAuthenticated from '../methods/loadingscreen';
+import notAuthenticated from '../methods/notAuthenticated';
 
 let statusCode;
 class forgotPassword extends React.Component {
@@ -47,7 +47,7 @@ class forgotPassword extends React.Component {
 
 	render () {
 		if (this.state.isLoading) {
-			return loading();
+			return loadingScreen();
 		} else {
 			if (statusCode === 200) {
 				return (
