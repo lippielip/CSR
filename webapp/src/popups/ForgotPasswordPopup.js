@@ -22,7 +22,9 @@ class PasswordPopup extends React.Component {
 					'Content-Type' : 'application/json'
 				},
 				body    : JSON.stringify({
-					E_Mail : document.getElementById('email').value
+					username : sessionStorage.getItem('username'),
+					token    : sessionStorage.getItem('token'),
+					E_Mail   : document.getElementById('email').value
 				})
 			}).then((response) => {
 				if (response.status === 200) {

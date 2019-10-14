@@ -53,6 +53,8 @@ class Table extends React.Component {
               'Content-Type': 'application/json'
             },
             body: JSON.stringify({
+username: sessionStorage.getItem('username'),
+            token: sessionStorage.getItem('token'),
               presentations: {
                     Topic: document.getElementById('Topic').value,
                     Presentation_Category: document.getElementById('Category').value,
@@ -86,6 +88,8 @@ class Table extends React.Component {
               'Content-Type': 'application/json'
             },
             body: JSON.stringify({
+username: sessionStorage.getItem('username'),
+            token: sessionStorage.getItem('token'),
                 User_ID: this.state.rowVal.original.User_ID,
               Presentation_ID: this.state.rowVal.original.Presentation_ID,
                 number: 0

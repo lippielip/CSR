@@ -4,7 +4,7 @@ var pool = require('../database');
 var bcrypt = require('bcryptjs');
 
 //function to change from first time password to own password
-
+//to be removed
 router.post('/', async function (req, res) {
 	console.log(`\x1b[36mAdding Password...\x1b[0m`);
 	var Username = req.body.Username; //get Username
