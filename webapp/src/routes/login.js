@@ -93,6 +93,7 @@ export default class Login extends React.Component {
 			}
 		}
 	}
+
 	toggleForgotPassword () {
 		(function ($) {
 			$('#ForgotPasswordPopup').modal('toggle');

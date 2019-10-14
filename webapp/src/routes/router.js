@@ -16,17 +16,14 @@ class Routes extends React.Component {
 		super(props);
 
 		this.state = {
-			wrongField    : [],
-			isLoggedIn    : false,
-			isLoading     : true,
-			username      : '',
-			passwordInput : '',
-			email         : ''
+			wrongField : [],
+			isLoggedIn : false,
+			isLoading  : true
 		};
-		this.handleOnChange = this.handleOnChange.bind(this);
-		this.handleSubmit = this.handleSubmit.bind(this);
+		//this.handleOnChange = this.handleOnChange.bind(this);
+		//this.handleSubmit = this.handleSubmit.bind(this);
 	}
-
+	/*
 	async handleSubmit () {
 		if (!(this.state.wrongField.length === 0)) {
 			alert(`Please Check your Input in ${this.state.wrongField.join(', ').replace(/_/g, ' ')}`);
@@ -115,7 +112,7 @@ class Routes extends React.Component {
 		sessionStorage.setItem('username', null);
 		sessionStorage.setItem('Authentication_Level', null);
 		this.setState({ isLoggedIn: false });
-	}
+	}*/
 
 	async componentDidMount () {
 		await checkToken();
