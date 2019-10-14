@@ -3,8 +3,8 @@ var router = express.Router();
 var pool = require('../database');
 var checkToken = require('../authentication/checkTokenInternal');
 // simple multipurpose function for fetching data
-router.post('/', function (req, res) {
-	console.log('token' + checkToken(req));
+router.post('/', async function (req, res) {
+	await console.log('token' + (await checkToken(req)));
 	console.log('\x1b[34m', `SELECT ${req.body.select ? req.body.select : '*'} FROM ${req.body.tableName} ${req.body.selectiveGet ? req.body.selectiveGet : ''}`, '\x1b[0m');
 	pool.getConnection(function (err, connection) {
 		if (err) {
