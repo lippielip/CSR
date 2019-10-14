@@ -3,7 +3,7 @@ import loading from '../methods/loadingscreen';
 import API_URL from '../variables';
 import checkResetToken from '../methods/checkResetToken';
 import notAuthenticated from '../methods/loadingscreen';
-
+let statusCode;
 class forgotPassword extends React.Component {
 	constructor (props) {
 		super(props);
@@ -39,9 +39,7 @@ class forgotPassword extends React.Component {
 	}
 
 	async componentDidMount () {
-		this.setState({
-			statusCode : checkResetToken(new URLSearchParams(window.location.search).get('token'))
-		});
+		statusCode = await checkResetToken(new URLSearchParams(window.location.search).get('token'));
 		this.setState({ isLoading: false });
 	}
 
@@ -49,7 +47,7 @@ class forgotPassword extends React.Component {
 		if (this.state.isLoading) {
 			return loading();
 		} else {
-			if (this.state.statusCode === 200) {
+			if (statusCode === 200) {
 				return (
 					<div className="container">
 						<div className="row">
