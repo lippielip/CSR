@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var pool = require('../database');
-var checkToken = require('../authentication/checkToken');
+var checkToken = require('../authentication/checkTokenInternal');
 // simple multipurpose function for fetching data
 router.post('/', function (req, res) {
 	console.log('token' + checkToken(req));
