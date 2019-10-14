@@ -16,7 +16,7 @@ export default async function checkResetToken (token) {
 			if (response.status === 200) {
 				resolve(response.status);
 			} else {
-				reject(new Error('404'));
+				resolve(404);
 			}
 		});
 	});
