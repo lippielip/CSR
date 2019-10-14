@@ -1,22 +1,26 @@
 var pool = require('../database');
 
 //function to compare the users local token with serverside token
+//overview
+// resolve(-1) === error authenticating
+// resolve(0) === not authenticated
+// resolve(1) == authenticated
 async function checkTokenInternal (req) {
 	return new Promise(function (resolve, reject) {
 		console.log(`\x1b[36mChecking Token...\x1b[0m`);
 		if (req.body.username === null || req.body.token === null) {
-			reject(-1);
+			resolve(-1);
 			return;
 		}
 		pool.getConnection(function (err, connection) {
 			if (err) {
 				console.log(err);
-				reject(-1);
+				resolve(-1);
 				return;
 			}
 			if (err) {
 				console.log(err);
-				reject(-1);
+				resolve(-1);
 				return;
 			}
 			connection.query(`Select token, Authentication_Level, Pending_Presentation FROM users WHERE Username = '${req.body.username}' `, function (err, result, fields) {
