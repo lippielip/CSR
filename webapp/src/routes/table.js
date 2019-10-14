@@ -224,7 +224,7 @@ username: sessionStorage.getItem('username'),
     
     async componentDidMount() {
       await this.fetchTable();
-      await checkToken();
+     // await checkToken();
       await this.setState({ isLoading: false });
       
 
@@ -233,10 +233,10 @@ username: sessionStorage.getItem('username'),
     render() {
         if (this.state.isLoading) {
           return loadingScreen()
-        } else {
-          if (sessionStorage.getItem('authenticated') !== "true") {
-            return notAuthenticated();
-          }
+        }// else {
+         // if (sessionStorage.getItem('authenticated') !== "true") {
+         //   return notAuthenticated();
+         // }
             return (
 <div className="container-fluid">
   <ReactTable
@@ -505,7 +505,7 @@ username: sessionStorage.getItem('username'),
 </div>
             )
         }
-    }
+  //  }
 }
 
 export default Table;
