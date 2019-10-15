@@ -58,7 +58,7 @@ class AddUserPopup extends React.Component {
 				})
 			}).then((response) => {
 				if (response.status === 200) {
-					document.getElementById('AddUserSuccess').innerHTML = 'Password successfully changed!';
+					document.getElementById('AddUserSuccess').innerHTML = 'User successfully added!';
 					window.setTimeout(function () {
 						(function ($) {
 							$('#AddUserPopup').modal('toggle');
