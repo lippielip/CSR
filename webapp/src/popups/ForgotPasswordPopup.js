@@ -31,11 +31,10 @@ class PasswordPopup extends React.Component {
 				if (response.status === 200) {
 					document.getElementById('ForgotPasswordSuccess').innerHTML = 'Password successfully changed!';
 					window.setTimeout(function () {
-						browserHistory.push('/');
+						(function ($) {
+							$('#ForgotPasswordPopup').modal('toggle');
+						})(jQuery);
 					}, 1500);
-					(function ($) {
-						$('#ForgotPasswordPopup').modal('toggle');
-					})(jQuery);
 				} else {
 					if (response.status === 403) {
 						document.getElementById('ForgotPasswordError').innerHTML = 'Duplicate E-Mails detected. Aborting.';
