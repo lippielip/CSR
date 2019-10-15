@@ -25,7 +25,7 @@ class Routes extends React.Component {
 		sessionStorage.setItem('token', null);
 		sessionStorage.setItem('username', null);
 		sessionStorage.setItem('Authentication_Level', null);
-		this.setState({ isLoading: true });
+		history.push('/');
 	}
 
 	async componentDidMount () {
@@ -78,7 +78,6 @@ class Routes extends React.Component {
 										</div>
 										<div className="navbar-nav">
 											<button className="btn btn-outline-success leftMargin10" onClick={() => this.logout()}>
-												<Redirect exact to="/" />
 												Logout
 											</button>
 										</div>
