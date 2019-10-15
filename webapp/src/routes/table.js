@@ -6,6 +6,7 @@ import jQuery from 'jquery'
 import notAuthenticated from '../methods/notAuthenticated';
 import API_URL from '../variables'
 import loadingScreen from '../methods/loadingscreen';
+import { browserHistory } from './router';
 require('bootstrap');
 
 
@@ -222,7 +223,7 @@ username: sessionStorage.getItem('username'),
     }
     
     async componentDidMount() {
-      await this.fetchTable().then(response => {console.dir(response)});
+      await this.fetchTable().then(response => {browserHistory.push("/")});
       await this.setState({ isLoading: false });
       
 
