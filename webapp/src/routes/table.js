@@ -219,12 +219,15 @@ username: sessionStorage.getItem('username'),
            })
          })
           .then(response => response.json())
-          .then(res => {console.dir(res)})
           .then(res => this.setState({ tableData: res }));
     }
     
-    async componentDidMount() {
-      await this.fetchTable();
+  async componentDidMount() {
+      try {
+        await this.fetchTable();
+      } catch (error) {
+        console.dir(error)
+      }
       await this.setState({ isLoading: false });
       
 
