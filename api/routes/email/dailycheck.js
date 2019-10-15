@@ -43,7 +43,6 @@ async function dailyCheck () {
 			async function (err, result, fields) {
 				if (err) console.log(err);
 				if (!canceled) {
-					console.log(result);
 					// both canceled == no colloquium
 					if (result.length === 0) {
 						console.log('Not enough Presenters!');
@@ -62,6 +61,7 @@ async function dailyCheck () {
 						//Tuesday
 						if (currentDay === 2) {
 							//Both Presenters filled in Presentation
+							console.log(users);
 							if (users[0].Pending_Presentation === 10 && users[1].Pending_Presentation === 10) {
 								console.log('Both Presenters are on Time. Sending out official mail early.');
 								mail(1, users);
