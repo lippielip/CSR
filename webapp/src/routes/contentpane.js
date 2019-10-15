@@ -29,7 +29,7 @@ class ContentPane extends React.Component {
 				<Route exact={true} path={'/Calendar/'} component={Calendar} />
 				<Route exact={true} path={'/adminPanel/'} component={adminPanel} />
 				<Route exact={true} path={'/User/'} component={User} />
-				<Route path={'/forgot'} component={forgotPassword} />
+				<Route exact={true} path={'/forgot'} component={forgotPassword} />
 				<Route component={NoMatch} />
 			</Switch>
 		);

@@ -1,11 +1,12 @@
 import * as React from 'react';
 import { Redirect } from 'react-router';
-import { Router, Link } from 'react-router-dom';
+import { Router, Link, Route } from 'react-router-dom';
 import * as history from 'history';
 import ContentPane from './contentpane';
 import Login from './login';
 import checkToken from '../methods/checktoken';
 import loadingScreen from '../methods/loadingscreen';
+import forgotPassword from './forgotPassword';
 
 export var browserHistory = history.createBrowserHistory();
 
@@ -88,7 +89,10 @@ class Routes extends React.Component {
 							</Router>
 						</div>
 					) : (
-						<Login />
+						<Router>
+							<Login />
+							<Route exact={true} path={'/forgot'} component={forgotPassword} />
+						</Router>
 					)}
 				</div>
 			);

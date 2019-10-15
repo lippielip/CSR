@@ -3,7 +3,6 @@ import ReactTable from 'react-table';
 import 'react-table/react-table.css';
 import { CheckCircle, XCircle, Trash, Edit } from 'react-feather';
 import jQuery from 'jquery'
-import checkToken from '../methods/checktoken';
 import notAuthenticated from '../methods/notAuthenticated';
 import API_URL from '../variables'
 import loadingScreen from '../methods/loadingscreen';
@@ -224,7 +223,6 @@ username: sessionStorage.getItem('username'),
     
     async componentDidMount() {
       await this.fetchTable();
-     // await checkToken();
       await this.setState({ isLoading: false });
       
 
