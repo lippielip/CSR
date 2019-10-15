@@ -177,7 +177,7 @@ function canceled () {
 
 	const data = {
 		from    : SENDER_MAIL,
-		to      : 'philipp.braun@telekom.de, <philipp.braun@telekom.de>',
+		to      : 'philipp.braun@telekom.de',
 		subject : 'Colloquium Planning',
 		html    : `${html(
 			`<p>Das Colloquium wird diese Woche nicht stattfinden, da nicht genug Leute anwesend sind.</p>

@@ -1,3 +1,12 @@
+import React from 'react';
+
 export default function notAuthenticated () {
-	return `Error: 401 Unauthorized`;
+	return (
+		<div>
+			<h3>
+				<br />
+				Error 401: Unauthorized
+			</h3>
+		</div>
+	);
 }
