@@ -203,32 +203,32 @@ username: sessionStorage.getItem('username'),
         }
     }
 
-    async fetchTable() {
+  async fetchTable() {
+      try {
         await fetch(API_URL + "/getter", {
-           method: 'POST',
-           headers: {
-             'Content-Type': 'application/json'
-           },
-          body: JSON.stringify({
-            username: sessionStorage.getItem('username'),
-            token: sessionStorage.getItem('token'),
-            select:'Presentation_ID, Topic, Presentation_Category, Date, Last_Changed, FirstName, LastName, User_ID,Username, Presentation_Held, Amount_A, Amount_B, Amount_C, CancelTokens, Pending_Presentation ',
-            tableName: 'presentations',
-            selectiveGet: 'INNER JOIN users ON presentations.Presenter = users.User_ID',
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+         body: JSON.stringify({
+           username: sessionStorage.getItem('username'),
+           token: sessionStorage.getItem('token'),
+           select:'Presentation_ID, Topic, Presentation_Category, Date, Last_Changed, FirstName, LastName, User_ID,Username, Presentation_Held, Amount_A, Amount_B, Amount_C, CancelTokens, Pending_Presentation ',
+           tableName: 'presentations',
+           selectiveGet: 'INNER JOIN users ON presentations.Presenter = users.User_ID',
 
-           })
-         })
-          .then(response => response.json())
-          .then(res => this.setState({ tableData: res }));
+          })
+        })
+         .then(response => response.json())
+         .then(res => this.setState({ tableData: res }));
+      } catch (error) {
+        browserHistory.push("/NoAuth")
+      }
+
     }
     
   async componentDidMount() {
-      try {
-        await this.fetchTable();
-      } catch (error) {
-        console.dir(error)
-        browserHistory.push('/')
-      }
+      await this.fetchTable();
       await this.setState({ isLoading: false });
       
 

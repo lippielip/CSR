@@ -7,6 +7,7 @@ import Calendar from './calendar';
 import User from './profile';
 import adminPanel from './adminPanel';
 import NoMatch from '../methods/noMatch';
+import notAuthenticated from '../methods/notAuthenticated';
 
 class ContentPane extends React.Component {
 	render () {
@@ -18,6 +19,7 @@ class ContentPane extends React.Component {
 				<Route exact={true} path={'/Calendar/'} component={Calendar} />
 				<Route exact={true} path={'/adminPanel/'} component={adminPanel} />
 				<Route exact={true} path={'/User/'} component={User} />
+				<Route exact={true} path={'/NoAuth'} component={notAuthenticated} />
 				<Route component={NoMatch} />
 			</Switch>
 		);
