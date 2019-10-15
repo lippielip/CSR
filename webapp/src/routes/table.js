@@ -222,7 +222,7 @@ username: sessionStorage.getItem('username'),
     }
     
     async componentDidMount() {
-      await this.fetchTable();
+      await this.fetchTable().then(response => {console.dir(response)});
       await this.setState({ isLoading: false });
       
 
