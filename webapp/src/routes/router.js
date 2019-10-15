@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Redirect } from 'react-router';
-import { Router, Link, Route } from 'react-router-dom';
+import { Router, Link, Route, Switch } from 'react-router-dom';
 import * as history from 'history';
 import ContentPane from './contentpane';
 import Login from './login';
@@ -90,8 +90,10 @@ class Routes extends React.Component {
 						</div>
 					) : (
 						<Router history={browserHistory}>
-							<Login />
-							<Route exact={true} path={'/forgot'} component={forgotPassword} />
+							<Switch>
+								<Route exact={true} path={'/login'} component={Login} />
+								<Route exact={true} path={'/forgot'} component={forgotPassword} />
+							</Switch>
 						</Router>
 					)}
 				</div>
