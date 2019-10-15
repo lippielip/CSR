@@ -280,7 +280,7 @@ username: sessionStorage.getItem('username'),
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-username: sessionStorage.getItem('username'),
+            username: sessionStorage.getItem('username'),
             token: sessionStorage.getItem('token'),
           missing: {
             start: missing_event.start,

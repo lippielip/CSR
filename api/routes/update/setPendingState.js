@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var pool = require('../database');
+var checkToken = require('../authentication/checkTokenInternal');
 
 // function to change values
 router.post('/', async function (req, res, next) {

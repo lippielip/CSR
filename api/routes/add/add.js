@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var pool = require('../database');
+var checkToken = require('../authentication/checkTokenInternal');
 
 router.post('/', async function (req, res) {
 	if ((await checkToken(req)) === 1) {
