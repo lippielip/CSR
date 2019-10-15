@@ -163,7 +163,7 @@ class AddUserPopup extends React.Component {
 										name="Authentication_Level"
 										required="required"
 										onChange={this.handleOnChange}>
-										<option disabled value="">
+										<option disabled={true} value="">
 											-- select an option --
 										</option>
 										{this.getDropdownTemplate('auth_level', 'Auth_Level_ID', 'Definition')}
