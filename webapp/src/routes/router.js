@@ -94,6 +94,7 @@ class Routes extends React.Component {
 								<Route exact={true} path={'/login'} component={Login} />
 								<Route exact={true} path={'/forgot'} component={forgotPassword} />
 							</Switch>
+							<Redirect exact from="/" to="login" />
 						</Router>
 					)}
 				</div>
