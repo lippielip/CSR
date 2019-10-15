@@ -7,7 +7,7 @@ const html = require('../email/passwordResetTemplate');
 const mailgun = require('../mailgun');
 const SENDER_MAIL = 'CSR Password Bot <noreply.reset@mail.3dstudis.net>';
 const mg = mailgun.mg;
-const API_URL = process.env.API_URL;
+const DOMAIN_NAME = process.env.DOMAIN_NAME;
 //function to compare the users local token with serverside token
 
 router.post('/', async function (req, res) {
@@ -42,8 +42,8 @@ router.post('/', async function (req, res) {
 							from    : SENDER_MAIL,
 							to      : `${req.body.E_Mail}`,
 							subject : 'Password Reset',
-							text    : `HTML Mail not available. Use this link to reset your Password: ${API_URL + '/forgotPassword?token=' + Hash}`,
-							html    : `${html(API_URL, Hash)}`
+							text    : `HTML Mail not available. Use this link to reset your Password: ${DOMAIN_NAME + '/forgotPassword?token=' + Hash}`,
+							html    : `${html(DOMAIN_NAME, Hash)}`
 						};
 
 						mg.messages().send(data, function (error, body) {
