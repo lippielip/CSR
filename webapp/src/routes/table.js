@@ -52,7 +52,7 @@ class Table extends React.Component {
               'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-username: sessionStorage.getItem('username'),
+            username: sessionStorage.getItem('username'),
             token: sessionStorage.getItem('token'),
               presentations: {
                     Topic: document.getElementById('Topic').value,
@@ -87,11 +87,11 @@ username: sessionStorage.getItem('username'),
               'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-username: sessionStorage.getItem('username'),
+            username: sessionStorage.getItem('username'),
             token: sessionStorage.getItem('token'),
-                User_ID: this.state.rowVal.original.User_ID,
-              Presentation_ID: this.state.rowVal.original.Presentation_ID,
-                number: 0
+            User_ID: this.state.rowVal.original.User_ID,
+            Presentation_ID: this.state.rowVal.original.Presentation_ID,
+            number: 0
             })
         }).then(response => {
             const statusCode = response.status;
@@ -146,7 +146,9 @@ username: sessionStorage.getItem('username'),
             headers: {
               'Content-Type': 'application/json'
             },
-            body: JSON.stringify({
+          body: JSON.stringify({
+            username: sessionStorage.getItem('username'),
+            token: sessionStorage.getItem('token'),
               presentations: {
                 Presentation_Held: value,
               },
@@ -161,7 +163,9 @@ username: sessionStorage.getItem('username'),
             headers: {
               'Content-Type': 'application/json'
             },
-            body: JSON.stringify({
+          body: JSON.stringify({
+            username: sessionStorage.getItem('username'),
+            token: sessionStorage.getItem('token'),
                 categoryName: `Amount_${row.original.Presentation_Category}`,
                 sign: sign,
                 Id: row.original.User_ID
