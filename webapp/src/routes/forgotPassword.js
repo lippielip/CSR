@@ -3,6 +3,7 @@ import loadingScreen from '../methods/loadingscreen';
 import API_URL from '../variables';
 import checkResetToken from '../methods/checkResetToken';
 import notAuthenticated from '../methods/notAuthenticated';
+import { browserHistory } from './router';
 
 let statusCode;
 class forgotPassword extends React.Component {
@@ -33,6 +34,10 @@ class forgotPassword extends React.Component {
 						token           : new URLSearchParams(window.location.search).get('token')
 					})
 				});
+				document.getElementById('ResetPasswordSuccess').innerHTML = 'Password successfully changed!';
+				window.setTimeout(function () {
+					browserHistory.push('/');
+				}, 1000);
 			}
 		} else {
 			document.getElementById('ResetPasswordError').innerHTML = "Passwords don't match";
@@ -92,7 +97,8 @@ class forgotPassword extends React.Component {
 													onChange={this.handleChange}
 												/>
 											</div>
-											<div id="ResetPasswordError" className="invalidText mt-2 mb-3" />
+											<div id="ResetPasswordError" className="text-danger mt-2 mb-3" />
+											<div id="ResetPasswordSuccess" className="text-success mt-2 mb-3" />
 											<button className="btn btn-lg btn-primary btn-block text-uppercase" type="submit">
 												Submit
 											</button>
