@@ -7,6 +7,7 @@ import Login from './login';
 import checkToken from '../methods/checktoken';
 import loadingScreen from '../methods/loadingscreen';
 import forgotPassword from './forgotPassword';
+import NoMatch from '../methods/noMatch';
 
 export var browserHistory = history.createBrowserHistory();
 
@@ -94,6 +95,7 @@ class Routes extends React.Component {
 							<Switch>
 								<Route exact={true} path={'/'} component={Login} />
 								<Route exact={true} path={'/forgot'} component={forgotPassword} />
+								<Route component={NoMatch} />
 							</Switch>
 						</Router>
 					)}
