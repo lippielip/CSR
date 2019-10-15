@@ -25,6 +25,7 @@ class Routes extends React.Component {
 		sessionStorage.setItem('token', null);
 		sessionStorage.setItem('username', null);
 		sessionStorage.setItem('Authentication_Level', null);
+		this.setState({ isLoading: true });
 	}
 
 	async componentDidMount () {
