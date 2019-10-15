@@ -58,9 +58,12 @@ class AddUserPopup extends React.Component {
 				})
 			}).then((response) => {
 				if (response.status === 200) {
-					(function ($) {
-						$('#AddUserPopup').modal('toggle');
-					})(jQuery);
+					document.getElementById('AddUserSuccess').innerHTML = 'Password successfully changed!';
+					window.setTimeout(function () {
+						(function ($) {
+							$('#AddUserPopup').modal('toggle');
+						})(jQuery);
+					}, 1500);
 				} else {
 					if (response.status === 400) {
 						document.getElementById('AddUserError').innerHTML = 'Error: Duplicate Username detected';
@@ -198,7 +201,8 @@ class AddUserPopup extends React.Component {
 										onChange={this.handleOnChange}
 										required="required"
 									/>
-									<div id="AddUserError" className="mt-3 invalidText" />
+									<div id="AddUserError" className="mt-3 text-danger" />
+									<div id="AddUserSuccess" className="mt-3 text-success" />
 								</div>
 
 								<button type="submit" className="btn btn-primary">
