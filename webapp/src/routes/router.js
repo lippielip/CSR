@@ -16,7 +16,6 @@ class Routes extends React.Component {
 
 		this.state = {
 			wrongField : [],
-			isLoggedIn : false,
 			isLoading  : true
 		};
 	}
@@ -26,7 +25,11 @@ class Routes extends React.Component {
 		sessionStorage.setItem('token', null);
 		sessionStorage.setItem('username', null);
 		sessionStorage.setItem('Authentication_Level', null);
-		this.setState({ isLoggedIn: false });
+		return (
+			<Router history={browserHistory}>
+				<Redirect exact to="/" />
+			</Router>
+		);
 	}
 
 	async componentDidMount () {
