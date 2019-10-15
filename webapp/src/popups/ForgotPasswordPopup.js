@@ -29,7 +29,7 @@ class PasswordPopup extends React.Component {
 				})
 			}).then((response) => {
 				if (response.status === 200) {
-					document.getElementById('ForgotPasswordSuccess').innerHTML = 'Password successfully changed!';
+					document.getElementById('ForgotPasswordSuccess').innerHTML = 'Password Reset Mail sent!';
 					window.setTimeout(function () {
 						(function ($) {
 							$('#ForgotPasswordPopup').modal('toggle');
