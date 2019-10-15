@@ -1,7 +1,6 @@
 import React from 'react';
 import jQuery from 'jquery';
 import API_URL from '../variables';
-import { browserHistory } from '../routes/router';
 // class for creating a first time password / new password
 class PasswordPopup extends React.Component {
 	constructor (props) {
