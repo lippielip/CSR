@@ -3,6 +3,7 @@ var router = express.Router();
 var pool = require('../database');
 var bcrypt = require('bcryptjs');
 var generator = require('generate-password');
+var checkToken = require('../authentication/checkTokenInternal');
 const html = require('../email/passwordResetTemplate');
 const mailgun = require('../mailgun');
 const SENDER_MAIL = 'CSR Password Bot <noreply.reset@mail.3dstudis.net>';
