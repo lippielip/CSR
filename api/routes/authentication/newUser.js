@@ -11,6 +11,8 @@ const mg = mailgun.mg;
 const DOMAIN_NAME = process.env.DOMAIN_NAME;
 
 // function to create new user
+// username = admin username
+// Username = new User username  !! case sensitive
 router.post('/', async function (req, res) {
 	if ((await checkToken(req)) === 1) {
 		pool.getConnection(function (err, connection) {
@@ -25,7 +27,7 @@ router.post('/', async function (req, res) {
 
 					if (
 						result.some((element) => {
-							if (element.Username.includes(req.body.newUsername)) {
+							if (element.Username.includes(req.body.Username)) {
 								return element;
 							}
 						})
@@ -57,7 +59,7 @@ router.post('/', async function (req, res) {
 					var Salt = bcrypt.genSaltSync(10);
 					var Hash = bcrypt.hashSync(password, Salt);
 					req.body.ResetToken = Hash;
-					console.log(`Reset Token generated for user ${req.body.newUsername}`);
+					console.log(`Reset Token generated for user ${req.body.Username}`);
 					var Keys = Object.keys(req.body).toString(); // get all filled in Propertys
 					var Values = Object.values(req.body); // get corresponding values
 					Values = Values.map(function (e) {
