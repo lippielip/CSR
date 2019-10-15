@@ -33,6 +33,8 @@ class PasswordPopup extends React.Component {
 						(function ($) {
 							$('#ForgotPasswordPopup').modal('toggle');
 						})(jQuery);
+						document.getElementById('forgotPasswordForm').reset();
+						document.getElementById('ForgotPasswordSuccess').innerHTML = '';
 					}, 1500);
 				} else {
 					if (response.status === 403) {

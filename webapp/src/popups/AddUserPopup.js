@@ -64,6 +64,7 @@ class AddUserPopup extends React.Component {
 							$('#AddUserPopup').modal('toggle');
 						})(jQuery);
 						document.getElementById('AddUserForm').reset();
+						document.getElementById('AddUserSuccess').innerHTML = '';
 					}, 1500);
 				} else {
 					if (response.status === 400) {
