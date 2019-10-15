@@ -227,6 +227,7 @@ username: sessionStorage.getItem('username'),
         await this.fetchTable();
       } catch (error) {
         console.dir(error)
+        browserHistory.push('/')
       }
       await this.setState({ isLoading: false });
       
