@@ -3,6 +3,11 @@ var router = express.Router();
 var pool = require('../database');
 var bcrypt = require('bcryptjs');
 var generator = require('generate-password');
+const html = require('../email/passwordResetTemplate');
+const mailgun = require('../mailgun');
+const SENDER_MAIL = 'CSR Password Bot <noreply.reset@mail.3dstudis.net>';
+const mg = mailgun.mg;
+const DOMAIN_NAME = process.env.DOMAIN_NAME;
 
 // function to create new user
 router.post('/', async function (req, res) {
@@ -19,7 +24,7 @@ router.post('/', async function (req, res) {
 
 					if (
 						result.some((element) => {
-							if (element.Username.includes(req.body.Username)) {
+							if (element.Username.includes(req.body.newUsername)) {
 								return element;
 							}
 						})
@@ -42,18 +47,16 @@ router.post('/', async function (req, res) {
 						console.log(`\x1b[31mError: Duplicate E-Mail\x1b[0m`);
 						return;
 					}
+					// encrytion on password
 
 					var password = generator.generate({
-						length  : 12,
+						length  : 64,
 						numbers : true
 					});
-
-					// encrytion on password
-					console.log(`temp PW for user \x1b[33m${req.body.Username}\x1b[0m: \x1b[35m${password}\x1b[0m`);
 					var Salt = bcrypt.genSaltSync(10);
 					var Hash = bcrypt.hashSync(password, Salt);
-					req.body.TempPassword = Hash;
-
+					req.body.ResetToken = Hash;
+					console.log(`Reset Token generated for user ${req.body.newUsername}`);
 					var Keys = Object.keys(req.body).toString(); // get all filled in Propertys
 					var Values = Object.values(req.body); // get corresponding values
 					Values = Values.map(function (e) {
@@ -62,7 +65,23 @@ router.post('/', async function (req, res) {
 					Values = Values.join(',');
 
 					connection.query(`INSERT INTO users (${Keys}) VALUES (${Values}) `, function (err, result, fields) {
-						res.status(200).send('User added Successfully');
+						if (err) {
+							console.log(err);
+							res.status(404).send();
+						} else {
+							const data = {
+								from    : SENDER_MAIL,
+								to      : `${req.body.E_Mail}`,
+								subject : 'Create a password',
+								text    : `HTML Mail not available. Use this link to set your Password: ${DOMAIN_NAME + '/forgotPassword?token=' + Hash}`,
+								html    : `${html(DOMAIN_NAME, Hash)}`
+							};
+							mg.messages().send(data, function (error, body) {
+								if (error) console.log(error);
+								console.log(body);
+							});
+							res.status(200).send('User added Successfully');
+						}
 					});
 				}
 			);

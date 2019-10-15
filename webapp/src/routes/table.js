@@ -3,7 +3,6 @@ import ReactTable from 'react-table';
 import 'react-table/react-table.css';
 import { CheckCircle, XCircle, Trash, Edit } from 'react-feather';
 import jQuery from 'jquery'
-import notAuthenticated from '../methods/notAuthenticated';
 import API_URL from '../variables'
 import loadingScreen from '../methods/loadingscreen';
 import { browserHistory } from './router';
@@ -238,9 +237,6 @@ username: sessionStorage.getItem('username'),
         if (this.state.isLoading) {
           return loadingScreen()
         } else {
-          if (sessionStorage.getItem('authenticated') !== "true") {
-            return notAuthenticated();
-          }
             return (
 <div className="container-fluid">
   <ReactTable

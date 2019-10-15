@@ -1,6 +1,7 @@
 import React from 'react';
 import jQuery from 'jquery';
 import API_URL from '../variables';
+import { browserHistory } from '../routes/router';
 
 class AddUserPopup extends React.Component {
 	constructor (props) {
@@ -13,22 +14,25 @@ class AddUserPopup extends React.Component {
 
 	async fetchData () {
 		// get all data
-
-		var tableNames = [ 'auth_level' ];
-		for (let i = 0; i < tableNames.length; i++) {
-			await fetch(API_URL + '/getter', {
-				method  : 'POST',
-				headers : {
-					'Content-Type' : 'application/json'
-				},
-				body    : JSON.stringify({
-					username  : sessionStorage.getItem('username'),
-					token     : sessionStorage.getItem('token'),
-					tableName : tableNames[i]
+		try {
+			var tableNames = [ 'auth_level' ];
+			for (let i = 0; i < tableNames.length; i++) {
+				await fetch(API_URL + '/getter', {
+					method  : 'POST',
+					headers : {
+						'Content-Type' : 'application/json'
+					},
+					body    : JSON.stringify({
+						username  : sessionStorage.getItem('username'),
+						token     : sessionStorage.getItem('token'),
+						tableName : tableNames[i]
+					})
 				})
-			})
-				.then((response) => response.json())
-				.then((res) => this.setState({ [tableNames[i]]: res }));
+					.then((response) => response.json())
+					.then((res) => this.setState({ [tableNames[i]]: res }));
+			}
+		} catch (error) {
+			browserHistory.push('/NoAuth');
 		}
 	}
 	// function that sends new User data to DB
@@ -47,7 +51,7 @@ class AddUserPopup extends React.Component {
 					E_Mail               : document.getElementById('AddUser_E_Mail').value,
 					FirstName            : document.getElementById('AddUser_FirstName').value,
 					LastName             : document.getElementById('AddUser_LastName').value,
-					Username             : document.getElementById('AddUser_Username').value, // change to new User or something else
+					newUsername          : document.getElementById('AddUser_Username').value, // change to new User or something else
 					Authentication_Level : document.getElementById('AddUser_Authentication_Level').value
 				})
 			}).then((response) => {
