@@ -42,6 +42,7 @@ async function dailyCheck () {
 			async function (err, result, fields) {
 				if (err) console.log(err);
 				if (!canceled) {
+					console.log(result);
 					// both canceled == no colloquium
 					if (result.length === 0) {
 						console.log('Not enough Presenters!');
