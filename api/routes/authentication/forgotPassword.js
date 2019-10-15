@@ -11,62 +11,58 @@ const API_URL = process.env.API_URL;
 //function to compare the users local token with serverside token
 
 router.post('/', async function (req, res) {
-	if ((await checkToken(req)) === 1) {
-		pool.getConnection(function (err, connection) {
+	pool.getConnection(function (err, connection) {
+		if (err) {
+			console.log(err);
+			return res.status(400).send("Couldn't get a connection");
+		}
+		connection.query(`SELECT E_Mail from users WHERE E_Mail = '${req.body.E_Mail}' `, function (err, result, fields) {
 			if (err) {
 				console.log(err);
-				return res.status(400).send("Couldn't get a connection");
+				res.status(404).send();
 			}
-			connection.query(`SELECT E_Mail from users WHERE E_Mail = '${req.body.E_Mail}' `, function (err, result, fields) {
-				if (err) {
-					console.log(err);
-					res.status(404).send();
-				}
-				if (Object.entries(result).length === 0) {
-					console.log('Email doesnt exist');
-					res.status(404).send();
-				}
-				if (result.length === 1) {
-					console.log('success!');
-					var password = generator.generate({
-						length  : 64,
-						numbers : true
-					});
-					var Salt = bcrypt.genSaltSync(10);
-					var Hash = bcrypt.hashSync(password, Salt);
-					connection.query(`Update users SET ResetToken = '${Hash}' WHERE E_Mail= '${req.body.E_Mail}' `, function (err, result, fields) {
-						if (err) {
-							console.log(err);
-							res.status(404).send();
-						} else {
-							const data = {
-								from    : SENDER_MAIL,
-								to      : `${req.body.E_Mail}`,
-								subject : 'Password Reset',
-								text    : `HTML Mail not available. Use this link to reset your Password: ${API_URL + '/forgotPassword?token=' + Hash}`,
-								html    : `${html(API_URL, Hash)}`
-							};
+			if (Object.entries(result).length === 0) {
+				console.log('Email doesnt exist');
+				res.status(404).send();
+			}
+			if (result.length === 1) {
+				console.log('success!');
+				var password = generator.generate({
+					length  : 64,
+					numbers : true
+				});
+				var Salt = bcrypt.genSaltSync(10);
+				var Hash = bcrypt.hashSync(password, Salt);
+				connection.query(`Update users SET ResetToken = '${Hash}' WHERE E_Mail= '${req.body.E_Mail}' `, function (err, result, fields) {
+					if (err) {
+						console.log(err);
+						res.status(404).send();
+					} else {
+						const data = {
+							from    : SENDER_MAIL,
+							to      : `${req.body.E_Mail}`,
+							subject : 'Password Reset',
+							text    : `HTML Mail not available. Use this link to reset your Password: ${API_URL + '/forgotPassword?token=' + Hash}`,
+							html    : `${html(API_URL, Hash)}`
+						};
 
-							mg.messages().send(data, function (error, body) {
-								if (error) console.log(error);
-								console.log(body);
-							});
-						}
-					});
+						mg.messages().send(data, function (error, body) {
+							if (error) console.log(error);
+							console.log(body);
+						});
+					}
+				});
 
-					res.status(200).send();
-				}
-				if (result.length >= 2) {
-					console.log('duplicate emails');
-					res.status(403).send();
-				}
-				connection.release();
-				if (err) throw err;
-			});
+				res.status(200).send();
+			}
+			if (result.length >= 2) {
+				console.log('duplicate emails');
+				res.status(403).send();
+			}
+			connection.release();
+			if (err) throw err;
 		});
-	} else {
-		res.status(401).send('authentication error');
-	}
+	});
 });
 
 module.exports = router;
