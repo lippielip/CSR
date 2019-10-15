@@ -21,12 +21,12 @@ class Routes extends React.Component {
 	}
 
 	logout () {
+		this.setState({ isLoading: true });
 		sessionStorage.setItem('authenticated', false);
 		sessionStorage.setItem('token', null);
 		sessionStorage.setItem('username', null);
 		sessionStorage.setItem('Authentication_Level', null);
 		browserHistory.push('/');
-		this.setState({ isLoading: true });
 		this.setState({ isLoading: false });
 	}
 
