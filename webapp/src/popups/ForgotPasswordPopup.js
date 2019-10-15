@@ -29,7 +29,7 @@ class PasswordPopup extends React.Component {
 				})
 			}).then((response) => {
 				if (response.status === 200) {
-					document.getElementById('ResetPasswordSuccess').innerHTML = 'Password successfully changed!';
+					document.getElementById('ForgotPasswordSuccess').innerHTML = 'Password successfully changed!';
 					window.setTimeout(function () {
 						browserHistory.push('/');
 					}, 1500);
