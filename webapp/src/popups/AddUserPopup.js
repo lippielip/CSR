@@ -51,7 +51,7 @@ class AddUserPopup extends React.Component {
 					E_Mail               : document.getElementById('AddUser_E_Mail').value,
 					FirstName            : document.getElementById('AddUser_FirstName').value,
 					LastName             : document.getElementById('AddUser_LastName').value,
-					newUsername          : document.getElementById('AddUser_Username').value, // change to new User or something else
+					Username             : document.getElementById('AddUser_Username').value, // change to new User or something else
 					Authentication_Level : document.getElementById('AddUser_Authentication_Level').value
 				})
 			}).then((response) => {
