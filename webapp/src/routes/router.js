@@ -89,7 +89,7 @@ class Routes extends React.Component {
 							</Router>
 						</div>
 					) : (
-						<Router>
+						<Router history={browserHistory}>
 							<Login />
 							<Route exact={true} path={'/forgot'} component={forgotPassword} />
 						</Router>
