@@ -37,7 +37,7 @@ class forgotPassword extends React.Component {
 				document.getElementById('ResetPasswordSuccess').innerHTML = 'Password successfully changed!';
 				window.setTimeout(function () {
 					browserHistory.push('/');
-				}, 1000);
+				}, 1500);
 			}
 		} else {
 			document.getElementById('ResetPasswordError').innerHTML = "Passwords don't match";

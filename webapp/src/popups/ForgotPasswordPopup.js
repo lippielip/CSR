@@ -1,6 +1,7 @@
 import React from 'react';
 import jQuery from 'jquery';
 import API_URL from '../variables';
+import { browserHistory } from '../routes/router';
 // class for creating a first time password / new password
 class PasswordPopup extends React.Component {
 	constructor (props) {
@@ -28,6 +29,10 @@ class PasswordPopup extends React.Component {
 				})
 			}).then((response) => {
 				if (response.status === 200) {
+					document.getElementById('ResetPasswordSuccess').innerHTML = 'Password successfully changed!';
+					window.setTimeout(function () {
+						browserHistory.push('/');
+					}, 1500);
 					(function ($) {
 						$('#ForgotPasswordPopup').modal('toggle');
 					})(jQuery);
@@ -88,7 +93,8 @@ class PasswordPopup extends React.Component {
 															/>
 														</div>
 														<input className="btn btn-lg btn-primary btn-block" value="Reset My Password" type="submit" />
-														<div id="ForgotPasswordError" className="mt-3 invalidText" />
+														<div id="ForgotPasswordError" className="mt-3 text-danger" />
+														<div id="ForgotPasswordSuccess" className="mt-3 text-success" />
 													</fieldset>
 												</div>
 											</div>
