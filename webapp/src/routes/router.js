@@ -25,7 +25,7 @@ class Routes extends React.Component {
 		sessionStorage.setItem('token', null);
 		sessionStorage.setItem('username', null);
 		sessionStorage.setItem('Authentication_Level', null);
-		history.push('/');
+		browserHistory.push('/');
 	}
 
 	async componentDidMount () {
