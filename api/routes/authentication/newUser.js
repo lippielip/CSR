@@ -27,7 +27,7 @@ router.post('/', async function (req, res) {
 
 					if (
 						result.some((element) => {
-							if (element.Username.includes(req.body.Username)) {
+							if (element.Username.includes(req.body.newUser.Username)) {
 								return element;
 							}
 						})
@@ -40,7 +40,7 @@ router.post('/', async function (req, res) {
 
 					if (
 						result.some((element) => {
-							if (element.E_Mail.includes(req.body.E_Mail)) {
+							if (element.E_Mail.includes(req.body.newUser.E_Mail)) {
 								return element;
 							}
 						})
@@ -58,10 +58,10 @@ router.post('/', async function (req, res) {
 					});
 					var Salt = bcrypt.genSaltSync(10);
 					var Hash = bcrypt.hashSync(password, Salt);
-					req.body.ResetToken = Hash;
-					console.log(`Reset Token generated for user ${req.body.Username}`);
-					var Keys = Object.keys(req.body).toString(); // get all filled in Propertys
-					var Values = Object.values(req.body); // get corresponding values
+					req.body.newUser.ResetToken = Hash;
+					console.log(`Reset Token generated for user ${req.body.newUser.Username}`);
+					var Keys = Object.keys(req.body.newUser).toString(); // get all filled in Propertys
+					var Values = Object.values(req.body.newUser); // get corresponding values
 					Values = Values.map(function (e) {
 						return JSON.stringify(e);
 					}); // formatting for SQL so a for Loop isnt needed
@@ -74,7 +74,7 @@ router.post('/', async function (req, res) {
 						} else {
 							const data = {
 								from    : SENDER_MAIL,
-								to      : `${req.body.E_Mail}`,
+								to      : `${req.body.newUser.E_Mail}`,
 								subject : 'Create a password',
 								text    : `HTML Mail not available. Use this link to set your Password: ${DOMAIN_NAME + '/forgotPassword?token=' + Hash}`,
 								html    : `${html(DOMAIN_NAME, Hash)}`

@@ -46,13 +46,15 @@ class AddUserPopup extends React.Component {
 					'Content-Type' : 'application/json'
 				},
 				body    : JSON.stringify({
-					username             : sessionStorage.getItem('username'),
-					token                : sessionStorage.getItem('token'),
-					E_Mail               : document.getElementById('AddUser_E_Mail').value,
-					FirstName            : document.getElementById('AddUser_FirstName').value,
-					LastName             : document.getElementById('AddUser_LastName').value,
-					Username             : document.getElementById('AddUser_Username').value, // change to new User or something else
-					Authentication_Level : document.getElementById('AddUser_Authentication_Level').value
+					username : sessionStorage.getItem('username'),
+					token    : sessionStorage.getItem('token'),
+					newUser  : {
+						E_Mail               : document.getElementById('AddUser_E_Mail').value,
+						FirstName            : document.getElementById('AddUser_FirstName').value,
+						LastName             : document.getElementById('AddUser_LastName').value,
+						Username             : document.getElementById('AddUser_Username').value, // change to new User or something else
+						Authentication_Level : document.getElementById('AddUser_Authentication_Level').value
+					}
 				})
 			}).then((response) => {
 				if (response.status === 200) {
