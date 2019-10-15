@@ -22,13 +22,20 @@ class PasswordPopup extends React.Component {
 					'Content-Type' : 'application/json'
 				},
 				body    : JSON.stringify({
-					E_Mail : document.getElementById('email').value
+					username : sessionStorage.getItem('username'),
+					token    : sessionStorage.getItem('token'),
+					E_Mail   : document.getElementById('email').value
 				})
 			}).then((response) => {
 				if (response.status === 200) {
-					(function ($) {
-						$('#ForgotPasswordPopup').modal('toggle');
-					})(jQuery);
+					document.getElementById('ForgotPasswordSuccess').innerHTML = 'Password Reset Mail sent!';
+					window.setTimeout(function () {
+						(function ($) {
+							$('#ForgotPasswordPopup').modal('toggle');
+						})(jQuery);
+						document.getElementById('forgotPasswordForm').reset();
+						document.getElementById('ForgotPasswordSuccess').innerHTML = '';
+					}, 1500);
 				} else {
 					if (response.status === 403) {
 						document.getElementById('ForgotPasswordError').innerHTML = 'Duplicate E-Mails detected. Aborting.';
@@ -86,7 +93,8 @@ class PasswordPopup extends React.Component {
 															/>
 														</div>
 														<input className="btn btn-lg btn-primary btn-block" value="Reset My Password" type="submit" />
-														<div id="ForgotPasswordError" className="mt-3 invalidText" />
+														<div id="ForgotPasswordError" className="mt-3 text-danger" />
+														<div id="ForgotPasswordSuccess" className="mt-3 text-success" />
 													</fieldset>
 												</div>
 											</div>

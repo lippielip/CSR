@@ -17,11 +17,12 @@ let canceled = false;
 let users;
 let moderator;
 let canceledUser = {
-	Username  : '',
-	User_ID   : '0',
-	E_Mail    : '',
-	FirstName : '-gekürztes Colloquium-',
-	LastName  : ''
+	Username             : '',
+	User_ID              : 0,
+	E_Mail               : '',
+	FirstName            : '-gekürztes Colloquium-',
+	LastName             : '',
+	Pending_Presentation : 10
 };
 //This function checks daily for new Presentation inputs and sends out emails accordingly using the switch in the mailswitch.js file
 async function dailyCheck () {
@@ -60,7 +61,8 @@ async function dailyCheck () {
 						//Tuesday
 						if (currentDay === 2) {
 							//Both Presenters filled in Presentation
-							if (result[0].Pending_Presentation === 10 && result[1].Pending_Presentation === 10) {
+							console.log(users);
+							if (users[0].Pending_Presentation === 10 && users[1].Pending_Presentation === 10) {
 								console.log('Both Presenters are on Time. Sending out official mail early.');
 								mail(1, users);
 								mail(4, users, moderator, Presentations);
@@ -68,14 +70,14 @@ async function dailyCheck () {
 							}
 							//One Presenter filled in Presentation
 							if (
-								(result[0].Pending_Presentation === 1 && result[1].Pending_Presentation === 10) ||
-								(result[0].Pending_Presentation === 10 && result[1].Pending_Presentation === 1)
+								(users[0].Pending_Presentation === 1 && users[1].Pending_Presentation === 10) ||
+								(users[0].Pending_Presentation === 10 && users[1].Pending_Presentation === 1)
 							) {
 								console.log('One Presenter is on Time!');
 								mail(2, users);
 							}
 							//No Presenter filled in Presentation
-							if (result[0].Pending_Presentation === 1 && result[1].Pending_Presentation === 1) {
+							if (users[0].Pending_Presentation === 1 && users[1].Pending_Presentation === 1) {
 								console.log('Both Presenters are late!');
 								mail(3, users);
 							}

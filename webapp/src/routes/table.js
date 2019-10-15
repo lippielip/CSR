@@ -3,9 +3,9 @@ import ReactTable from 'react-table';
 import 'react-table/react-table.css';
 import { CheckCircle, XCircle, Trash, Edit } from 'react-feather';
 import jQuery from 'jquery'
-import checkToken from '../methods/checktoken';
-import notAuthenticated from '../methods/notAuthenticated';
 import API_URL from '../variables'
+import loadingScreen from '../methods/loadingscreen';
+import { browserHistory } from './router';
 require('bootstrap');
 
 
@@ -52,6 +52,8 @@ class Table extends React.Component {
               'Content-Type': 'application/json'
             },
             body: JSON.stringify({
+            username: sessionStorage.getItem('username'),
+            token: sessionStorage.getItem('token'),
               presentations: {
                     Topic: document.getElementById('Topic').value,
                     Presentation_Category: document.getElementById('Category').value,
@@ -85,9 +87,11 @@ class Table extends React.Component {
               'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                User_ID: this.state.rowVal.original.User_ID,
-              Presentation_ID: this.state.rowVal.original.Presentation_ID,
-                number: 0
+            username: sessionStorage.getItem('username'),
+            token: sessionStorage.getItem('token'),
+            User_ID: this.state.rowVal.original.User_ID,
+            Presentation_ID: this.state.rowVal.original.Presentation_ID,
+            number: 0
             })
         }).then(response => {
             const statusCode = response.status;
@@ -142,7 +146,9 @@ class Table extends React.Component {
             headers: {
               'Content-Type': 'application/json'
             },
-            body: JSON.stringify({
+          body: JSON.stringify({
+            username: sessionStorage.getItem('username'),
+            token: sessionStorage.getItem('token'),
               presentations: {
                 Presentation_Held: value,
               },
@@ -157,7 +163,9 @@ class Table extends React.Component {
             headers: {
               'Content-Type': 'application/json'
             },
-            body: JSON.stringify({
+          body: JSON.stringify({
+            username: sessionStorage.getItem('username'),
+            token: sessionStorage.getItem('token'),
                 categoryName: `Amount_${row.original.Presentation_Category}`,
                 sign: sign,
                 Id: row.original.User_ID
@@ -198,25 +206,32 @@ class Table extends React.Component {
         }
     }
 
-    async fetchTable() {
+  async fetchTable() {
+      try {
         await fetch(API_URL + "/getter", {
-           method: 'POST',
-           headers: {
-             'Content-Type': 'application/json'
-           },
-      body: JSON.stringify({
-             select:'Presentation_ID, Topic, Presentation_Category, Date, Last_Changed, FirstName, LastName, User_ID,Username, Presentation_Held, Amount_A, Amount_B, Amount_C, CancelTokens, Pending_Presentation ',
-             tableName: 'presentations',
-             selectiveGet: 'INNER JOIN users ON presentations.Presenter = users.User_ID'
-           })
-         })
-          .then(response => response.json())
-          .then(res => this.setState({ tableData: res }));
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+         body: JSON.stringify({
+           username: sessionStorage.getItem('username'),
+           token: sessionStorage.getItem('token'),
+           select:'Presentation_ID, Topic, Presentation_Category, Date, Last_Changed, FirstName, LastName, User_ID,Username, Presentation_Held, Amount_A, Amount_B, Amount_C, CancelTokens, Pending_Presentation ',
+           tableName: 'presentations',
+           selectiveGet: 'INNER JOIN users ON presentations.Presenter = users.User_ID',
+
+          })
+        })
+         .then(response => response.json())
+         .then(res => this.setState({ tableData: res }));
+      } catch (error) {
+        browserHistory.push("/NoAuth")
+      }
+
     }
     
-    async componentDidMount() {
+  async componentDidMount() {
       await this.fetchTable();
-      await checkToken();
       await this.setState({ isLoading: false });
       
 
@@ -224,13 +239,8 @@ class Table extends React.Component {
     
     render() {
         if (this.state.isLoading) {
-            return (
-                <div className="lds" style={{ left: '45%', top: '45%', position: 'absolute' }}><div></div><div></div><div></div></div>
-            )
+          return loadingScreen()
         } else {
-          if (sessionStorage.getItem('authenticated') !== "true") {
-            return notAuthenticated();
-          }
             return (
 <div className="container-fluid">
   <ReactTable
@@ -499,7 +509,7 @@ class Table extends React.Component {
 </div>
             )
         }
-    }
+   }
 }
 
 export default Table;

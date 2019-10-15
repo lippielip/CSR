@@ -5,7 +5,7 @@ import { mdiAccount } from '@mdi/js';
 import checkToken from '../methods/checktoken';
 import notAuthenticated from '../methods/notAuthenticated';
 import AddUserPopup from '../popups/AddUserPopup';
-import loading from '../methods/loadingscreen';
+import loadingScreen from '../methods/loadingscreen';
 
 class AdminPanel extends React.Component {
 	constructor (props) {
@@ -56,7 +56,7 @@ class AdminPanel extends React.Component {
 
 	render () {
 		if (this.state.isLoading) {
-			return loading();
+			return loadingScreen();
 		} else {
 			if (sessionStorage.getItem('authenticated') !== 'true' || sessionStorage.getItem('Authentication_Level') !== '10') {
 				return notAuthenticated();

@@ -4,7 +4,7 @@ import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction"; // needed for dayClick
 import checkToken from '../methods/checktoken';
-import loading from '../methods/loadingscreen'
+import loadingScreen from '../methods/loadingscreen'
 import '../App.css';
 import trash from '../images/trash.png';
 import "@fullcalendar/core/main.css";
@@ -63,6 +63,8 @@ export default class DemoApp extends React.Component {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
+username: sessionStorage.getItem('username'),
+            token: sessionStorage.getItem('token'),
         select: 'Presentation_ID, Topic, Presentation_Category, Presentation_Held, Date, FirstName, LastName, User_ID, username, Pending_Presentation',
         tableName: 'presentations',
         selectiveGet: 'INNER JOIN users ON presentations.Presenter = users.User_ID' // comment out this line if you want everyone to see everything
@@ -91,6 +93,8 @@ export default class DemoApp extends React.Component {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
+username: sessionStorage.getItem('username'),
+            token: sessionStorage.getItem('token'),
         select: 'Missing_ID, User_ID, start, end, FirstName, LastName',
         tableName: 'outofoffice',
         selectiveGet: `INNER JOIN users ON outofoffice.User = users.User_ID `  //WHERE users.Username = '${this.state.user}' Im Fall das man nur sein eigenes sehen soll in selectiveget einfügen
@@ -121,6 +125,8 @@ export default class DemoApp extends React.Component {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
+username: sessionStorage.getItem('username'),
+            token: sessionStorage.getItem('token'),
         tableName: 'presentations',
         selectiveGet: `WHERE Date = '${date}'`
       })
@@ -175,6 +181,8 @@ export default class DemoApp extends React.Component {
               'Content-Type': 'application/json'
             },
             body: JSON.stringify({
+username: sessionStorage.getItem('username'),
+            token: sessionStorage.getItem('token'),
               outofoffice: {
                 start: dstart,
                 end: dend
@@ -196,6 +204,8 @@ export default class DemoApp extends React.Component {
               'Content-Type': 'application/json'
             },
             body: JSON.stringify({
+username: sessionStorage.getItem('username'),
+            token: sessionStorage.getItem('token'),
               presentations: {
                 Date: dstart,
               },
@@ -270,6 +280,8 @@ export default class DemoApp extends React.Component {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
+            username: sessionStorage.getItem('username'),
+            token: sessionStorage.getItem('token'),
           missing: {
             start: missing_event.start,
             end: missing_event.end,
@@ -284,6 +296,8 @@ export default class DemoApp extends React.Component {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
+username: sessionStorage.getItem('username'),
+            token: sessionStorage.getItem('token'),
           presentation: {
             Topic: event.title,
             Presenter: sessionStorage.getItem('username'),
@@ -317,12 +331,12 @@ export default class DemoApp extends React.Component {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
+          username: sessionStorage.getItem('username'),
+          token: sessionStorage.getItem('token'),
           DeleteTables: [table],
           IDName: [ID],
           tableIDs: [deleteValue.id],
-          username: sessionStorage.getItem('username'),
           deleteUser: deleteValue.extendedProps.username,
-          token: sessionStorage.getItem('token'),
           held: deleteValue.extendedProps.Pending_Presentation
         })
       })
@@ -333,6 +347,8 @@ export default class DemoApp extends React.Component {
             'Content-Type': 'application/json'
           },
           body: JSON.stringify({
+            username: sessionStorage.getItem('username'),
+            token: sessionStorage.getItem('token'),
             categoryName: `Amount_${deleteValue.extendedProps.type}`,
             sign: "-",
             Id: deleteValue.extendedProps.User_ID
@@ -365,7 +381,7 @@ export default class DemoApp extends React.Component {
 }
   render() {
     if (this.state.isLoading) {
-      return loading();
+      return loadingScreen();
     } else {
       if (sessionStorage.getItem('authenticated') !== "true") {
         return notAuthenticated();

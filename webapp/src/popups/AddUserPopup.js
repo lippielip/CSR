@@ -1,6 +1,7 @@
 import React from 'react';
 import jQuery from 'jquery';
 import API_URL from '../variables';
+import { browserHistory } from '../routes/router';
 
 class AddUserPopup extends React.Component {
 	constructor (props) {
@@ -13,20 +14,25 @@ class AddUserPopup extends React.Component {
 
 	async fetchData () {
 		// get all data
-
-		var tableNames = [ 'auth_level' ];
-		for (let i = 0; i < tableNames.length; i++) {
-			await fetch(API_URL + '/getter', {
-				method  : 'POST',
-				headers : {
-					'Content-Type' : 'application/json'
-				},
-				body    : JSON.stringify({
-					tableName : tableNames[i]
+		try {
+			var tableNames = [ 'auth_level' ];
+			for (let i = 0; i < tableNames.length; i++) {
+				await fetch(API_URL + '/getter', {
+					method  : 'POST',
+					headers : {
+						'Content-Type' : 'application/json'
+					},
+					body    : JSON.stringify({
+						username  : sessionStorage.getItem('username'),
+						token     : sessionStorage.getItem('token'),
+						tableName : tableNames[i]
+					})
 				})
-			})
-				.then((response) => response.json())
-				.then((res) => this.setState({ [tableNames[i]]: res }));
+					.then((response) => response.json())
+					.then((res) => this.setState({ [tableNames[i]]: res }));
+			}
+		} catch (error) {
+			browserHistory.push('/NoAuth');
 		}
 	}
 	// function that sends new User data to DB
@@ -40,17 +46,26 @@ class AddUserPopup extends React.Component {
 					'Content-Type' : 'application/json'
 				},
 				body    : JSON.stringify({
-					E_Mail               : document.getElementById('AddUser_E_Mail').value,
-					FirstName            : document.getElementById('AddUser_FirstName').value,
-					LastName             : document.getElementById('AddUser_LastName').value,
-					Username             : document.getElementById('AddUser_Username').value,
-					Authentication_Level : document.getElementById('AddUser_Authentication_Level').value
+					username : sessionStorage.getItem('username'),
+					token    : sessionStorage.getItem('token'),
+					newUser  : {
+						E_Mail               : document.getElementById('AddUser_E_Mail').value,
+						FirstName            : document.getElementById('AddUser_FirstName').value,
+						LastName             : document.getElementById('AddUser_LastName').value,
+						Username             : document.getElementById('AddUser_Username').value, // change to new User or something else
+						Authentication_Level : document.getElementById('AddUser_Authentication_Level').value
+					}
 				})
 			}).then((response) => {
 				if (response.status === 200) {
-					(function ($) {
-						$('#AddUserPopup').modal('toggle');
-					})(jQuery);
+					document.getElementById('AddUserSuccess').innerHTML = 'User successfully added!';
+					window.setTimeout(function () {
+						(function ($) {
+							$('#AddUserPopup').modal('toggle');
+						})(jQuery);
+						document.getElementById('AddUserForm').reset();
+						document.getElementById('AddUserSuccess').innerHTML = '';
+					}, 1500);
 				} else {
 					if (response.status === 400) {
 						document.getElementById('AddUserError').innerHTML = 'Error: Duplicate Username detected';
@@ -148,7 +163,7 @@ class AddUserPopup extends React.Component {
 										name="Authentication_Level"
 										required="required"
 										onChange={this.handleOnChange}>
-										<option disabled value="">
+										<option disabled={true} value="">
 											-- select an option --
 										</option>
 										{this.getDropdownTemplate('auth_level', 'Auth_Level_ID', 'Definition')}
@@ -188,7 +203,8 @@ class AddUserPopup extends React.Component {
 										onChange={this.handleOnChange}
 										required="required"
 									/>
-									<div id="AddUserError" className="mt-3 invalidText" />
+									<div id="AddUserError" className="mt-3 text-danger" />
+									<div id="AddUserSuccess" className="mt-3 text-success" />
 								</div>
 
 								<button type="submit" className="btn btn-primary">

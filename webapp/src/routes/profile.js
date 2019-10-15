@@ -1,8 +1,8 @@
 import * as React from 'react';
 import { Redirect } from 'react-router';
 import notAuthenticated from '../methods/notAuthenticated';
-import loading from '../methods/loadingscreen';
 import API_URL from '../variables';
+import loadingScreen from '../methods/loadingscreen';
 let event = {
 	title                 : '',
 	start                 : '',
@@ -28,6 +28,8 @@ class User extends React.Component {
 				'Content-Type' : 'application/json'
 			},
 			body    : JSON.stringify({
+username: sessionStorage.getItem('username'),
+            token: sessionStorage.getItem('token'),
 				select       : 'User_ID, Pending_Presentation, Amount_A, Amount_B, Amount_C ',
 				tableName    : 'users',
 				selectiveGet : `WHERE Username = '${sessionStorage.getItem('username')}'`
@@ -64,6 +66,8 @@ class User extends React.Component {
 				'Content-Type' : 'application/json'
 			},
 			body    : JSON.stringify({
+username: sessionStorage.getItem('username'),
+            token: sessionStorage.getItem('token'),
 				presentation : {
 					Topic                 : event.title,
 					Presenter             : sessionStorage.getItem('username'),
@@ -78,7 +82,9 @@ class User extends React.Component {
 				'Content-Type' : 'application/json'
 			},
 			body    : JSON.stringify({
-				username : sessionStorage.getItem('username')
+username: sessionStorage.getItem('username'),
+            token: sessionStorage.getItem('token'),
+				
 			})
 		});
 		this.setState({ redirect: true });
@@ -89,7 +95,7 @@ class User extends React.Component {
 			return <Redirect to="/calendar" />;
 		}
 		if (this.state.isLoading) {
-			return loading();
+			return loadingScreen();
 		} else {
 			if (sessionStorage.getItem('authenticated') !== 'true') {
 				return notAuthenticated();

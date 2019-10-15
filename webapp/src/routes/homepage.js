@@ -2,7 +2,7 @@ import * as React from 'react';
 import logo from '../images/ppLogoNew.svg';
 import checkToken from '../methods/checktoken';
 import notAuthenticated from '../methods/notAuthenticated';
-import loading from '../methods/loadingscreen';
+import loadingScreen from '../methods/loadingscreen';
 class Home extends React.Component {
 	constructor (props) {
 		super(props);
@@ -18,7 +18,7 @@ class Home extends React.Component {
 	}
 	render () {
 		if (this.state.isLoading) {
-			return loading();
+			return loadingScreen();
 		} else {
 			if (sessionStorage.getItem('authenticated') !== 'true') {
 				return notAuthenticated();
