@@ -18,7 +18,7 @@ let users;
 let moderator;
 let canceledUser = {
 	Username             : '',
-	User_ID              : '0',
+	User_ID              : 0,
 	E_Mail               : '',
 	FirstName            : '-gekürztes Colloquium-',
 	LastName             : '',

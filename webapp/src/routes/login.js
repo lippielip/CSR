@@ -1,10 +1,8 @@
 import * as React from 'react';
 import jQuery from 'jquery';
+import logo from '../images/ppLogo.svg';
 import checkToken from '../methods/checktoken';
 import loadingScreen from '../methods/loadingscreen';
-//import altar from '../images/altar.svg';
-import logo from '../images/ppLogo.svg';
-import PasswordPopup from '../popups/PasswordPopup';
 import ForgotPassword from '../popups/ForgotPasswordPopup';
 import API_URL from '../variables';
 
@@ -129,12 +127,7 @@ export default class Login extends React.Component {
 						}}>
 						<div className="container">
 							<h1 style={{ paddingTop: '40px' }}>Colloquium Selector Robot</h1>
-							<br />
-							<img src={logo} className="App-link " alt="logo" style={{ maxHeight: '180px', marginTop: '30px', marginBottom: '30px' }} />
-							<br />
-							{/*<img src={altar} style={{ maxHeight: '300px' }} alt="altar" />*/}
-							<div id="error" className="invalidText" />
-
+							<img src={logo} className="App-link " alt="logo" style={{ maxHeight: '180px', marginTop: '30px', marginBottom: '50px' }} />
 							<div className="form-group centered">
 								<div className="col-lg-4">
 									<input type="text" name="username" id="InputUsername" className="form-control" placeholder="Username" onChange={this.handleOnChange} />
@@ -153,6 +146,7 @@ export default class Login extends React.Component {
 									/>
 								</div>
 							</div>
+							<div id="error" className="text-danger" />
 							<button type="submit" className="btn btn-danger col-lg-2" style={{ marginTop: '20px' }}>
 								Login
 							</button>
@@ -165,7 +159,6 @@ export default class Login extends React.Component {
 							</div>
 						</div>
 					</form>
-					<PasswordPopup Username={this.state.username} />
 					<ForgotPassword />
 				</div>
 			);
