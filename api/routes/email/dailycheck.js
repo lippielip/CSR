@@ -17,11 +17,12 @@ let canceled = false;
 let users;
 let moderator;
 let canceledUser = {
-	Username  : '',
-	User_ID   : '0',
-	E_Mail    : '',
-	FirstName : '-gekürztes Colloquium-',
-	LastName  : ''
+	Username             : '',
+	User_ID              : '0',
+	E_Mail               : '',
+	FirstName            : '-gekürztes Colloquium-',
+	LastName             : '',
+	Pending_Presentation : '10'
 };
 //This function checks daily for new Presentation inputs and sends out emails accordingly using the switch in the mailswitch.js file
 async function dailyCheck () {
