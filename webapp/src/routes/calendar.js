@@ -5,7 +5,7 @@ import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction"; // needed for dayClick
 import checkToken from '../methods/checktoken';
 import loadingScreen from '../methods/loadingscreen'
-import trash from '%PUBLIC_URL%/assets/images/trash.png';
+import trash from '../../public/assets/images/trash.png';
 import "@fullcalendar/core/main.css";
 import "@fullcalendar/daygrid/main.css";
 import "@fullcalendar/timegrid/main.css";
