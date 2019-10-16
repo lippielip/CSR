@@ -8,6 +8,7 @@ import notAuthenticated from '../methods/notAuthenticated';
 import AddUserPopup from '../popups/AddUserPopup';
 import loadingScreen from '../methods/loadingscreen';
 import UserTable from './adminRoutes/userPanel';
+import { browserHistory } from '../router';
 
 class AdminPanel extends React.Component {
 	constructor (props) {
@@ -92,7 +93,7 @@ class AdminPanel extends React.Component {
 										User Deletion
 									</h5>
 									<p className="card-text">Remove a user with this utility.</p>
-									<Router>
+									<Router history={browserHistory}>
 										<button className="btn btn-primary">
 											<Link to={'/users'} />
 										</button>
