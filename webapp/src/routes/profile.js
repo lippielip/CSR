@@ -28,8 +28,8 @@ class User extends React.Component {
 				'Content-Type' : 'application/json'
 			},
 			body    : JSON.stringify({
-username: sessionStorage.getItem('username'),
-            token: sessionStorage.getItem('token'),
+				username     : sessionStorage.getItem('username'),
+				token        : sessionStorage.getItem('token'),
 				select       : 'User_ID, Pending_Presentation, Amount_A, Amount_B, Amount_C ',
 				tableName    : 'users',
 				selectiveGet : `WHERE Username = '${sessionStorage.getItem('username')}'`
@@ -66,8 +66,8 @@ username: sessionStorage.getItem('username'),
 				'Content-Type' : 'application/json'
 			},
 			body    : JSON.stringify({
-username: sessionStorage.getItem('username'),
-            token: sessionStorage.getItem('token'),
+				username     : sessionStorage.getItem('username'),
+				token        : sessionStorage.getItem('token'),
 				presentation : {
 					Topic                 : event.title,
 					Presenter             : sessionStorage.getItem('username'),
@@ -82,9 +82,8 @@ username: sessionStorage.getItem('username'),
 				'Content-Type' : 'application/json'
 			},
 			body    : JSON.stringify({
-username: sessionStorage.getItem('username'),
-            token: sessionStorage.getItem('token'),
-				
+				username : sessionStorage.getItem('username'),
+				token    : sessionStorage.getItem('token')
 			})
 		});
 		this.setState({ redirect: true });
