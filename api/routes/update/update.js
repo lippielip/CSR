@@ -3,20 +3,7 @@ var router = express.Router();
 var pool = require('../database');
 var checkToken = require('../authentication/checkTokenInternal');
 
-function testLength(Date) {
-	return new Promise(function (resolve, reject) {
-		connection.query(`SELECT Date FROM presentations WHERE Date = '${Date}'`, function (err, result, fields) {
-			if (err) console.log(err);
-			if (result.length === 2) {
-				res.status(304).send();
-				connection.release();
-				resolve();
-			} else {
-				resolve();
-			}
-		});
-	});
-}
+
 // function to change values
 router.post('/', async function (req, res, next) {
 	if ((await checkToken(req)) >= 5) {
@@ -28,6 +15,20 @@ router.post('/', async function (req, res, next) {
 			//loop through all categories
 			var category = Object.keys(req.body)[2];
 			if (category === 'presentations') {
+				async function testLength(Date) {
+					return new Promise(function (resolve, reject) {
+						connection.query(`SELECT Date FROM presentations WHERE Date = '${Date}'`, function (err, result, fields) {
+							if (err) console.log(err);
+							if (result.length === 2) {
+								res.status(304).send();
+								connection.release();
+								resolve();
+							} else {
+								resolve();
+							}
+						});
+					});
+				}
 				await testLength(req.body.presentations.Date)
 			}
 			var proplength = Object.values(req.body[category]).length; // category amount
