@@ -86,8 +86,8 @@ class Routes extends React.Component {
 										</div>
 									</div>
 								</nav>
-								{sessionStorage.getItem('Pending_Presentation') === '1' ? <Redirect exact to="/user" /> : null}
 								<ContentPane />
+								{sessionStorage.getItem('Pending_Presentation') === '1' ? <Redirect exact to="/user" /> : null}
 							</Router>
 						</div>
 					) : (

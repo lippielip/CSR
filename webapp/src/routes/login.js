@@ -57,13 +57,6 @@ export default class Login extends React.Component {
 						sessionStorage.setItem('Pending_Presentation', null);
 						sessionStorage.setItem('authenticated', response.authenticated);
 					}
-					if (response.authenticated === 'newUser') {
-						sessionStorage.setItem('username', this.state.username);
-						sessionStorage.setItem('token', response.token);
-						(function ($) {
-							$('#PasswordPopup').modal('toggle');
-						})(jQuery);
-					}
 				});
 		}
 	}
