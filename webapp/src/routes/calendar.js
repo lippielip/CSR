@@ -110,7 +110,7 @@ export default class Calendar extends React.Component {
           allDay: true,
           type: "missingEvent",
           id: unformattedLeaves[i].Missing_ID,
-          username: unformattedEvents[i].Username,
+          username: unformattedLeaves[i].Username,
           color: 'rgb(150, 16,0)'
         })
       });
