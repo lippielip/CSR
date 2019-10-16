@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import * as serviceWorker from './serviceWorker';
-import Routes from './routes/router';
+import Routes from './router';
 require('bootstrap');
 
 function App () {

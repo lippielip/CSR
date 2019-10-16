@@ -1,7 +1,7 @@
 import React from 'react';
 import jQuery from 'jquery';
 import API_URL from '../variables';
-import { browserHistory } from '../routes/router';
+import { browserHistory } from '../router';
 
 class AddUserPopup extends React.Component {
 	constructor (props) {
