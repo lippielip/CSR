@@ -14,12 +14,17 @@ router.post('/', async function (req, res, next) {
 			//loop through all categories
 			var category = Object.keys(req.body)[2];
 			if (category === 'presentations') {
-				connection.query(`SELECT Date FROM presentations WHERE Date = '${req.body.presentations.Date}'`, function (err, result, fields) {
-					if (err) console.log(err);
-					if (result.length === 2) {
-						res.status(304).send();
-						connection.release();
-					}
+				return new Promise(function (resolve, reject) {
+					connection.query(`SELECT Date FROM presentations WHERE Date = '${req.body.presentations.Date}'`, function (err, result, fields) {
+						if (err) console.log(err);
+						if (result.length === 2) {
+							res.status(304).send();
+							connection.release();
+							resolve();
+						} else {
+							resolve();
+						}
+					});
 				});
 			}
 			var proplength = Object.values(req.body[category]).length; // category amount
