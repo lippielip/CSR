@@ -3,7 +3,7 @@ import jQuery from 'jquery';
 import Icon from '@mdi/react';
 import { mdiAccount } from '@mdi/js';
 import checkToken from '../methods/checktoken';
-import { Router, Link, Route, Switch } from 'react-router-dom';
+import { Router, Link, Route } from 'react-router-dom';
 import notAuthenticated from '../methods/notAuthenticated';
 import AddUserPopup from '../popups/AddUserPopup';
 import loadingScreen from '../methods/loadingscreen';
