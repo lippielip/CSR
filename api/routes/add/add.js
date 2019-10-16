@@ -18,7 +18,7 @@ router.post('/', async function (req, res) {
 					req.body.presentation.Presenter = null;
 				} else {
 					req.body.presentation.Presenter = result[0].User_ID;
-					console.dir(req.body.presentation);
+					console.log(req.body.presentation);
 				}
 			});
 

@@ -314,7 +314,6 @@ username: sessionStorage.getItem('username'),
   async handleDelete() {
     var table = "presentations";
     var Id = "Presentation_ID"
-    console.dir(deleteValue.extendedProps)
     if (deleteValue.extendedProps.type === "missingEvent") {
       table = "outofoffice";
       Id = "Missing_ID"

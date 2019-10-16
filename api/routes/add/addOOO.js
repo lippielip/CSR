@@ -18,7 +18,7 @@ router.post('/', async function (req, res) {
 					req.body.missing.User = null;
 				} else {
 					req.body.missing.User = result[0].User_ID;
-					console.dir(req.body.missing);
+					console.log(req.body.missing);
 				}
 			});
 			connection.query(`INSERT INTO outofoffice (${CategoryNames[1]}) VALUES ('${Object.values(req.body.missing)[1]}')`, function (err) {
