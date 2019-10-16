@@ -95,7 +95,7 @@ class AdminPanel extends React.Component {
 									<p className="card-text">Remove a user with this utility.</p>
 									<Router history={browserHistory}>
 										<button className="btn btn-primary">
-											<Link to={'/users'} />
+											<Link to={'/users'}>Delete a user</Link>
 										</button>
 										<Route exact path="/users" component={UserTable} />
 									</Router>
