@@ -114,9 +114,9 @@ class Table extends React.Component {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          DeleteTables: ['presentations'],
+          DeleteTable: ['presentations'],
           IDName: ['Presentation_ID'],
-          tableIDs: [this.state.rowVal.original.Presentation_ID],
+          tableID: [this.state.rowVal.original.Presentation_ID],
           username: sessionStorage.getItem('username'),
           token: sessionStorage.getItem('token'),
           held: this.state.rowVal.original.Pending_Presentation
