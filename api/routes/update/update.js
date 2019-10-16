@@ -5,7 +5,7 @@ var checkToken = require('../authentication/checkTokenInternal');
 
 // function to change values
 router.post('/', async function (req, res, next) {
-	if ((await checkToken(req)) === 1) {
+	if ((await checkToken(req)) >= 5) {
 		for (let i = 0; i < Object.keys(req.body).length - 1; i++) {
 			//loop through all categories
 			var category = Object.keys(req.body)[i];
