@@ -3,6 +3,7 @@ import { Redirect } from 'react-router';
 import notAuthenticated from '../methods/notAuthenticated';
 import API_URL from '../variables';
 import loadingScreen from '../methods/loadingscreen';
+
 let event = {
 	title                 : '',
 	start                 : '',

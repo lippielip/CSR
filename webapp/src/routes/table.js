@@ -1,8 +1,8 @@
 import * as React from 'react';
 import ReactTable from 'react-table';
+import jQuery from 'jquery'
 import 'react-table/react-table.css';
 import { CheckCircle, XCircle, Trash, Edit } from 'react-feather';
-import jQuery from 'jquery'
 import API_URL from '../variables'
 import loadingScreen from '../methods/loadingscreen';
 import { browserHistory } from '../router';

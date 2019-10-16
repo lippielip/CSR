@@ -97,16 +97,16 @@
 	color: black;
 }
 
-.demo-app {
+.calendar-app {
 	font-family: Arial, Helvetica Neue, Helvetica, sans-serif;
 	font-size: 14px;
 }
 
-.demo-app-top {
+.calendar-app-top {
 	margin: 0 0 3em;
 }
 
-.demo-app-calendar {
+.calendar-app-calendar {
 	margin: 0 auto;
 	max-width: 900px;
 }

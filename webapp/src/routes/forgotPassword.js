@@ -1,8 +1,8 @@
 import * as React from 'react';
 import loadingScreen from '../methods/loadingscreen';
-import API_URL from '../variables';
 import checkResetToken from '../methods/checkResetToken';
 import notAuthenticated from '../methods/notAuthenticated';
+import API_URL from '../variables';
 import { browserHistory } from '../router';
 
 let statusCode;

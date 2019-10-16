@@ -1,8 +1,9 @@
 import * as React from 'react';
-import logo from '../images/ppLogoNew.svg';
 import checkToken from '../methods/checktoken';
 import notAuthenticated from '../methods/notAuthenticated';
 import loadingScreen from '../methods/loadingscreen';
+import logo from '../images/ppLogoNew.svg';
+
 class Home extends React.Component {
 	constructor (props) {
 		super(props);

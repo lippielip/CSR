@@ -1,4 +1,5 @@
 import React from "react";
+import jQuery from 'jquery'
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
@@ -9,7 +10,6 @@ import trash from '../images/trash.png';
 import "@fullcalendar/core/main.css";
 import "@fullcalendar/daygrid/main.css";
 import "@fullcalendar/timegrid/main.css";
-import jQuery from 'jquery'
 import notAuthenticated from "../methods/notAuthenticated";
 import API_URL from '../variables';
 
@@ -30,7 +30,7 @@ let unformattedEvents;
 let unformattedLeaves;
 let deleteValue;
 
-export default class DemoApp extends React.Component {
+export default class Calendar extends React.Component {
 
   constructor(props) {
     super(props);
@@ -385,12 +385,12 @@ username: sessionStorage.getItem('username'),
         return notAuthenticated();
       }
       return (
-        <div className="demo-app">
-          <div className="demo-app-top">
+        <div className="calendar-app">
+          <div className="calendar-app-top">
             <br />
             <button className="btn btn-primary" onClick={this.toggleWeekends}>toggle weekends</button>&nbsp;
         </div>
-          <div className="demo-app-calendar">
+          <div className="calendar-app-calendar">
             <FullCalendar
               defaultView="dayGridMonth"
               header={{

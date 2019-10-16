@@ -2,12 +2,12 @@ import * as React from 'react';
 import { Redirect } from 'react-router';
 import { Router, Link, Route, Switch } from 'react-router-dom';
 import * as history from 'history';
-import ContentPane from './routes/contentpane';
-import Login from './routes/login';
 import checkToken from './methods/checktoken';
 import loadingScreen from './methods/loadingscreen';
-import forgotPassword from './routes/forgotPassword';
 import NoMatch from './methods/noMatch';
+import ContentPane from './routes/contentpane';
+import Login from './routes/login';
+import forgotPassword from './routes/forgotPassword';
 
 export var browserHistory = history.createBrowserHistory();
 

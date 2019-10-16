@@ -1,8 +1,8 @@
 import * as React from 'react';
-import categories from '../images/categoryTable.png';
 import checkToken from '../methods/checktoken';
 import notAuthenticated from '../methods/notAuthenticated';
 import loadingScreen from '../methods/loadingscreen';
+import categories from '../images/categoryTable.png';
 class Info extends React.Component {
 	constructor (props) {
 		super(props);
