@@ -5,15 +5,13 @@ import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction"; // needed for dayClick
 import checkToken from '../methods/checktoken';
 import loadingScreen from '../methods/loadingscreen'
-import '../App.css';
-import trash from '../images/trash.png';
+import trash from '%PUBLIC_URL%/assets/images/trash.png';
 import "@fullcalendar/core/main.css";
 import "@fullcalendar/daygrid/main.css";
 import "@fullcalendar/timegrid/main.css";
 import jQuery from 'jquery'
 import notAuthenticated from "../methods/notAuthenticated";
 import API_URL from '../variables';
-require('bootstrap')
 
 // must manually import the stylesheets for each plugin
 let event = {

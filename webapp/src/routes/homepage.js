@@ -1,5 +1,5 @@
 import * as React from 'react';
-import logo from '../images/ppLogoNew.svg';
+import logo from '%PUBLIC_URL%/assets/images/ppLogoNew.svg';
 import checkToken from '../methods/checktoken';
 import notAuthenticated from '../methods/notAuthenticated';
 import loadingScreen from '../methods/loadingscreen';
