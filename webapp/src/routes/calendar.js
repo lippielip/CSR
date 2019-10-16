@@ -374,7 +374,7 @@ username: sessionStorage.getItem('username'),
     await checkToken();
     await this.fetchEvents();
     await this.setState({ isLoading: false });
-
+console.dir(this.state)
 
 }
   render() {
