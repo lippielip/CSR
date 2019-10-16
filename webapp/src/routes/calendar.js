@@ -63,7 +63,7 @@ export default class Calendar extends React.Component {
       body: JSON.stringify({
         username: sessionStorage.getItem('username'),
         token: sessionStorage.getItem('token'),
-        select: 'Presentation_ID, Topic, Presentation_Category, Presentation_Held, Date, FirstName, LastName, User_ID, username, Pending_Presentation',
+        select: 'Presentation_ID, Topic, Presentation_Category, Presentation_Held, Date, FirstName, LastName, User_ID, Username, Pending_Presentation',
         tableName: 'presentations',
         selectiveGet: 'INNER JOIN users ON presentations.Presenter = users.User_ID' // comment out this line if you want everyone to see everything
       })
@@ -79,7 +79,7 @@ export default class Calendar extends React.Component {
           type: unformattedEvents[i].Presentation_Category,
           Presentation_Held: unformattedEvents[i].Presentation_Held,
           User_ID: unformattedEvents[i].User_ID,
-          username: unformattedEvents[i].username,
+          username: unformattedEvents[i].Username,
           id: unformattedEvents[i].Presentation_ID,
           Pending_Presentation: unformattedEvents[i].Pending_Presentation
         })
@@ -93,7 +93,7 @@ export default class Calendar extends React.Component {
       body: JSON.stringify({
         username: sessionStorage.getItem('username'),
         token: sessionStorage.getItem('token'),
-        select: 'Missing_ID, User_ID, start, end, FirstName, LastName',
+        select: 'Missing_ID, User_ID, start, end, FirstName, LastName, Username',
         tableName: 'outofoffice',
         selectiveGet: `INNER JOIN users ON outofoffice.User = users.User_ID `  //WHERE users.Username = '${this.state.user}' Im Fall das man nur sein eigenes sehen soll in selectiveget einfügen
       })
@@ -110,6 +110,7 @@ export default class Calendar extends React.Component {
           allDay: true,
           type: "missingEvent",
           id: unformattedLeaves[i].Missing_ID,
+          username: unformattedEvents[i].Username,
           color: 'rgb(150, 16,0)'
         })
       });
