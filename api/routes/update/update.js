@@ -18,7 +18,6 @@ router.post('/', async function (req, res, next) {
 					if (err) console.log(err);
 					if (result.length === 2) {
 						res.status(304).send();
-						connection.release();
 					} else {
 						var proplength = Object.values(req.body[category]).length; // category amount
 						console.log('\x1b[31m', `Property Amount for Category ${category}: ${proplength}`, '\x1b[0m');
@@ -49,7 +48,6 @@ router.post('/', async function (req, res, next) {
 							});
 						}
 						res.status(200).send();
-						connection.release();
 					}
 				});
 			} else {
@@ -78,8 +76,8 @@ router.post('/', async function (req, res, next) {
 					});
 				}
 				res.status(200).send();
-				connection.release();
 			}
+			connection.release();
 		});
 	} else {
 		res.status(401).send('authentication error');
