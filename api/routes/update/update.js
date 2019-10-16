@@ -6,6 +6,8 @@ var checkToken = require('../authentication/checkTokenInternal');
 // function to change values
 router.post('/', async function (req, res, next) {
 	if ((await checkToken(req)) >= 5) {
+		delete req.body.username;
+		delete req.body.token;
 		pool.getConnection(function (err, connection) {
 			if (err) {
 				console.log(err);
@@ -20,7 +22,6 @@ router.post('/', async function (req, res, next) {
 						if (result.length === 2) {
 							res.status(304).send();
 							connection.release();
-							break;
 						} else {
 							var proplength = Object.values(req.body[category]).length; // category amount
 							console.log('\x1b[31m', `Property Amount for Category ${category}: ${proplength}`, '\x1b[0m');
