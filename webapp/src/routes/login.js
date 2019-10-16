@@ -1,6 +1,6 @@
 import * as React from 'react';
 import jQuery from 'jquery';
-import logo from '../../public/assets/images/ppLogo.svg';
+import logo from '../images/ppLogo.svg';
 import checkToken from '../methods/checktoken';
 import loadingScreen from '../methods/loadingscreen';
 import ForgotPassword from '../popups/ForgotPasswordPopup';

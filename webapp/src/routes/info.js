@@ -1,5 +1,5 @@
 import * as React from 'react';
-import categories from '../../public/assets/images/categoryTable.png';
+import categories from '../images/categoryTable.png';
 import checkToken from '../methods/checktoken';
 import notAuthenticated from '../methods/notAuthenticated';
 import loadingScreen from '../methods/loadingscreen';
