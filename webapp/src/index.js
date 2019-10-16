@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import * as serviceWorker from './serviceWorker';
 import Routes from './routes/router';
-require('bootstrap');
+
 function App () {
 	return (
 		<div className="App">
