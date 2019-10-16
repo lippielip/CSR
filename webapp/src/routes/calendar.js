@@ -91,8 +91,8 @@ username: sessionStorage.getItem('username'),
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-username: sessionStorage.getItem('username'),
-            token: sessionStorage.getItem('token'),
+        username: sessionStorage.getItem('username'),
+        token: sessionStorage.getItem('token'),
         select: 'Missing_ID, User_ID, start, end, FirstName, LastName',
         tableName: 'outofoffice',
         selectiveGet: `INNER JOIN users ON outofoffice.User = users.User_ID `  //WHERE users.Username = '${this.state.user}' Im Fall das man nur sein eigenes sehen soll in selectiveget einfügen
@@ -179,8 +179,8 @@ username: sessionStorage.getItem('username'),
               'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-username: sessionStorage.getItem('username'),
-            token: sessionStorage.getItem('token'),
+              username: sessionStorage.getItem('username'),
+              token: sessionStorage.getItem('token'),
               outofoffice: {
                 start: dstart,
                 end: dend
@@ -202,8 +202,8 @@ username: sessionStorage.getItem('username'),
               'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-username: sessionStorage.getItem('username'),
-            token: sessionStorage.getItem('token'),
+              username: sessionStorage.getItem('username'),
+              token: sessionStorage.getItem('token'),
               presentations: {
                 Date: dstart,
               },
@@ -278,8 +278,8 @@ username: sessionStorage.getItem('username'),
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-            username: sessionStorage.getItem('username'),
-            token: sessionStorage.getItem('token'),
+          username: sessionStorage.getItem('username'),
+          token: sessionStorage.getItem('token'),
           missing: {
             start: missing_event.start,
             end: missing_event.end,
@@ -287,6 +287,7 @@ username: sessionStorage.getItem('username'),
           }
         })
       })
+      this.handleSelect();
     } else {
       await fetch(API_URL + "/add", {
         method: 'POST',
@@ -294,8 +295,8 @@ username: sessionStorage.getItem('username'),
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-username: sessionStorage.getItem('username'),
-            token: sessionStorage.getItem('token'),
+          username: sessionStorage.getItem('username'),
+          token: sessionStorage.getItem('token'),
           presentation: {
             Topic: event.title,
             Presenter: sessionStorage.getItem('username'),
@@ -416,7 +417,7 @@ username: sessionStorage.getItem('username'),
             />
     <div id="deleteEventsDiv" className="Fade-button">
               <img style={{ height: "80px" }} src={trash} alt="trash" />
-</div>
+    </div>
           </div>
           <div className="modal fade" id="CalendarPopup" tabIndex="-1" role="dialog" aria-labelledby="CalendarPopupCenterTitle" aria-hidden="true">
             <div className="modal-dialog modal-dialog-centered" role="document">
