@@ -4,7 +4,7 @@ var pool = require('../database');
 var checkToken = require('../authentication/checkTokenInternal');
 
 router.post('/', async function (req, res) {
-	if ((await checkToken(req)) === 1) {
+	if ((await checkToken(req)) >= 5) {
 		var CategoryAmount = Object.keys(req.body.presentation).length;
 		var CategoryNames = Object.keys(req.body.presentation);
 		var Presentation_ID;
