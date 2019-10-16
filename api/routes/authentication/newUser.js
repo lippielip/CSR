@@ -74,17 +74,19 @@ router.post('/', async function (req, res) {
 							console.log(err);
 							res.status(404).send();
 						} else {
-							const data = {
-								from    : SENDER_MAIL,
-								to      : `${req.body.newUser.E_Mail}`,
-								subject : 'Create a password',
-								text    : `HTML Mail not available. Use this link to set your Password: ${DOMAIN_NAME + '/forgotPassword?token=' + Hash}`,
-								html    : `${html(DOMAIN_NAME, Hash)}`
-							};
-							mg.messages().send(data, function (error, body) {
-								if (error) console.log(error);
-								console.log(body);
-							});
+							if (req.body.newUser.Authentication_Level >= 5) {
+								const data = {
+									from    : SENDER_MAIL,
+									to      : `${req.body.newUser.E_Mail}`,
+									subject : 'Create a password',
+									text    : `HTML Mail not available. Use this link to set your Password: ${DOMAIN_NAME + '/forgotPassword?token=' + Hash}`,
+									html    : `${html(DOMAIN_NAME, Hash)}`
+								};
+								mg.messages().send(data, function (error, body) {
+									if (error) console.log(error);
+									console.log(body);
+								});
+							}
 							res.status(200).send('User added Successfully');
 						}
 					});
