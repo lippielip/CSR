@@ -6,8 +6,6 @@ var checkToken = require('../authentication/checkTokenInternal');
 // function to change values
 router.post('/', async function (req, res, next) {
 	if ((await checkToken(req)) >= 5) {
-		delete req.body.username;
-		delete req.body.token;
 		pool.getConnection(function (err, connection) {
 			if (err) {
 				console.log(err);
