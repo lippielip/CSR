@@ -6,6 +6,8 @@ import API_URL from '../../variables'
 import loadingScreen from '../../methods/loadingscreen';
 import {Trash, Edit } from 'react-feather';
 import { browserHistory } from '../../router';
+import notAuthenticated from '../../methods/notAuthenticated';
+import checkToken from '../../methods/checktoken';
 
 
 export default class UserTable extends React.Component {
@@ -161,7 +163,8 @@ export default class UserTable extends React.Component {
 
     }
     
-  async componentDidMount() {
+    async componentDidMount() {
+        await checkToken();
       await this.fetchTable();
       await this.setState({ isLoading: false });
     }
@@ -170,6 +173,9 @@ render() {
         if (this.state.isLoading) {
           return loadingScreen()
         } else {
+            if (sessionStorage.getItem('authenticated') !== 'true' || sessionStorage.getItem('Authentication_Level') !== '10') {
+                return notAuthenticated();
+			}
             return (
     <div className="container-fluid">
         <ReactTable
