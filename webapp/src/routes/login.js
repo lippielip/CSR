@@ -5,7 +5,6 @@ import checkToken from '../methods/checktoken';
 import loadingScreen from '../methods/loadingscreen';
 import ForgotPassword from '../popups/ForgotPasswordPopup';
 import API_URL from '../variables';
-require('bootstrap');
 export default class Login extends React.Component {
 	constructor (props) {
 		super(props);
