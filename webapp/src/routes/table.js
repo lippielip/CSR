@@ -5,7 +5,7 @@ import { CheckCircle, XCircle, Trash, Edit } from 'react-feather';
 import jQuery from 'jquery'
 import API_URL from '../variables'
 import loadingScreen from '../methods/loadingscreen';
-import { browserHistory } from './router';
+import { browserHistory } from '../router';
 
 
 class Table extends React.Component {
