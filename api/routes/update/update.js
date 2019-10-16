@@ -6,16 +6,13 @@ var checkToken = require('../authentication/checkTokenInternal');
 // function to change values
 router.post('/', async function (req, res, next) {
 	if ((await checkToken(req)) >= 5) {
-		delete req.body.username;
-		delete req.body.token;
-
 		pool.getConnection(function (err, connection) {
 			if (err) {
 				console.log(err);
 				return res.status(400).send("Couldn't get a connection");
 			}
 			//loop through all categories
-			var category = Object.keys(req.body)[0];
+			var category = Object.keys(req.body)[2];
 			if (category === 'presentations') {
 				connection.query(`SELECT Date FROM presentations WHERE Date = '${req.body.presentations.Date}'`, function (err, result, fields) {
 					if (err) console.log(err);
