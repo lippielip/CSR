@@ -3,6 +3,7 @@ import jQuery from 'jquery';
 import Icon from '@mdi/react';
 import { mdiAccount } from '@mdi/js';
 import checkToken from '../methods/checktoken';
+import { Router, Link, Route, Switch } from 'react-router-dom';
 import notAuthenticated from '../methods/notAuthenticated';
 import AddUserPopup from '../popups/AddUserPopup';
 import loadingScreen from '../methods/loadingscreen';
@@ -91,10 +92,12 @@ class AdminPanel extends React.Component {
 										User Deletion
 									</h5>
 									<p className="card-text">Remove a user with this utility.</p>
-									<button className="btn btn-primary" onClick={this.toggleAddUserPopup}>
-										Remove a user
-									</button>
-									<UserTable />
+									<Router>
+										<button className="btn btn-primary">
+											<Link to={'/users'} />
+										</button>
+										<Route exact path="/users" component={UserTable} />
+									</Router>
 								</div>
 							</div>
 						</div>
