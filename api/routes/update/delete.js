@@ -30,6 +30,7 @@ router.post('/', async function (req, res, next) {
 				}
 				connection.query(`SELECT username from users WHERE username = ${req.body.username}`, function (err, result, fields) {
 					if (err) res.status(500).send(err);
+					console.log(result);
 					if (result[0] === req.body.deleteUser && req.body.IDName === 'Missing_ID') {
 						console.log(`Deleting Entry from ${req.body.DeleteTable} ...`);
 						console.log(`DELETE FROM ${req.body.DeleteTable} WHERE ${req.body.IDName}= ${req.body.tableID}`);
