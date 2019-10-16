@@ -7,7 +7,6 @@ import { Router, Link, Route } from 'react-router-dom';
 import notAuthenticated from '../methods/notAuthenticated';
 import AddUserPopup from '../popups/AddUserPopup';
 import loadingScreen from '../methods/loadingscreen';
-import UserTable from './adminRoutes/userPanel';
 import { browserHistory } from '../router';
 
 class AdminPanel extends React.Component {
