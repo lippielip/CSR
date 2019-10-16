@@ -313,16 +313,16 @@ username: sessionStorage.getItem('username'),
 
   async handleDelete() {
     var table = "presentations";
-    var ID = "Presentation_ID"
+    var Id = "Presentation_ID"
+    console.dir(deleteValue.extendedProps)
     if (deleteValue.extendedProps.type === "missingEvent") {
       table = "outofoffice";
-      ID = "Missing_ID"
+      Id = "Missing_ID"
     }
     if (deleteValue.extendedProps.type !== "missingEvent" && sessionStorage.getItem('Authentication_Level') !== "10") {
-      alert("You don't have the rights to delete entries!")
+      alert("You don't have the rights to delete Presentations!")
 
     } else {
-      console.log(deleteValue.extendedProps)
       await fetch(API_URL + "/delete", {
      
         method: 'POST',
@@ -332,11 +332,10 @@ username: sessionStorage.getItem('username'),
         body: JSON.stringify({
           username: sessionStorage.getItem('username'),
           token: sessionStorage.getItem('token'),
-          DeleteTables: [table],
-          IDName: [ID],
-          tableIDs: [deleteValue.id],
+          DeleteTable: table,
+          IDName: Id,
+          tableID: deleteValue.id,
           deleteUser: deleteValue.extendedProps.username,
-          held: deleteValue.extendedProps.Pending_Presentation
         })
       })
       if (deleteValue.extendedProps.Presentation_Held === 1) {

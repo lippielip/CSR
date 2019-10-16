@@ -11,17 +11,11 @@ router.post('/', async function (req, res, next) {
 				return res.status(400).send("Couldn't get a connection");
 			}
 			// if admin privileges and token are correct, delete entry
-			console.log(`Deleting Entry from ${req.body.DeleteTables} ...`);
-			for (let i = 0; i < req.body.DeleteTables.length; i++) {
-				console.log(`DELETE FROM ${req.body.DeleteTables[i]} WHERE ${req.body.IDName[i]}= ${req.body.tableIDs[i]}`);
-				connection.query(`DELETE FROM ${req.body.DeleteTables[i]} WHERE ${req.body.IDName[i]}= ${req.body.tableIDs[i]}`, function (err, result, fields) {
+			console.log(`Deleting Entry from ${req.body.DeleteTable} ...`);
+			for (let i = 0; i < req.body.DeleteTable.length; i++) {
+				console.log(`DELETE FROM ${req.body.DeleteTable} WHERE ${req.body.IDName}= ${req.body.tableID}`);
+				connection.query(`DELETE FROM ${req.body.DeleteTable} WHERE ${req.body.IDName}= ${req.body.tableID}`, function (err, result, fields) {
 					if (err) res.status(500).send(err);
-				});
-			}
-			if (req.body.held === 10) {
-				connection.query(`UPDATE users SET Pending_Presentation = 0 WHERE Username = '${req.body.deleteUser}' `, function (err, result, fields) {
-					if (err) console.log(err);
-					console.log(result.message + ')');
 				});
 			}
 			console.log('Success!');
@@ -30,7 +24,32 @@ router.post('/', async function (req, res, next) {
 			connection.release();
 		});
 	} else {
-		res.status(401).send('authentication error');
+		if ((await checkToken(req)) >= 5) {
+			pool.getConnection(function (err, connection) {
+				if (err) {
+					console.log(err);
+					return res.status(400).send("Couldn't get a connection");
+				}
+				connection.query(`SELECT username from users WHERE username = ${req.body.username}`, function (err, result, fields) {
+					if (err) res.status(500).send(err);
+					if (result[0] === req.body.deleteUser && req.body.IDName === 'Missing_ID') {
+						console.log(`Deleting Entry from ${req.body.DeleteTable} ...`);
+						for (let i = 0; i < req.body.DeleteTable.length; i++) {
+							console.log(`DELETE FROM ${req.body.DeleteTable} WHERE ${req.body.IDName}= ${req.body.tableID}`);
+							connection.query(`DELETE FROM ${req.body.DeleteTable} WHERE ${req.body.IDName}= ${req.body.tableID}`, function (err, result, fields) {
+								if (err) res.status(500).send(err);
+							});
+						}
+						console.log('Success!');
+						res.status(200).send();
+
+						connection.release();
+					}
+				});
+			});
+		} else {
+			res.status(401).send('authentication error');
+		}
 	}
 });
 
