@@ -3,11 +3,10 @@ var router = express.Router();
 var pool = require('../database');
 var checkToken = require('../authentication/checkTokenInternal');
 
-
 // function to change values
 router.post('/', async function (req, res, next) {
 	if ((await checkToken(req)) >= 5) {
-		pool.getConnection(function (err, connection) {
+		pool.getConnection(async function (err, connection) {
 			if (err) {
 				console.log(err);
 				return res.status(400).send("Couldn't get a connection");
@@ -15,7 +14,7 @@ router.post('/', async function (req, res, next) {
 			//loop through all categories
 			var category = Object.keys(req.body)[2];
 			if (category === 'presentations') {
-				async function testLength(Date) {
+				async function testLength (Date) {
 					return new Promise(function (resolve, reject) {
 						connection.query(`SELECT Date FROM presentations WHERE Date = '${Date}'`, function (err, result, fields) {
 							if (err) console.log(err);
@@ -29,7 +28,7 @@ router.post('/', async function (req, res, next) {
 						});
 					});
 				}
-				await testLength(req.body.presentations.Date)
+				await testLength(req.body.presentations.Date);
 			}
 			var proplength = Object.values(req.body[category]).length; // category amount
 			console.log('\x1b[31m', `Property Amount for Category ${category}: ${proplength}`, '\x1b[0m');
