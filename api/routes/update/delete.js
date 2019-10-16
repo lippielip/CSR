@@ -31,7 +31,7 @@ router.post('/', async function (req, res, next) {
 				connection.query(`SELECT Username from users WHERE Username = '${req.body.username}'`, function (err, result, fields) {
 					if (err) res.status(500).send(err);
 					console.log(result);
-					if (result[0] === req.body.deleteUser && req.body.IDName === 'Missing_ID') {
+					if (result[0].Username === req.body.deleteUser && req.body.IDName === 'Missing_ID') {
 						console.log(`Deleting Entry from ${req.body.DeleteTable} ...`);
 						console.log(`DELETE FROM ${req.body.DeleteTable} WHERE ${req.body.IDName}= ${req.body.tableID}`);
 						connection.query(`DELETE FROM ${req.body.DeleteTable} WHERE ${req.body.IDName}= ${req.body.tableID}`, function (err, result, fields) {
@@ -41,6 +41,8 @@ router.post('/', async function (req, res, next) {
 						res.status(200).send();
 
 						connection.release();
+					} else {
+						res.status(401).send('authentication error');
 					}
 				});
 			});
