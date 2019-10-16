@@ -61,8 +61,8 @@ export default class Calendar extends React.Component {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-username: sessionStorage.getItem('username'),
-            token: sessionStorage.getItem('token'),
+        username: sessionStorage.getItem('username'),
+        token: sessionStorage.getItem('token'),
         select: 'Presentation_ID, Topic, Presentation_Category, Presentation_Held, Date, FirstName, LastName, User_ID, username, Pending_Presentation',
         tableName: 'presentations',
         selectiveGet: 'INNER JOIN users ON presentations.Presenter = users.User_ID' // comment out this line if you want everyone to see everything
@@ -193,7 +193,7 @@ username: sessionStorage.getItem('username'),
           })
         } else {
           if (sessionStorage.getItem('Pending_Presentation') === 1 || sessionStorage.getItem('Pending_Presentation') === 10) {
-            alert("You are presenting this week! Not allowed to change Dates")
+            alert("You are presenting this week! Change the Text Content and not the Date!")
             info.revert();
           } else {
           fetch(API_URL + "/update", {
