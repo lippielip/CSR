@@ -49,6 +49,7 @@ router.post('/', async function (req, res, next) {
 							});
 						}
 						res.status(200).send();
+						connection.release();
 					}
 				});
 			} else {
@@ -77,8 +78,8 @@ router.post('/', async function (req, res, next) {
 					});
 				}
 				res.status(200).send();
+				connection.release();
 			}
-			connection.release();
 		});
 	} else {
 		res.status(401).send('authentication error');
