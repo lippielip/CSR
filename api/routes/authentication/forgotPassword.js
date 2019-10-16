@@ -16,7 +16,7 @@ router.post('/', async function (req, res) {
 			console.log(err);
 			return res.status(400).send("Couldn't get a connection");
 		}
-		connection.query(`SELECT E_Mail from users WHERE E_Mail = '${req.body.E_Mail}' `, function (err, result, fields) {
+		connection.query(`SELECT E_Mail from users WHERE E_Mail = '${req.body.E_Mail} AND Authentication_Level >= 5' `, function (err, result, fields) {
 			if (err) {
 				console.log(err);
 				res.status(404).send();
