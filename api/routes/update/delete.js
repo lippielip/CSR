@@ -28,7 +28,7 @@ router.post('/', async function (req, res, next) {
 					console.log(err);
 					return res.status(400).send("Couldn't get a connection");
 				}
-				connection.query(`SELECT username from users WHERE username = ${req.body.username}`, function (err, result, fields) {
+				connection.query(`SELECT Username from users WHERE Username = ${req.body.username}`, function (err, result, fields) {
 					if (err) res.status(500).send(err);
 					console.log(result);
 					if (result[0] === req.body.deleteUser && req.body.IDName === 'Missing_ID') {
