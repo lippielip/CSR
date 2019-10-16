@@ -119,6 +119,10 @@ async function GetPresentPeople (MissingPeople, NewPresentations) {
 							console.log('\x1b[35m', 'Ignoring User with preferred Matchmaking: ' + result[i].Username, '\x1b[0m');
 							continue;
 						}
+						if (result[i].Authentication_Level < 5) {
+							console.log('\x1b[35m', 'Ignoring Guest User: ' + result[i].Username, '\x1b[0m');
+							continue;
+						}
 						//if someone is not present, then they are not added to the roulette
 						if (MissingPeople.includes(result[i].User_ID)) {
 							console.log('\x1b[35m', 'Ignoring user: ' + result[i].Username + ' (absent)', '\x1b[0m');

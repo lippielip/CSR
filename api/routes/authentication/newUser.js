@@ -45,21 +45,23 @@ router.post('/', async function (req, res) {
 							}
 						})
 					) {
-						//duplicate username error
+						//duplicate E-Mail error
 						res.status(401).send('Duplicate E-Mail');
 						console.log(`\x1b[31mError: Duplicate E-Mail\x1b[0m`);
 						return;
 					}
 					// encrytion on password
+					if (req.body.newUser.Authentication_Level >= 5) {
+						var password = generator.generate({
+							length  : 64,
+							numbers : true
+						});
 
-					var password = generator.generate({
-						length  : 64,
-						numbers : true
-					});
-					var Salt = bcrypt.genSaltSync(10);
-					var Hash = bcrypt.hashSync(password, Salt);
-					req.body.newUser.ResetToken = Hash;
-					console.log(`Reset Token generated for user ${req.body.newUser.Username}`);
+						var Salt = bcrypt.genSaltSync(10);
+						var Hash = bcrypt.hashSync(password, Salt);
+						req.body.newUser.ResetToken = Hash;
+						console.log(`Reset Token generated for user ${req.body.newUser.Username}`);
+					}
 					var Keys = Object.keys(req.body.newUser).toString(); // get all filled in Propertys
 					var Values = Object.values(req.body.newUser); // get corresponding values
 					Values = Values.map(function (e) {
