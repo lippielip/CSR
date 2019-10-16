@@ -1,7 +1,7 @@
 .App {
 	text-align: center;
 	background-color: #282c34;
-	background: url(./images/background.png);
+	background: url(../../../src/images/background.png);
 	color: white;
 	min-height: 100vh;
 	justify-content: center;

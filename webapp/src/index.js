@@ -2,8 +2,6 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import * as serviceWorker from './serviceWorker';
 import Routes from './routes/router';
-import './assets/stylesheets/index.css';
-import './assets/stylesheets/App.css';
 require('bootstrap');
 function App () {
 	return (
