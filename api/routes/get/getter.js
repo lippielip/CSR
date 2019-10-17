@@ -6,7 +6,11 @@ var restrictedGetter = [ 'PASSWORD', 'TOKEN', 'RESETTOKEN', '*' ];
 // simple multipurpose function for fetching data
 router.post('/', async function (req, res) {
 	if ((await checkToken(req)) >= 5) {
-		console.log(restrictedGetter.some((el) => req.body.select.toUpperCase().indexOf(el, (fromIndex = 0))));
+		console.log(
+			restrictedGetter.some((el) => {
+				if (req.body.select.toUpperCase().indexOf(el, (fromIndex = 0)) !== -1) return el;
+			})
+		);
 		if (restrictedGetter.some((el) => req.body.select.toUpperCase().indexOf(el, (fromIndex = 0)))) {
 			console.log('Protected information');
 			res.status(500).send('protected information requested');
