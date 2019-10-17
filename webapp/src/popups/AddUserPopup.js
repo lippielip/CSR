@@ -15,22 +15,20 @@ class AddUserPopup extends React.Component {
 	async fetchData () {
 		// get all data
 		try {
-			var tableNames = [ 'auth_level' ];
-			for (let i = 0; i < tableNames.length; i++) {
-				await fetch(API_URL + '/getter', {
-					method  : 'POST',
-					headers : {
-						'Content-Type' : 'application/json'
-					},
-					body    : JSON.stringify({
-						username  : sessionStorage.getItem('username'),
-						token     : sessionStorage.getItem('token'),
-						tableName : tableNames[i]
-					})
+			await fetch(API_URL + '/getter', {
+				method  : 'POST',
+				headers : {
+					'Content-Type' : 'application/json'
+				},
+				body    : JSON.stringify({
+					username  : sessionStorage.getItem('username'),
+					token     : sessionStorage.getItem('token'),
+					tableName : 'auth_level',
+					select    : 'Auth_Level_ID, Definition'
 				})
-					.then((response) => response.json())
-					.then((res) => this.setState({ [tableNames[i]]: res }));
-			}
+			})
+				.then((response) => response.json())
+				.then((res) => this.setState({ auth_level: res }));
 		} catch (error) {
 			browserHistory.push('/NoAuth');
 		}
