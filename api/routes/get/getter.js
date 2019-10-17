@@ -2,11 +2,11 @@ var express = require('express');
 var router = express.Router();
 var pool = require('../database');
 var checkToken = require('../authentication/checkTokenInternal');
-var restrictedGetter = [ 'Password', 'Token', 'ResetToken', '*' ];
+var restrictedGetter = [ 'PASSWORD', 'TOKEN', 'RESETTOKEN', '*' ];
 // simple multipurpose function for fetching data
 router.post('/', async function (req, res) {
 	if ((await checkToken(req)) >= 5) {
-		console.log(req.body.select.toUpperCase());
+		console.log('*'.toUpperCase());
 		if (restrictedGetter.some((el) => req.body.select.toUpperCase().includes(el))) {
 			console.log('Protected information');
 			res.status(500).send();
