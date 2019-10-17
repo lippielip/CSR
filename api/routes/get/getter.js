@@ -6,10 +6,9 @@ var restrictedGetter = [ 'PASSWORD', 'TOKEN', 'RESETTOKEN', '*' ];
 // simple multipurpose function for fetching data
 router.post('/', async function (req, res) {
 	if ((await checkToken(req)) >= 5) {
-		console.log('*'.toUpperCase());
 		if (restrictedGetter.some((el) => req.body.select.toUpperCase().includes(el))) {
 			console.log('Protected information');
-			res.status(500).send();
+			res.status(500).send('protected information requested');
 		} else {
 			console.log('\x1b[34m', `SELECT ${req.body.select} FROM ${req.body.tableName} ${req.body.selectiveGet ? req.body.selectiveGet : ''}`, '\x1b[0m');
 			pool.getConnection(function (err, connection) {
