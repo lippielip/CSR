@@ -2,7 +2,7 @@ var express = require('express');
 var router = express.Router();
 var pool = require('../database');
 var checkToken = require('../authentication/checkTokenInternal');
-var restrictedGetter = ['(PASSWORD)', '(TOKEN)', '(RESETTOKEN)', '(\\*)'];
+var restrictedGetter = ['\s{0,1}(PASSWORD)\s{0,1}', '\s{0,1}(TOKEN)\s{0,1}', '\s{0,1}(RESETTOKEN)\s{0,1}', '\s{0,1}(\\*)\s{0,1}'];
 // simple multipurpose function for fetching data
 router.post('/', async function (req, res) {
 	if ((await checkToken(req)) >= 5) {
