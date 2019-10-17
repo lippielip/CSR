@@ -17,7 +17,7 @@ router.post('/', async function (req, res) {
 					connection.release();
 					res.status(500).send(err);
 				}
-				console.log(result.includes('Missing_ID'));
+				console.log(Object.keys(result).includes('Missing_ID'));
 				res.status(200).send(result);
 				console.log(`${req.body.tableName}`, '\x1b[32m', `(sent)`, '\x1b[0m');
 			});
