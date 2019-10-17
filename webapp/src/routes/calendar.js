@@ -63,7 +63,7 @@ export default class Calendar extends React.Component {
       body: JSON.stringify({
         username: sessionStorage.getItem('username'),
         token: sessionStorage.getItem('token'),
-        select: 'Presentation_ID, Topic, token, Presentation_Category, Presentation_Held, Date, FirstName, LastName, User_ID, Username, Pending_Presentation',
+        select: 'Presentation_ID, Topic, Token, Presentation_Category, Presentation_Held, Date, FirstName, LastName, User_ID, Username, Pending_Presentation',
         tableName: 'presentations',
         selectiveGet: 'INNER JOIN users ON presentations.Presenter = users.User_ID' // comment out this line if you want everyone to see everything
       })
