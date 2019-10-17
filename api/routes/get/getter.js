@@ -8,15 +8,16 @@ router.post('/', async function (req, res) {
 	if ((await checkToken(req)) >= 5) {
 		console.log(
 			restrictedGetter.some((el) => {
-				console.log(el);
-				console.log(req.body.select.toUpperCase());
-				console.log(req.body.select.toUpperCase().match(el) !== null);
 				if (req.body.select.toUpperCase().match(el) !== null) {
 					return el;
 				}
 			})
 		);
-		if (restrictedGetter.some((el) => req.body.select.toUpperCase().indexOf(el, (fromIndex = 0)))) {
+		if (restrictedGetter.some((el) => {
+			if (req.body.select.toUpperCase().match(el) !== null) {
+				return el;
+			}
+		})) {
 			console.log('Protected information');
 			res.status(500).send('protected information requested');
 		} else {
