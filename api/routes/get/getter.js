@@ -8,8 +8,7 @@ router.post('/', async function (req, res) {
 	if ((await checkToken(req)) >= 5) {
 		console.log(
 			restrictedGetter.some((el) => {
-				console.log(el);
-				console.log(req.body.select.toUpperCase());
+				console.log(req.body.select.toUpperCase().match(el));
 				if (req.body.select.toUpperCase().match(el) !== null) {
 					return el;
 				}
