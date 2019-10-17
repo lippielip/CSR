@@ -6,7 +6,7 @@ var restrictedGetter = [ 'Password', 'token', 'ResetToken' ];
 // simple multipurpose function for fetching data
 router.post('/', async function (req, res) {
 	if ((await checkToken(req)) >= 5) {
-		if (restrictedGetter.some((el) => req.select.includes(el))) {
+		if (restrictedGetter.some((el) => req.body.select.includes(el))) {
 			console.log('Protected information');
 			res.status(500).send();
 		} else {
