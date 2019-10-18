@@ -3,9 +3,11 @@ import jQuery from 'jquery';
 import Icon from '@mdi/react';
 import { mdiAccount } from '@mdi/js';
 import checkToken from '../methods/checktoken';
+import { Router, Link } from 'react-router-dom';
 import notAuthenticated from '../methods/notAuthenticated';
 import AddUserPopup from '../popups/AddUserPopup';
 import loadingScreen from '../methods/loadingscreen';
+import { browserHistory } from '../router';
 
 class AdminPanel extends React.Component {
 	constructor (props) {
@@ -87,13 +89,14 @@ class AdminPanel extends React.Component {
 								<div className="card-body ">
 									<h5 className="card-title">
 										<Icon path={mdiAccount} size={1} color={'white'} />
-										User Creation
+										User Deletion
 									</h5>
-									<p className="card-text">Add a user with this utility. Make sure their E-Mail is set correctly, so they can receive the activation password.</p>
-									<button className="btn btn-primary" onClick={this.toggleAddUserPopup}>
-										Add a user
-									</button>
-									<AddUserPopup />
+									<p className="card-text">Remove a user with this utility.</p>
+									<Router history={browserHistory}>
+										<Link to={'adminPanel/users'}>
+											<button className="btn btn-primary">Delete a user</button>
+										</Link>
+									</Router>
 								</div>
 							</div>
 						</div>

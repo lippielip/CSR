@@ -1,19 +1,17 @@
 import React from "react";
+import jQuery from 'jquery'
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction"; // needed for dayClick
 import checkToken from '../methods/checktoken';
 import loadingScreen from '../methods/loadingscreen'
-import '../App.css';
 import trash from '../images/trash.png';
 import "@fullcalendar/core/main.css";
 import "@fullcalendar/daygrid/main.css";
 import "@fullcalendar/timegrid/main.css";
-import jQuery from 'jquery'
 import notAuthenticated from "../methods/notAuthenticated";
 import API_URL from '../variables';
-require('bootstrap')
 
 // must manually import the stylesheets for each plugin
 let event = {
@@ -25,14 +23,14 @@ let event = {
 let missing_event = {
   start: '',
   end: '',
-  Pending:''
+  Pending: ''
 }
 let clickedDate;
 let unformattedEvents;
 let unformattedLeaves;
 let deleteValue;
 
-export default class DemoApp extends React.Component {
+export default class Calendar extends React.Component {
 
   constructor(props) {
     super(props);
@@ -56,16 +54,16 @@ export default class DemoApp extends React.Component {
   }
 
   async fetchEvents() {
-    this.setState({calendarEvents : [] })
+    this.setState({ calendarEvents: [] })
     await fetch(API_URL + "/getter", {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-username: sessionStorage.getItem('username'),
-            token: sessionStorage.getItem('token'),
-        select: 'Presentation_ID, Topic, Presentation_Category, Presentation_Held, Date, FirstName, LastName, User_ID, username, Pending_Presentation',
+        username: sessionStorage.getItem('username'),
+        token: sessionStorage.getItem('token'),
+        select: 'Presentation_ID, Topic, Presentation_Category, Presentation_Held, Date, FirstName, LastName, User_ID, Username, Pending_Presentation',
         tableName: 'presentations',
         selectiveGet: 'INNER JOIN users ON presentations.Presenter = users.User_ID' // comment out this line if you want everyone to see everything
       })
@@ -81,7 +79,7 @@ username: sessionStorage.getItem('username'),
           type: unformattedEvents[i].Presentation_Category,
           Presentation_Held: unformattedEvents[i].Presentation_Held,
           User_ID: unformattedEvents[i].User_ID,
-          username: unformattedEvents[i].username,
+          username: unformattedEvents[i].Username,
           id: unformattedEvents[i].Presentation_ID,
           Pending_Presentation: unformattedEvents[i].Pending_Presentation
         })
@@ -93,9 +91,9 @@ username: sessionStorage.getItem('username'),
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-username: sessionStorage.getItem('username'),
-            token: sessionStorage.getItem('token'),
-        select: 'Missing_ID, User_ID, start, end, FirstName, LastName',
+        username: sessionStorage.getItem('username'),
+        token: sessionStorage.getItem('token'),
+        select: 'Missing_ID, User_ID, start, end, FirstName, LastName, Username',
         tableName: 'outofoffice',
         selectiveGet: `INNER JOIN users ON outofoffice.User = users.User_ID `  //WHERE users.Username = '${this.state.user}' Im Fall das man nur sein eigenes sehen soll in selectiveget einfügen
       })
@@ -112,6 +110,7 @@ username: sessionStorage.getItem('username'),
           allDay: true,
           type: "missingEvent",
           id: unformattedLeaves[i].Missing_ID,
+          username: unformattedLeaves[i].Username,
           color: 'rgb(150, 16,0)'
         })
       });
@@ -125,13 +124,13 @@ username: sessionStorage.getItem('username'),
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-username: sessionStorage.getItem('username'),
-            token: sessionStorage.getItem('token'),
+        username: sessionStorage.getItem('username'),
+        token: sessionStorage.getItem('token'),
         tableName: 'presentations',
         selectiveGet: `WHERE Date = '${date}'`
       })
     })
-    .then(response => response.json())
+      .then(response => response.json())
       .then(res => {
         if (res.length >= 2) {
           this.setState({
@@ -149,7 +148,7 @@ username: sessionStorage.getItem('username'),
     (function ($) {
       $('#CalendarPopup').modal('toggle');
     })(jQuery);
-    
+
   };
 
   handleSelect() {
@@ -171,41 +170,41 @@ username: sessionStorage.getItem('username'),
     if (!window.confirm("Are you sure about this change?")) {
       info.revert();
     } else {
-        var dstart = new Date(info.event.start.setHours(12, 0, 0, 0)).toISOString().split("T")[0] //your date object
-        if (info.event.title.includes("Out of Office")) {
-        
-          var dend = new Date(info.event.end).toISOString().split("T")[0]
-          fetch(API_URL + "/update", {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-username: sessionStorage.getItem('username'),
+      var dstart = new Date(info.event.start.setHours(12, 0, 0, 0)).toISOString().split("T")[0] //your date object
+      if (info.event.title.includes("Out of Office")) {
+
+        var dend = new Date(info.event.end).toISOString().split("T")[0]
+        fetch(API_URL + "/update", {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            username: sessionStorage.getItem('username'),
             token: sessionStorage.getItem('token'),
-              outofoffice: {
-                start: dstart,
-                end: dend
-              },
-              idInfo: {
-                id: info.event.id,
-                idName: 'Missing_ID'
-              }
-            })
+            outofoffice: {
+              start: dstart,
+              end: dend
+            },
+            idInfo: {
+              id: info.event.id,
+              idName: 'Missing_ID'
+            }
           })
+        })
+      } else {
+        if (sessionStorage.getItem('Pending_Presentation') === 1 || sessionStorage.getItem('Pending_Presentation') === 10) {
+          alert("You are presenting this week! Change the Text Content and not the Date!")
+          info.revert();
         } else {
-          if (sessionStorage.getItem('Pending_Presentation') === 1 || sessionStorage.getItem('Pending_Presentation') === 10) {
-            alert("You are presenting this week! Not allowed to change Dates")
-            info.revert();
-          } else {
           fetch(API_URL + "/update", {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-username: sessionStorage.getItem('username'),
-            token: sessionStorage.getItem('token'),
+              username: sessionStorage.getItem('username'),
+              token: sessionStorage.getItem('token'),
               presentations: {
                 Date: dstart,
               },
@@ -243,29 +242,29 @@ username: sessionStorage.getItem('username'),
   };
 
   handleEventClick(info) {
- // TODO: EDIT IN CALENDAR
+    // TODO: EDIT IN CALENDAR
   }
-  
+
   handleEventDragStart() {
-      (function ($) {
-       $('#deleteEventsDiv').fadeIn(500);
-         })(jQuery)
+    (function ($) {
+      $('#deleteEventsDiv').fadeIn(500);
+    })(jQuery)
   }
 
   handleEventDragStop(info) {
- var trashEl = jQuery('#deleteEventsDiv');
+    var trashEl = jQuery('#deleteEventsDiv');
     var ofs = trashEl.offset();
-    
- var x1 = ofs.left;
- var x2 = ofs.left + trashEl.outerWidth(true);
- var y1 = ofs.top;
- var y2 = ofs.top + trashEl.outerHeight(true);
- if (info.jsEvent.pageX >= x1 && info.jsEvent.pageX<= x2 &&
-   info.jsEvent.pageY >= y1 && info.jsEvent.pageY <= y2) {
-   (function ($) {
-     $('#DeletePopup').modal('show');
-   })(jQuery)
-   deleteValue = info.event
+
+    var x1 = ofs.left;
+    var x2 = ofs.left + trashEl.outerWidth(true);
+    var y1 = ofs.top;
+    var y2 = ofs.top + trashEl.outerHeight(true);
+    if (info.jsEvent.pageX >= x1 && info.jsEvent.pageX <= x2 &&
+      info.jsEvent.pageY >= y1 && info.jsEvent.pageY <= y2) {
+      (function ($) {
+        $('#DeletePopup').modal('show');
+      })(jQuery)
+      deleteValue = info.event
     }
     (function ($) {
       $('#deleteEventsDiv').fadeOut(200);
@@ -280,8 +279,8 @@ username: sessionStorage.getItem('username'),
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-            username: sessionStorage.getItem('username'),
-            token: sessionStorage.getItem('token'),
+          username: sessionStorage.getItem('username'),
+          token: sessionStorage.getItem('token'),
           missing: {
             start: missing_event.start,
             end: missing_event.end,
@@ -289,6 +288,7 @@ username: sessionStorage.getItem('username'),
           }
         })
       })
+      this.handleSelect();
     } else {
       await fetch(API_URL + "/add", {
         method: 'POST',
@@ -296,8 +296,8 @@ username: sessionStorage.getItem('username'),
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-username: sessionStorage.getItem('username'),
-            token: sessionStorage.getItem('token'),
+          username: sessionStorage.getItem('username'),
+          token: sessionStorage.getItem('token'),
           presentation: {
             Topic: event.title,
             Presenter: sessionStorage.getItem('username'),
@@ -314,18 +314,17 @@ username: sessionStorage.getItem('username'),
 
   async handleDelete() {
     var table = "presentations";
-    var ID = "Presentation_ID"
+    var Id = "Presentation_ID"
     if (deleteValue.extendedProps.type === "missingEvent") {
       table = "outofoffice";
-      ID = "Missing_ID"
+      Id = "Missing_ID"
     }
     if (deleteValue.extendedProps.type !== "missingEvent" && sessionStorage.getItem('Authentication_Level') !== "10") {
-      alert("You don't have the rights to delete entries!")
+      alert("You don't have the rights to delete Presentations!")
 
     } else {
-      console.log(deleteValue.extendedProps)
       await fetch(API_URL + "/delete", {
-     
+
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -333,11 +332,10 @@ username: sessionStorage.getItem('username'),
         body: JSON.stringify({
           username: sessionStorage.getItem('username'),
           token: sessionStorage.getItem('token'),
-          DeleteTables: [table],
-          IDName: [ID],
-          tableIDs: [deleteValue.id],
+          DeleteTable: table,
+          IDName: Id,
+          tableID: deleteValue.id,
           deleteUser: deleteValue.extendedProps.username,
-          held: deleteValue.extendedProps.Pending_Presentation
         })
       })
       if (deleteValue.extendedProps.Presentation_Held === 1) {
@@ -359,7 +357,7 @@ username: sessionStorage.getItem('username'),
     await this.fetchEvents();
     (function ($) {
       $('#DeletePopup').modal('hide');
-     })(jQuery)
+    })(jQuery)
   }
 
   handleOnChange(e) { // broad function for any kind of change in data
@@ -376,9 +374,9 @@ username: sessionStorage.getItem('username'),
     await checkToken();
     await this.fetchEvents();
     await this.setState({ isLoading: false });
+    console.dir(unformattedEvents)
 
-
-}
+  }
   render() {
     if (this.state.isLoading) {
       return loadingScreen();
@@ -387,12 +385,12 @@ username: sessionStorage.getItem('username'),
         return notAuthenticated();
       }
       return (
-        <div className="demo-app">
-          <div className="demo-app-top">
+        <div className="calendar-app">
+          <div className="calendar-app-top">
             <br />
             <button className="btn btn-primary" onClick={this.toggleWeekends}>toggle weekends</button>&nbsp;
         </div>
-          <div className="demo-app-calendar">
+          <div className="calendar-app-calendar">
             <FullCalendar
               defaultView="dayGridMonth"
               header={{
@@ -413,12 +411,12 @@ username: sessionStorage.getItem('username'),
               eventDragStart={this.handleEventDragStart}
               eventDragStop={this.handleEventDragStop}
               dragRevertDuration={0}
-              
+
 
             />
-    <div id="deleteEventsDiv" className="Fade-button">
+            <div id="deleteEventsDiv" className="Fade-button">
               <img style={{ height: "80px" }} src={trash} alt="trash" />
-</div>
+            </div>
           </div>
           <div className="modal fade" id="CalendarPopup" tabIndex="-1" role="dialog" aria-labelledby="CalendarPopupCenterTitle" aria-hidden="true">
             <div className="modal-dialog modal-dialog-centered" role="document">
@@ -474,29 +472,29 @@ username: sessionStorage.getItem('username'),
             </div>
           </div>
           <div className="modal fade" id="DeletePopup" tabIndex="-1" role="dialog" aria-labelledby="DeletePopupCenterTile" aria-hidden="true">
-      <div className="modal-dialog modal-dialog-centered" role="document">
-                            <form id="deleteForm" className="modal-content" onSubmit={e => {
+            <div className="modal-dialog modal-dialog-centered" role="document">
+              <form id="deleteForm" className="modal-content" onSubmit={e => {
                 e.preventDefault()
                 this.handleDelete();
-                            }}>
-          <div className="modal-header">
-              <h5 className="modal-title" id="DeletePopupTitle">Delete</h5>
-              <button type="button" className="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-              </button>
+              }}>
+                <div className="modal-header">
+                  <h5 className="modal-title" id="DeletePopupTitle">Delete</h5>
+                  <button type="button" className="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div className="modal-body">
+                  <br />
+                  <div>Are you sure you want to delete this Entry?</div>
+                  <br />
+                </div>
+                <div className="modal-footer">
+                  <button type="button" className="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                  <button type="submit" className="btn btn-danger">Delete</button>
+                </div>
+              </form>
+            </div>
           </div>
-          <div className="modal-body">
-              <br/>
-            <div>Are you sure you want to delete this Entry?</div>
-            <br/>
-          </div>
-          <div className="modal-footer">
-              <button type="button" className="btn btn-secondary" data-dismiss="modal">Cancel</button>
-              <button type="submit" className="btn btn-danger">Delete</button>
-          </div>
-          </form>
-      </div>
-      </div>
         </div>
       );
     }

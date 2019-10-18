@@ -1,9 +1,9 @@
 import * as React from 'react';
 import loadingScreen from '../methods/loadingscreen';
-import API_URL from '../variables';
 import checkResetToken from '../methods/checkResetToken';
 import notAuthenticated from '../methods/notAuthenticated';
-import { browserHistory } from './router';
+import API_URL from '../variables';
+import { browserHistory } from '../router';
 
 let statusCode;
 class forgotPassword extends React.Component {

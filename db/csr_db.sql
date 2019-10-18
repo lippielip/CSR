@@ -23,9 +23,10 @@ CREATE TABLE IF NOT EXISTS `auth_level` (
   PRIMARY KEY (`Auth_Level_ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
--- Exportiere Daten aus Tabelle csr_db.auth_level: ~3 rows (ungefähr)
+-- Exportiere Daten aus Tabelle csr_db.auth_level: ~4 rows (ungefähr)
 /*!40000 ALTER TABLE `auth_level` DISABLE KEYS */;
 REPLACE INTO `auth_level` (`Auth_Level_ID`, `Definition`) VALUES
+	(1, 'Guest'),
 	(5, 'Standard\r\n'),
 	(7, 'Business Expert'),
 	(10, 'Super Admin');
@@ -40,9 +41,9 @@ CREATE TABLE IF NOT EXISTS `outofoffice` (
   PRIMARY KEY (`Missing_ID`),
   KEY `User_ID` (`User`),
   CONSTRAINT `FK_outofoffice_users` FOREIGN KEY (`User`) REFERENCES `users` (`User_ID`)
-) ENGINE=InnoDB AUTO_INCREMENT=68 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=71 DEFAULT CHARSET=latin1;
 
--- Exportiere Daten aus Tabelle csr_db.outofoffice: ~1 rows (ungefähr)
+-- Exportiere Daten aus Tabelle csr_db.outofoffice: ~2 rows (ungefähr)
 /*!40000 ALTER TABLE `outofoffice` DISABLE KEYS */;
 /*!40000 ALTER TABLE `outofoffice` ENABLE KEYS */;
 
@@ -56,7 +57,6 @@ CREATE TABLE IF NOT EXISTS `pending_definition` (
 -- Exportiere Daten aus Tabelle csr_db.pending_definition: ~5 rows (ungefähr)
 /*!40000 ALTER TABLE `pending_definition` DISABLE KEYS */;
 REPLACE INTO `pending_definition` (`Pending_ID`, `Definition`) VALUES
-	(-1, 'Admin'),
 	(0, 'Not Presenting'),
 	(1, 'Presentation not filled in'),
 	(2, 'Moderator'),
@@ -75,7 +75,7 @@ CREATE TABLE IF NOT EXISTS `presentations` (
   PRIMARY KEY (`Presentation_ID`),
   KEY `FK_presentations_users` (`Presenter`),
   CONSTRAINT `FK_presentations_users` FOREIGN KEY (`Presenter`) REFERENCES `users` (`User_ID`)
-) ENGINE=InnoDB AUTO_INCREMENT=212 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=220 DEFAULT CHARSET=latin1;
 
 -- Exportiere Daten aus Tabelle csr_db.presentations: ~2 rows (ungefähr)
 /*!40000 ALTER TABLE `presentations` DISABLE KEYS */;
@@ -97,7 +97,6 @@ CREATE TABLE IF NOT EXISTS `users` (
   `Authentication_Level` int(11) NOT NULL DEFAULT 5,
   `Password` text DEFAULT NULL,
   `token` tinytext DEFAULT NULL,
-  `TempPassword` text DEFAULT NULL,
   `ResetToken` text DEFAULT NULL,
   PRIMARY KEY (`User_ID`),
   KEY `Username` (`Username`(3072)),
@@ -107,12 +106,10 @@ CREATE TABLE IF NOT EXISTS `users` (
   CONSTRAINT `FK_users_pending_definition` FOREIGN KEY (`Pending_Presentation`) REFERENCES `pending_definition` (`Pending_ID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=34 DEFAULT CHARSET=latin1;
 
--- Exportiere Daten aus Tabelle csr_db.users: ~10 rows (ungefähr)
+-- Exportiere Daten aus Tabelle csr_db.users: ~3 rows (ungefähr)
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-REPLACE INTO `users` (`User_ID`, `Username`, `E_Mail`, `FirstName`, `LastName`, `CancelTokens`, `Pending_Presentation`, `Last_Probability`, `Amount_A`, `Amount_B`, `Amount_C`, `Authentication_Level`, `Password`, `token`, `TempPassword`, `ResetToken`) VALUES
-	(0, 'SuperAdmin', 'lippiebraun@gmail.com', 'Admin', 'Admin', -1, -1, -1, 0, 0, 0, 10, '$2a$10$N84RHqbQZR8tlR8UCpvH8emde6PoWyClUWvv1HiPkW6hWVQtci.9a', 'dxBSMD4Bjzl20p4ixrpupLpq6bj4rM1B2HnSeBRUJpQ867qmk4QcK4PuxiEglYbV', NULL, NULL),
-	(1, 'philipp.braun', 'philipp.braun@telekom.de', 'Philipp', 'Braun', 2, 0, 0.102559, 0, 0, 0, 5, '$2a$10$IQ1IuI4TAQF/e0nhti8sT.qrAlrGZPcJoiJ.rihT2CYZmkfKoeejO', 'tfjFdy4Li6KqYsX3dPUgO08wuQbwClSGC8JkwybDIJ8f6d2IrdjgWn9tpx9Sp60L', NULL, NULL),
-	(4, 'hannes.goering', 'hannes-norbert.goering@telekom.de', 'Hannes', 'Göring', 2, 0, 0.179488, 0, 0, 0, 5, '$2a$10$S5tRrGkih2PF3JdM3KU.heg2BvEggRUcC4E88bbR8IPCmQlh.iCqG', 'NiQaieDwDux4B5svHREDNG7SSsR5Bx6J6RkeZjJPLtKQjqwf6zzNO41RjO2APDJM', NULL, NULL);
+REPLACE INTO `users` (`User_ID`, `Username`, `E_Mail`, `FirstName`, `LastName`, `CancelTokens`, `Pending_Presentation`, `Last_Probability`, `Amount_A`, `Amount_B`, `Amount_C`, `Authentication_Level`, `Password`, `token`, `ResetToken`) VALUES
+	(0, 'SuperAdmin', NULL, 'Admin', 'Admin', 2, 0, 0, 0, 0, 0, 10, '$2a$10$N84RHqbQZR8tlR8UCpvH8emde6PoWyClUWvv1HiPkW6hWVQtci.9a', NULL, NULL);
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;

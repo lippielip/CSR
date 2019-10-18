@@ -5,7 +5,7 @@ var checkToken = require('../authentication/checkTokenInternal');
 
 // function to change values
 router.post('/', async function (req, res, next) {
-	if ((await checkToken(req)) === 1) {
+	if ((await checkToken(req)) >= 5) {
 		pool.getConnection(function (err, connection) {
 			if (err) {
 				console.log(err);

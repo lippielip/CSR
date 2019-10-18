@@ -14,7 +14,7 @@ const DOMAIN_NAME = process.env.DOMAIN_NAME;
 // username = admin username
 // Username = new User username  !! case sensitive
 router.post('/', async function (req, res) {
-	if ((await checkToken(req)) === 1) {
+	if ((await checkToken(req)) >= 10) {
 		pool.getConnection(function (err, connection) {
 			if (err) {
 				console.log(err);
@@ -45,21 +45,23 @@ router.post('/', async function (req, res) {
 							}
 						})
 					) {
-						//duplicate username error
+						//duplicate E-Mail error
 						res.status(401).send('Duplicate E-Mail');
 						console.log(`\x1b[31mError: Duplicate E-Mail\x1b[0m`);
 						return;
 					}
 					// encrytion on password
+					if (req.body.newUser.Authentication_Level >= 5) {
+						var password = generator.generate({
+							length  : 64,
+							numbers : true
+						});
 
-					var password = generator.generate({
-						length  : 64,
-						numbers : true
-					});
-					var Salt = bcrypt.genSaltSync(10);
-					var Hash = bcrypt.hashSync(password, Salt);
-					req.body.newUser.ResetToken = Hash;
-					console.log(`Reset Token generated for user ${req.body.newUser.Username}`);
+						var Salt = bcrypt.genSaltSync(10);
+						var Hash = bcrypt.hashSync(password, Salt);
+						req.body.newUser.ResetToken = Hash;
+						console.log(`Reset Token generated for user ${req.body.newUser.Username}`);
+					}
 					var Keys = Object.keys(req.body.newUser).toString(); // get all filled in Propertys
 					var Values = Object.values(req.body.newUser); // get corresponding values
 					Values = Values.map(function (e) {
@@ -72,17 +74,19 @@ router.post('/', async function (req, res) {
 							console.log(err);
 							res.status(404).send();
 						} else {
-							const data = {
-								from    : SENDER_MAIL,
-								to      : `${req.body.newUser.E_Mail}`,
-								subject : 'Create a password',
-								text    : `HTML Mail not available. Use this link to set your Password: ${DOMAIN_NAME + '/forgotPassword?token=' + Hash}`,
-								html    : `${html(DOMAIN_NAME, Hash)}`
-							};
-							mg.messages().send(data, function (error, body) {
-								if (error) console.log(error);
-								console.log(body);
-							});
+							if (req.body.newUser.Authentication_Level >= 5) {
+								const data = {
+									from    : SENDER_MAIL,
+									to      : `${req.body.newUser.E_Mail}`,
+									subject : 'Create a password',
+									text    : `HTML Mail not available. Use this link to set your Password: ${DOMAIN_NAME + '/forgotPassword?token=' + Hash}`,
+									html    : `${html(DOMAIN_NAME, Hash)}`
+								};
+								mg.messages().send(data, function (error, body) {
+									if (error) console.log(error);
+									console.log(body);
+								});
+							}
 							res.status(200).send('User added Successfully');
 						}
 					});

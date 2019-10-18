@@ -2,13 +2,15 @@ import * as React from 'react';
 import ReactTable from 'react-table';
 import jQuery from 'jquery'
 import 'react-table/react-table.css';
-import { CheckCircle, XCircle, Trash, Edit } from 'react-feather';
-import API_URL from '../variables'
-import loadingScreen from '../methods/loadingscreen';
-import { browserHistory } from '../router';
+import API_URL from '../../variables'
+import loadingScreen from '../../methods/loadingscreen';
+import {Trash, Edit } from 'react-feather';
+import { browserHistory } from '../../router';
+import notAuthenticated from '../../methods/notAuthenticated';
+import checkToken from '../../methods/checktoken';
 
 
-class Table extends React.Component {
+export default class UserTable extends React.Component {
     constructor(props) {
         super(props);
 
@@ -138,72 +140,6 @@ class Table extends React.Component {
         await this.fetchTable();
         this.toggleDeletePopup();
     }
-    
-   async update(row, value,sign) {
-        await fetch(API_URL + "/update", {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json'
-            },
-          body: JSON.stringify({
-            username: sessionStorage.getItem('username'),
-            token: sessionStorage.getItem('token'),
-              presentations: {
-                Presentation_Held: value,
-              },
-              idInfo: {
-                id: row.original.Presentation_ID,
-                idName: 'Presentation_ID'
-              }
-            })
-        })
-        await fetch(API_URL + "/change", {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json'
-            },
-          body: JSON.stringify({
-            username: sessionStorage.getItem('username'),
-            token: sessionStorage.getItem('token'),
-                categoryName: `Amount_${row.original.Presentation_Category}`,
-                sign: sign,
-                Id: row.original.User_ID
-            })
-        })
-        await this.fetchTable()
-    }
-
-    toggleColor(row, identifier) {
-        if (identifier === "check") {
-            if (row.original.Presentation_Held === 0) {
-                row.original.Presentation_Held = 1;
-                document.getElementById(`check${row.index}`).attributes[5].value = "green"
-                document.getElementById(`x${row.index}`).attributes[5].value = "white"
-                this.update(row, 1, "+")
-            }
-        } else {
-            if (row.original.Presentation_Held === 1) {
-                row.original.Presentation_Held = 0;
-                document.getElementById(`check${row.index}`).attributes[5].value = "white"
-                document.getElementById(`x${row.index}`).attributes[5].value = "red"
-                this.update(row, 0, "-")
-            }
-        }
-    }
-
-    initialColor(row, identifier) {
-        if (identifier === "check") {
-            if (row.original.Presentation_Held === 1) {
-                return 'green';
-            } else return 'white';
-        } else {
-            if (identifier === "x") {
-                if (row.original.Presentation_Held === 1) {
-                    return 'white'
-                } else return 'red'
-            }
-        }
-    }
 
   async fetchTable() {
       try {
@@ -215,10 +151,8 @@ class Table extends React.Component {
          body: JSON.stringify({
            username: sessionStorage.getItem('username'),
            token: sessionStorage.getItem('token'),
-           select:'Presentation_ID, Topic, Presentation_Category, Date, Last_Changed, FirstName, LastName, User_ID, Username, Presentation_Held, Amount_A, Amount_B, Amount_C, CancelTokens, Pending_Presentation ',
-           tableName: 'presentations',
-           selectiveGet: 'INNER JOIN users ON presentations.Presenter = users.User_ID',
-
+           select:'User_ID, Username, E_Mail, FirstName, LastName, CancelTokens, Pending_Presentation, Last_Probability, Amount_A, Amount_B, Amount_C, Authentication_Level',
+           tableName: 'users'
           })
         })
          .then(response => response.json())
@@ -229,105 +163,61 @@ class Table extends React.Component {
 
     }
     
-  async componentDidMount() {
+    async componentDidMount() {
+        await checkToken();
       await this.fetchTable();
       await this.setState({ isLoading: false });
-      
-
     }
     
-    render() {
+render() {
         if (this.state.isLoading) {
           return loadingScreen()
         } else {
+            if (sessionStorage.getItem('authenticated') !== 'true' || sessionStorage.getItem('Authentication_Level') !== '10') {
+                return notAuthenticated();
+			}
             return (
-<div className="container-fluid">
-  <ReactTable
+    <div className="container-fluid">
+        <ReactTable
     data={this.state.tableData}
     columns={[
       {
-        Header: "Topic",
-        accessor: "Topic",
+        Header: "User",
+        accessor: "Username",
         style: { whiteSpace: "unset" },
         filterAll: true
       },
       {
         id: "Name",
-        Header: "Presenter",
+        Header: "Full Name",
         accessor: d => `${d.FirstName} ${d.LastName}`,
         style: { whiteSpace: "unset" },
         filterAll: true
       },
       {
-        Header: "Category",
-        accessor: "Presentation_Category",
+        Header: "E-Mail",
+        accessor: "E_Mail",
         style: { whiteSpace: "unset" },
         filterAll: true
       },
       {
-        id: "Date",
-        Header: "Date",
-        accessor: d => {
-          var date = new Date(d.Date);
-          return date.toLocaleString("de-DE").split(",")[0];
-        },
+        id: "Cancel Tokens",
+        Header: "CancelTokens",
         style: { whiteSpace: "unset" },
         filterAll: true
       },
       {
-        id: "Last_Changed",
-        Header: "Last Changed",
-        accessor: d => {
-          var date = new Date(d.Last_Changed);
-          return date.toLocaleString("de-DE");
-        },
+        id: "Pending Presentation",
+        Header: "Pending_Presentation",
         style: { whiteSpace: "unset" },
         filterAll: true
       },
       {
-        Header: "Presentation held?",
+        Header: "Actions",
         Filter: <div />,
         sortable: false,
         Cell: row => (
-          <div>
-            <button
-              className="btn btn-default btn-icon"
-              title=""
-              type="button"
-              onClick={() => {
-                if(sessionStorage.getItem('authenticated') === "true" && (sessionStorage.getItem('username') ===  row.original.Username || sessionStorage.getItem('Authentication_Level') === "10") )
-                this.toggleColor(row, "check");
-              }}
-            >
-              <CheckCircle
-                id={`check${row.index}`}
-                color={this.initialColor(row, "check")}
-              />
-            </button>
-            <button
-              className="btn btn-default btn-icon"
-              title=""
-              type="button"
-              onClick={() => {
-                if(sessionStorage.getItem('authenticated') === "true" && (sessionStorage.getItem('username') ===  row.original.Username || sessionStorage.getItem('Authentication_Level') === "10") )
-                this.toggleColor(row, "x");
-              }}
-            >
-              <XCircle
-                id={`x${row.index}`}
-                color={this.initialColor(row, "x")}
-              />
-            </button>
-          </div>
-        )
-      },
-      {
-        Header: "Options",
-        Filter: <div />,
-        sortable: false,
-        Cell: row => (
-          <div>
-            {sessionStorage.getItem('authenticated') === "true" && (sessionStorage.getItem('username') === row.original.Username || sessionStorage.getItem('Authentication_Level') === "10")  ? 
+          <div> 
             <button
               className="btn btn-default btn-icon"
               title=""
@@ -338,8 +228,6 @@ class Table extends React.Component {
             > 
               <Edit color="white" />
               </button>
-              : null }
-            {sessionStorage.getItem('Authentication_Level') === "10" ?
               <button
                 className="btn btn-default leftMargin5 btn-icon"
                 title=""
@@ -347,7 +235,7 @@ class Table extends React.Component {
                 onClick={() => this.toggleDeletePopup(row)}
               >
                 <Trash color="white" />
-              </button> : null}
+              </button>
           </div>
         )
       }
@@ -510,5 +398,3 @@ class Table extends React.Component {
         }
    }
 }
-
-export default Table;

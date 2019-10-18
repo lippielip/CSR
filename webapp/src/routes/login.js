@@ -5,7 +5,6 @@ import checkToken from '../methods/checktoken';
 import loadingScreen from '../methods/loadingscreen';
 import ForgotPassword from '../popups/ForgotPasswordPopup';
 import API_URL from '../variables';
-
 export default class Login extends React.Component {
 	constructor (props) {
 		super(props);
@@ -57,13 +56,6 @@ export default class Login extends React.Component {
 						sessionStorage.setItem('Authentication_Level', null);
 						sessionStorage.setItem('Pending_Presentation', null);
 						sessionStorage.setItem('authenticated', response.authenticated);
-					}
-					if (response.authenticated === 'newUser') {
-						sessionStorage.setItem('username', this.state.username);
-						sessionStorage.setItem('token', response.token);
-						(function ($) {
-							$('#PasswordPopup').modal('toggle');
-						})(jQuery);
 					}
 				});
 		}

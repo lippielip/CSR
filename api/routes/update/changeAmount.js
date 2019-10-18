@@ -5,7 +5,7 @@ var checkToken = require('../authentication/checkTokenInternal');
 
 // function to change values
 router.post('/', async function (req, res, next) {
-	if ((await checkToken(req)) === 1) {
+	if ((await checkToken(req)) >= 5) {
 		var category = req.body.categoryName;
 		var sign = req.body.sign;
 		console.log(

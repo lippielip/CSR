@@ -5,7 +5,7 @@ var checkToken = require('../authentication/checkTokenInternal');
 
 // simple multipurpose function for fetching data
 router.post('/', async function (req, res) {
-	if ((await checkToken(req)) === 1) {
+	if ((await checkToken(req)) >= 5) {
 		pool.getConnection(function (err, connection) {
 			if (err) {
 				console.log(err);

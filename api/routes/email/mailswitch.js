@@ -5,7 +5,7 @@ const SENDER_MAIL = mailgun.sender;
 const mg = mailgun.mg;
 let emails = '';
 
-function getEmails () {
+function getEmails() {
 	return new Promise(function (resolve, reject) {
 		pool.getConnection(async function (err, connection) {
 			await connection.query(`SELECT E_Mail FROM users WHERE Authentication_Level < 10`, async function (err, result, fields) {
@@ -19,7 +19,7 @@ function getEmails () {
 	});
 }
 
-async function sendMail (caseVar, users, moderator, Presentations) {
+async function sendMail(caseVar, users, moderator, Presentations) {
 	emails = await getEmails();
 	switch (caseVar) {
 		case -1:
@@ -52,19 +52,19 @@ async function sendMail (caseVar, users, moderator, Presentations) {
 	}
 }
 
-function monday (users, moderator) {
+function monday(users, moderator) {
 	console.log(emails);
 	console.log(`User ${users[0].Username} und ${users[1].Username} wurden für das Colloquium gewählt. Bitte eintragen!`);
 
 	const data = {
-		from    : SENDER_MAIL,
-		to      : 'philipp.braun@telekom.de',
-		subject : 'Colloquium Planning',
-		text    : `Die Presenter diese Woche sind: ${users[0].FirstName} gewählt mit einer Warscheinlichkeit von ${(users[0].probability * 100).toFixed(2)}% und ${users[1]
+		from: SENDER_MAIL,
+		to: emails,
+		subject: 'Colloquium Planning',
+		text: `Die Presenter diese Woche sind: ${users[0].FirstName} gewählt mit einer Warscheinlichkeit von ${(users[0].probability * 100).toFixed(2)}% und ${users[1]
 			.FirstName}gewählt mit einer Warscheinlichkeit von ${(users[1].probability * 100).toFixed(2)}%
 Der Moderator dieser Woche ist : ${moderator.FirstName}
 Bitte tragt eure Presentationen zeitnah ein!`,
-		html    : `${html(
+		html: `${html(
 			`<br>
 			<p>Die Presenter diese Woche sind:</p>
 			 <p><b>${users[0].FirstName}</b> gewählt mit einer Warscheinlichkeit von ${(users[0].probability * 100).toFixed(2)}% und
@@ -81,14 +81,14 @@ Bitte tragt eure Presentationen zeitnah ein!`,
 	});
 }
 
-function onTime () {
+function onTime() {
 	console.log('Beide Nutzer haben erfolgreich ihre Präsentation eingetragen!');
 
 	const data = {
-		from    : SENDER_MAIL,
-		to      : 'philipp.braun@telekom.de',
-		subject : 'Colloquium Planning',
-		html    : `${html(
+		from: SENDER_MAIL,
+		to: emails,
+		subject: 'Colloquium Planning',
+		html: `${html(
 			`<p>Beide Presentationen wurden eingetragen.</p>
 			<p>Die Rundmail wird in kürze verschickt!</p>`
 		)}`
@@ -100,14 +100,14 @@ function onTime () {
 	});
 }
 
-function onelate (lateUser, goodUser) {
+function onelate(lateUser, goodUser) {
 	console.log(`Vortrag von ${goodUser} wurde eingetragen. User: ${lateUser} muss noch seinen Vortrag eintragen.`);
 
 	const data = {
-		from    : SENDER_MAIL,
-		to      : 'philipp.braun@telekom.de',
-		subject : 'Colloquium Planning',
-		html    : `${html(
+		from: SENDER_MAIL,
+		to: emails,
+		subject: 'Colloquium Planning',
+		html: `${html(
 			`<p>Vortrag von ${goodUser} wurde eingetragen.</p>
 			<p>${lateUser} muss noch einen Vortrag eintragen.</p>`
 		)}`
@@ -119,14 +119,14 @@ function onelate (lateUser, goodUser) {
 	});
 }
 
-function bothlate (users) {
+function bothlate(users) {
 	console.log(`User ${users[0].Username} und User ${users[1].Username} haben noch keine Vorträge eingetragen!`);
 
 	const data = {
-		from    : SENDER_MAIL,
-		to      : 'philipp.braun@telekom.de',
-		subject : 'Colloquium Planning',
-		html    : `${html(
+		from: SENDER_MAIL,
+		to: emails,
+		subject: 'Colloquium Planning',
+		html: `${html(
 			`<p>${users[0].FirstName} und User ${users[1].FirstName} haben noch keine Vorträge eingetragen!</p>
 			<p> Bitte zeitnah einen Vortrag eintragen!`
 		)}`
@@ -137,12 +137,12 @@ function bothlate (users) {
 		console.log(body);
 	});
 }
-function wednesday (users, moderator, Presentations) {
+function wednesday(users, moderator, Presentations) {
 	const data = {
-		from    : SENDER_MAIL,
-		to      : 'philipp.braun@telekom.de',
-		subject : 'Colloquium Planning',
-		html    : `${html(
+		from: SENDER_MAIL,
+		to: emails,
+		subject: 'Colloquium Planning',
+		html: `${html(
 			`<p>hier die Themen des Colloquiums der aktuellen Woche:</p>
 		<table>
 				<tr>
@@ -172,14 +172,14 @@ function wednesday (users, moderator, Presentations) {
 	});
 }
 
-function canceled () {
+function canceled() {
 	console.log('Colloquium findet nicht statt. Nicht genug Leute anwesend!');
 
 	const data = {
-		from    : SENDER_MAIL,
-		to      : 'philipp.braun@telekom.de',
-		subject : 'Colloquium Planning',
-		html    : `${html(
+		from: SENDER_MAIL,
+		to: emails,
+		subject: 'Colloquium Planning',
+		html: `${html(
 			`<p>Das Colloquium wird diese Woche nicht stattfinden, da nicht genug Leute anwesend sind.</p>
 			<p>Wir wünschen euch noch eine schöne Woche!</p>
 			`

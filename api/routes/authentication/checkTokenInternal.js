@@ -33,19 +33,17 @@ async function checkTokenInternal (req) {
 				if (result.length === 0) {
 					// non existent user
 					console.log('\x1b[31mFailed!\x1b[0m');
-					console.log(0);
-					resolve(0);
+					resolve(-1);
 					return;
 				}
 				if (req.body.token === result[0].token) {
 					// successfull authentication
 					console.log('\x1b[32mSuccess!\x1b[0m');
-					resolve(1);
+					resolve(result[0].Authentication_Level);
 					return;
 				} else {
 					console.log('\x1b[31mFailed!\x1b[0m');
-					console.log(0);
-					resolve(0);
+					resolve(-1);
 					return;
 				}
 			});

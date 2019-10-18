@@ -2,12 +2,12 @@ import * as React from 'react';
 import { Redirect } from 'react-router';
 import { Router, Link, Route, Switch } from 'react-router-dom';
 import * as history from 'history';
-import ContentPane from './contentpane';
-import Login from './login';
-import checkToken from '../methods/checktoken';
-import loadingScreen from '../methods/loadingscreen';
-import forgotPassword from './forgotPassword';
-import NoMatch from '../methods/noMatch';
+import checkToken from './methods/checktoken';
+import loadingScreen from './methods/loadingscreen';
+import NoMatch from './methods/noMatch';
+import ContentPane from './routes/contentpane';
+import Login from './routes/login';
+import forgotPassword from './routes/forgotPassword';
 
 export var browserHistory = history.createBrowserHistory();
 
@@ -86,8 +86,8 @@ class Routes extends React.Component {
 										</div>
 									</div>
 								</nav>
-								{sessionStorage.getItem('Pending_Presentation') === '1' ? <Redirect exact to="/user" /> : null}
 								<ContentPane />
+								{sessionStorage.getItem('Pending_Presentation') === '1' ? <Redirect exact to="/user" /> : null}
 							</Router>
 						</div>
 					) : (
