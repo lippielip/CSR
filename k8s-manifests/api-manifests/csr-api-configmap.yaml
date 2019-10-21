@@ -13,5 +13,4 @@ data:
   MAIL_DOMAIN: "mail.3dstudis.net"
   MAIL_HOST: "api.eu.mailgun.net"
   MAIL_SENDER: "Colloquium Selector Robot <noreply@mail.3dstudis.net>"
-  API_URL: "https://api.3dstudis.net"
   DOMAIN_NAME: "https://3dstudis.net"
