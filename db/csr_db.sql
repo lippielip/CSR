@@ -23,9 +23,10 @@ CREATE TABLE IF NOT EXISTS `auth_level` (
   PRIMARY KEY (`Auth_Level_ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
--- Exportiere Daten aus Tabelle csr_db.auth_level: ~4 rows (ungefähr)
+-- Exportiere Daten aus Tabelle csr_db.auth_level: ~3 rows (ungefähr)
+DELETE FROM `auth_level`;
 /*!40000 ALTER TABLE `auth_level` DISABLE KEYS */;
-REPLACE INTO `auth_level` (`Auth_Level_ID`, `Definition`) VALUES
+INSERT INTO `auth_level` (`Auth_Level_ID`, `Definition`) VALUES
 	(1, 'Guest'),
 	(5, 'Standard\r\n'),
 	(7, 'Business Expert'),
@@ -43,7 +44,8 @@ CREATE TABLE IF NOT EXISTS `outofoffice` (
   CONSTRAINT `FK_outofoffice_users` FOREIGN KEY (`User`) REFERENCES `users` (`User_ID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=71 DEFAULT CHARSET=latin1;
 
--- Exportiere Daten aus Tabelle csr_db.outofoffice: ~2 rows (ungefähr)
+-- Exportiere Daten aus Tabelle csr_db.outofoffice: ~0 rows (ungefähr)
+DELETE FROM `outofoffice`;
 /*!40000 ALTER TABLE `outofoffice` DISABLE KEYS */;
 /*!40000 ALTER TABLE `outofoffice` ENABLE KEYS */;
 
@@ -55,8 +57,9 @@ CREATE TABLE IF NOT EXISTS `pending_definition` (
 ) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=latin1;
 
 -- Exportiere Daten aus Tabelle csr_db.pending_definition: ~5 rows (ungefähr)
+DELETE FROM `pending_definition`;
 /*!40000 ALTER TABLE `pending_definition` DISABLE KEYS */;
-REPLACE INTO `pending_definition` (`Pending_ID`, `Definition`) VALUES
+INSERT INTO `pending_definition` (`Pending_ID`, `Definition`) VALUES
 	(0, 'Not Presenting'),
 	(1, 'Presentation not filled in'),
 	(2, 'Moderator'),
@@ -77,7 +80,8 @@ CREATE TABLE IF NOT EXISTS `presentations` (
   CONSTRAINT `FK_presentations_users` FOREIGN KEY (`Presenter`) REFERENCES `users` (`User_ID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=220 DEFAULT CHARSET=latin1;
 
--- Exportiere Daten aus Tabelle csr_db.presentations: ~2 rows (ungefähr)
+-- Exportiere Daten aus Tabelle csr_db.presentations: ~1 rows (ungefähr)
+DELETE FROM `presentations`;
 /*!40000 ALTER TABLE `presentations` DISABLE KEYS */;
 /*!40000 ALTER TABLE `presentations` ENABLE KEYS */;
 
@@ -106,10 +110,11 @@ CREATE TABLE IF NOT EXISTS `users` (
   CONSTRAINT `FK_users_pending_definition` FOREIGN KEY (`Pending_Presentation`) REFERENCES `pending_definition` (`Pending_ID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=34 DEFAULT CHARSET=latin1;
 
--- Exportiere Daten aus Tabelle csr_db.users: ~3 rows (ungefähr)
+-- Exportiere Daten aus Tabelle csr_db.users: ~1 rows (ungefähr)
+DELETE FROM `users`;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-REPLACE INTO `users` (`User_ID`, `Username`, `E_Mail`, `FirstName`, `LastName`, `CancelTokens`, `Pending_Presentation`, `Last_Probability`, `Amount_A`, `Amount_B`, `Amount_C`, `Authentication_Level`, `Password`, `token`, `ResetToken`) VALUES
-	(0, 'SuperAdmin', NULL, 'Admin', 'Admin', 2, 0, 0, 0, 0, 0, 10, '$2a$10$N84RHqbQZR8tlR8UCpvH8emde6PoWyClUWvv1HiPkW6hWVQtci.9a', NULL, NULL);
+INSERT INTO `users` (`User_ID`, `Username`, `E_Mail`, `FirstName`, `LastName`, `CancelTokens`, `Pending_Presentation`, `Last_Probability`, `Amount_A`, `Amount_B`, `Amount_C`, `Authentication_Level`, `Password`, `token`, `ResetToken`) VALUES
+	(0, 'SuperAdmin', 'postmaster@mail.3dstudis.net\r\n', 'Admin', 'Admin', 2, 0, 0, 0, 0, 0, 10, '$2a$10$N84RHqbQZR8tlR8UCpvH8emde6PoWyClUWvv1HiPkW6hWVQtci.9a', NULL, NULL);
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
