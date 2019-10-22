@@ -13,6 +13,7 @@ router.post('/', async function (req, res, next) {
 			if (err) {
 				console.log(err);
 			}
+			console.log(result);
 			if (result.length === 1) {
 				if (req.body.password === req.body.confirmPassword) {
 					var Salt = bcrypt.genSaltSync(10); //generate Hash

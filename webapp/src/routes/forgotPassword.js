@@ -33,11 +33,19 @@ class forgotPassword extends React.Component {
 						confirmPassword : document.getElementById('forgotConfirmPasswordInput').value,
 						token           : new URLSearchParams(window.location.search).get('token')
 					})
-				});
-				document.getElementById('ResetPasswordSuccess').innerHTML = 'Password successfully changed!';
+				}).then((response) => {
+					if (response.status === 200) {
+						document.getElementById('ResetPasswordSuccess').innerHTML = 'Password successfully changed!';
 				window.setTimeout(function () {
 					browserHistory.push('/');
 				}, 1500);
+					} else {
+						if (response.status === 404) {
+							document.getElementById('ResetPasswordError').innerHTML = "Password was not changed!";
+						}
+					}
+				});
+				
 			}
 		} else {
 			document.getElementById('ResetPasswordError').innerHTML = "Passwords don't match";
