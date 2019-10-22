@@ -14,6 +14,7 @@ const DOMAIN_NAME = process.env.DOMAIN_NAME;
 // username = admin username
 // Username = new User username  !! case sensitive
 router.post('/', async function (req, res) {
+	console.log(req)
 	if ((await checkToken(req)) >= 10) {
 		pool.getConnection(function (err, connection) {
 			if (err) {
