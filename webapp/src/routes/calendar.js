@@ -126,6 +126,7 @@ export default class Calendar extends React.Component {
       body: JSON.stringify({
         username: sessionStorage.getItem('username'),
         token: sessionStorage.getItem('token'),
+        select:'Presentation_ID',
         tableName: 'presentations',
         selectiveGet: `WHERE Date = '${date}'`
       })

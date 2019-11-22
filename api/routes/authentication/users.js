@@ -44,6 +44,10 @@ router.post('/', async function (req, res) {
 					console.log('\x1b[31mIncorrect Password\x1b[0m');
 					return;
 				}
+			} else {
+				res.send({ authenticated: false });
+					console.log('\x1b[31mNo Password set!\x1b[0m');
+					return;
 			}
 		});
 		connection.release();
