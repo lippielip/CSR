@@ -8,20 +8,6 @@ router.post('/', async function (req, res, next) {
 	if ((await checkToken(req)) >= 5) {
 		var category = req.body.categoryName;
 		var sign = req.body.sign;
-		console.log(
-			'\x1b[34m',
-			`UPDATE`,
-			'\x1b[0m',
-			` users`,
-			'\x1b[32m',
-			`SET`,
-			'\x1b[0m',
-			`${category} = ${category} ${sign} 1`,
-			'\x1b[32m',
-			`WHERE`,
-			'\x1b[0m',
-			`User_ID = ${req.body.Id} `
-		);
 		pool.getConnection(function (err, connection) {
 			if (err) {
 				console.log(err);

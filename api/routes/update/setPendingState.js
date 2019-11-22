@@ -13,7 +13,6 @@ router.post('/', async function (req, res, next) {
 			}
 			connection.query(`UPDATE users SET Pending_Presentation = 10 WHERE Username = '${req.body.username}' `, function (err, result, fields) {
 				if (err) console.log(err);
-				console.log(result.message + ')');
 			});
 			res.status(200).send();
 			connection.release();

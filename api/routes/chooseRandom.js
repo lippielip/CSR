@@ -12,11 +12,11 @@ let probability;
 let IDmap = [];
 let voluntaryCount = 0;
 
-function rand (min, max) {
+function rand(min, max) {
 	return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-function getObjectIndex (array, attr, value) {
+function getObjectIndex(array, attr, value) {
 	for (var i = 0; i < array.length; i += 1) {
 		if (array[i][attr] === value) {
 			return i;
@@ -25,7 +25,7 @@ function getObjectIndex (array, attr, value) {
 	return -1;
 }
 
-function generateWeighedList (list, weight) {
+function generateWeighedList(list, weight) {
 	var weighed_list = [];
 	var sum = 0;
 	probability = [];
@@ -48,7 +48,7 @@ function generateWeighedList (list, weight) {
 	return weighed_list;
 }
 
-async function getPresenters (combList, list_length) {
+async function getPresenters(combList, list_length) {
 	return new Promise(function (resolve, reject) {
 		let list = combList.map(function (entry) {
 			return entry.User_ID;
@@ -82,7 +82,7 @@ async function getPresenters (combList, list_length) {
 	});
 }
 
-async function getModerator (combList) {
+async function getModerator(combList) {
 	return new Promise(function (resolve, reject) {
 		let list = combList.map(function (entry) {
 			return entry.User_ID;
@@ -103,7 +103,7 @@ async function getModerator (combList) {
 	});
 }
 
-async function GetPresentPeople (MissingPeople, NewPresentations) {
+async function GetPresentPeople(MissingPeople, NewPresentations) {
 	return new Promise(function (resolve, reject) {
 		pool.getConnection(async function (err, connection) {
 			if (err) {
@@ -141,12 +141,12 @@ async function GetPresentPeople (MissingPeople, NewPresentations) {
 									if (err) console.log(err);
 								});
 								IDmap.push({
-									User_ID            : result[i].User_ID,
-									Username           : result[i].Username,
-									Presentations_held : result[i].Amount_A * A_WEIGHT + result[i].Amount_B * B_WEIGHT + result[i].Amount_C * C_WEIGHT,
-									E_Mail             : result[i].E_Mail,
-									FirstName          : result[i].FirstName,
-									LastName           : result[i].LastName
+									User_ID: result[i].User_ID,
+									Username: result[i].Username,
+									Presentations_held: result[i].Amount_A * A_WEIGHT + result[i].Amount_B * B_WEIGHT + result[i].Amount_C * C_WEIGHT,
+									E_Mail: result[i].E_Mail,
+									FirstName: result[i].FirstName,
+									LastName: result[i].LastName
 								});
 							} else {
 								/*if someoneone is present, then if they havent held a presentation last week, get the sum of the presentations they have held this year
@@ -154,12 +154,12 @@ async function GetPresentPeople (MissingPeople, NewPresentations) {
 								  normal probability*/
 								if (result[i].Pending_Presentation != 10) {
 									IDmap.push({
-										User_ID            : result[i].User_ID,
-										Username           : result[i].Username,
-										Presentations_held : result[i].Amount_A * A_WEIGHT + result[i].Amount_B * B_WEIGHT + result[i].Amount_C * C_WEIGHT,
-										E_Mail             : result[i].E_Mail,
-										FirstName          : result[i].FirstName,
-										LastName           : result[i].LastName
+										User_ID: result[i].User_ID,
+										Username: result[i].Username,
+										Presentations_held: result[i].Amount_A * A_WEIGHT + result[i].Amount_B * B_WEIGHT + result[i].Amount_C * C_WEIGHT,
+										E_Mail: result[i].E_Mail,
+										FirstName: result[i].FirstName,
+										LastName: result[i].LastName
 									});
 									connection.query(`UPDATE users SET Pending_Presentation = 0 WHERE User_ID = ${result[i].User_ID} `, function (err, result, fields) {
 										if (err) console.log(err);
@@ -168,12 +168,12 @@ async function GetPresentPeople (MissingPeople, NewPresentations) {
 									//low prob of getting picked
 									console.log('\x1b[36m', 'Ignoring user: ' + result[i].Username + ' (last presenter)', '\x1b[0m');
 									IDmap.push({
-										User_ID            : result[i].User_ID,
-										Username           : result[i].Username,
-										Presentations_held : 100,
-										E_Mail             : result[i].E_Mail,
-										FirstName          : result[i].FirstName,
-										LastName           : result[i].LastName
+										User_ID: result[i].User_ID,
+										Username: result[i].Username,
+										Presentations_held: 100,
+										E_Mail: result[i].E_Mail,
+										FirstName: result[i].FirstName,
+										LastName: result[i].LastName
 									});
 									connection.query(`UPDATE users SET Pending_Presentation = 0 WHERE User_ID = ${result[i].User_ID} `, function (err, result, fields) {
 										if (err) console.log(err);
@@ -191,7 +191,7 @@ async function GetPresentPeople (MissingPeople, NewPresentations) {
 	});
 }
 
-async function PickWeeklyPresenters () {
+async function PickWeeklyPresenters() {
 	console.log('\x1b[33m', 'Picking Presenters...', '\x1b[0m');
 	//Check if enough people are present, regardless of if they had a presentation last week
 	let MissingPeople = await getMissingPeople();
@@ -200,6 +200,9 @@ async function PickWeeklyPresenters () {
 
 	if (IDmap.length <= 3) {
 		mail(-1);
+		await connection.query(`INSERT INTO presentation_status (Year, Calendar_Week, Status) VALUES ("${currentWeek[0]}","${currentWeek[1]}","-1")`, async function (err, result) {
+			if (err) console.log(err)
+		})
 	} else {
 		const USER_AMOUNT = IDmap.length;
 		let Presenter1;
@@ -244,7 +247,7 @@ async function PickWeeklyPresenters () {
 		}
 		let IdIndex3 = await getModerator(IDmap);
 		let Moderator = IDmap[IdIndex3];
-		let users = [ Presenter1, Presenter2 ];
+		let users = [Presenter1, Presenter2];
 		mail(0, users, Moderator);
 		console.log('\x1b[33m', 'Success!', '\x1b[0m');
 	}

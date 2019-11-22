@@ -22,14 +22,14 @@ router.post('/', async function (req, res) {
 				res.status(404).send();
 			}
 			if (Object.entries(result).length === 0) {
-				console.log('Email doesnt exist');
+				console.log('Email does not exist');
 				res.status(404).send();
 			}
 			if (result.length === 1) {
 				console.log('success!');
 				var password = generator.generate({
-					length  : 64,
-					numbers : true
+					length: 64,
+					numbers: true
 				});
 				var Salt = bcrypt.genSaltSync(10);
 				var Hash = bcrypt.hashSync(password, Salt);
@@ -39,11 +39,11 @@ router.post('/', async function (req, res) {
 						res.status(404).send();
 					} else {
 						const data = {
-							from    : SENDER_MAIL,
-							to      : `${req.body.E_Mail}`,
-							subject : 'Password Reset',
-							text    : `HTML Mail not available. Use this link to reset your Password: ${DOMAIN_NAME + '/forgotPassword?token=' + Hash}`,
-							html    : `${html(DOMAIN_NAME, Hash)}`
+							from: SENDER_MAIL,
+							to: `${req.body.E_Mail}`,
+							subject: 'Password Reset',
+							text: `HTML Mail not available. Use this link to reset your Password: ${DOMAIN_NAME + '/forgotPassword?token=' + Hash}`,
+							html: `${html(DOMAIN_NAME, Hash)}`
 						};
 
 						mg.messages().send(data, function (error, body) {

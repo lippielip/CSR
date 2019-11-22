@@ -9,9 +9,9 @@ var CronJob = require('cron').CronJob;
 
 // allow cross origin post and get
 var corsOptions = {
-	allowedHeaders : 'Content-Type, Access-Control-Allow-Origin',
-	orgin          : '*',
-	allowedMethods : 'POST,GET'
+	allowedHeaders: 'Content-Type, Access-Control-Allow-Origin',
+	orgin: '*',
+	allowedMethods: 'POST,GET'
 };
 // import of all routes
 var MariaDbGetter = require('./routes/get/getter');
@@ -44,19 +44,19 @@ const job1 = new CronJob(
 	'Europe/Berlin'
 );
 
-const job2 = new CronJob(
-	'30 5 * * *',
-	function () {
-		console.log('Fetching Presentation Status...');
-		CheckPresentationStatus();
-	},
-	null,
-	true,
-	'Europe/Berlin'
-);
-
-job1.start();
-job2.start();
+//const job2 = new CronJob(
+//	'30 5 * * *',
+function test() {
+	console.log('Fetching Presentation Status...');
+	CheckPresentationStatus();
+}//,
+//	null,
+//	true,
+//	'Europe/Berlin'
+//);
+test();
+//job1.start();
+//job2.start();
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));

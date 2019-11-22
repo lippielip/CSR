@@ -14,7 +14,6 @@ router.post('/', async function (req, res) {
 			console.log('Protected information');
 			res.status(500).send('protected information requested');
 		} else {
-			console.log('\x1b[34m', `SELECT ${req.body.select} FROM ${req.body.tableName} ${req.body.selectiveGet ? req.body.selectiveGet : ''}`, '\x1b[0m');
 			pool.getConnection(function (err, connection) {
 				if (err) {
 					console.log(err);

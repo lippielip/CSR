@@ -374,7 +374,6 @@ export default class Calendar extends React.Component {
     await checkToken();
     await this.fetchEvents();
     await this.setState({ isLoading: false });
-    console.dir(unformattedEvents)
 
   }
   render() {

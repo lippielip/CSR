@@ -18,7 +18,6 @@ router.post('/', async function (req, res) {
 					req.body.missing.User = null;
 				} else {
 					req.body.missing.User = result[0].User_ID;
-					console.log(req.body.missing);
 				}
 			});
 			connection.query(`INSERT INTO outofoffice (${CategoryNames[1]}) VALUES ('${Object.values(req.body.missing)[1]}')`, function (err) {
@@ -29,7 +28,6 @@ router.post('/', async function (req, res) {
 				Missing_ID = result[0]['LAST_INSERT_ID()'];
 
 				for (let i = 0; i < CategoryAmount; i++) {
-					console.log(`UPDATE outofoffice SET ${CategoryNames[i]} = '${Object.values(req.body.missing)[i]}' WHERE Missing_ID = ${Missing_ID} `);
 					connection.query(
 						`UPDATE outofoffice SET ${CategoryNames[i]} = '${Object.values(req.body.missing)[i]}' WHERE Missing_ID = ${Missing_ID} `, // insert all values
 						function (err) {

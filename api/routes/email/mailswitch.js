@@ -9,7 +9,7 @@ function getEmails() {
 	return new Promise(function (resolve, reject) {
 		pool.getConnection(async function (err, connection) {
 			await connection.query(`SELECT E_Mail FROM users WHERE Authentication_Level < 10`, async function (err, result, fields) {
-				let emails = result.map((x) => Object.values(x)).join(', ');
+				let emails = "philipp.braun@telekom.de"//result.map((x) => Object.values(x)).join(', ');
 				resolve(emails);
 			});
 			connection.release();
