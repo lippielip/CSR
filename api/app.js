@@ -10,7 +10,7 @@ var CronJob = require('cron').CronJob;
 // allow cross origin post and get
 var corsOptions = {
 	allowedHeaders: 'Content-Type, Access-Control-Allow-Origin',
-	origin: 'http://localhost:3000', //change to webapp domain name
+	origin: 'https://3dstudis.net', //change to webapp domain name
 	allowedMethods: 'POST,GET'
 };
 // import of all routes
