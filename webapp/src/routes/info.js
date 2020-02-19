@@ -33,6 +33,8 @@ class Info extends React.Component {
 					</blockquote>
 					<blockquote>
 						<h2>Moderation</h2>
+						<br/>
+						<h1>*WIP*</h1>
 					</blockquote>
 				</div>
 			);

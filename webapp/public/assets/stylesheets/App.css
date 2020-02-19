@@ -137,3 +137,6 @@
 	color: #ff0000;
 	transition: all 150ms cubic-bezier(.445, .05, .55, .95);
 }
+.biggerMargin{
+	margin-bottom: 20px;
+}

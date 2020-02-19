@@ -10,10 +10,6 @@ router.post('/', async function (req, res) {
 			console.log(err);
 			return res.status(400).send("Couldn't get a connection");
 		}
-		if (err) {
-			console.log(err);
-			return res.send(400, "Couldn't get a connection");
-		}
 		connection.query(`Select token, Authentication_Level, Pending_Presentation FROM users WHERE Username = '${req.body.username}' `, function (err, result, fields) {
 			if (err) {
 				console.log(err);

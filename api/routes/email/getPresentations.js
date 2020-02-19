@@ -17,19 +17,19 @@ async function getPresentations () {
 				if (result.length === 1) {
 					result[1] = {
 						Topic                 : '',
-						Presenter             : '0',
+						Presenter             : 0,
 						Presentation_Category : ''
 					};
 				}
 				if (result.length === 0) {
 					result[0] = {
 						Topic                 : '',
-						Presenter             : '0',
+						Presenter             : 0,
 						Presentation_Category : ''
 					};
 					result[1] = {
 						Topic                 : '',
-						Presenter             : '0',
+						Presenter             : 0,
 						Presentation_Category : ''
 					};
 				}

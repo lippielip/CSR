@@ -3,6 +3,7 @@ var mail = require('./email/mailswitch');
 var getMissingPeople = require('./get/getMissingPeople');
 var getNewPresentations = require('./get/getNewPresentations');
 /* Random Function weighting of different Presentation Types */
+
 const A_WEIGHT = 1;
 const B_WEIGHT = 1.5;
 const C_WEIGHT = 2;
@@ -11,12 +12,30 @@ const WEIGHT_FACTOR = 10000;
 let probability;
 let IDmap = [];
 let voluntaryCount = 0;
+var d = new Date();
 
-function rand(min, max) {
+function getWeekNumber (d) {
+	// Copy date so don't modify original
+	d = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+	// Set to nearest Thursday: current date + 4 - current day number
+	// Make Sunday's day number 7
+	d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay() || 7));
+	// Get first day of year
+	var yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+	// Calculate full weeks to nearest Thursday
+	var weekNo = Math.ceil(((d - yearStart) / 86400000 + 1) / 7);
+	// Return array of year and week number
+	return [
+		d.getUTCFullYear(),
+		weekNo
+	];
+}
+
+function rand (min, max) {
 	return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-function getObjectIndex(array, attr, value) {
+function getObjectIndex (array, attr, value) {
 	for (var i = 0; i < array.length; i += 1) {
 		if (array[i][attr] === value) {
 			return i;
@@ -25,7 +44,7 @@ function getObjectIndex(array, attr, value) {
 	return -1;
 }
 
-function generateWeighedList(list, weight) {
+function generateWeighedList (list, weight) {
 	var weighed_list = [];
 	var sum = 0;
 	probability = [];
@@ -48,7 +67,7 @@ function generateWeighedList(list, weight) {
 	return weighed_list;
 }
 
-async function getPresenters(combList, list_length) {
+async function getPresenters (combList, list_length) {
 	return new Promise(function (resolve, reject) {
 		let list = combList.map(function (entry) {
 			return entry.User_ID;
@@ -82,7 +101,7 @@ async function getPresenters(combList, list_length) {
 	});
 }
 
-async function getModerator(combList) {
+async function getModerator (combList) {
 	return new Promise(function (resolve, reject) {
 		let list = combList.map(function (entry) {
 			return entry.User_ID;
@@ -103,7 +122,7 @@ async function getModerator(combList) {
 	});
 }
 
-async function GetPresentPeople(MissingPeople, NewPresentations) {
+async function GetPresentPeople (MissingPeople, NewPresentations) {
 	return new Promise(function (resolve, reject) {
 		pool.getConnection(async function (err, connection) {
 			if (err) {
@@ -191,18 +210,43 @@ async function GetPresentPeople(MissingPeople, NewPresentations) {
 	});
 }
 
-async function PickWeeklyPresenters() {
+async function PickWeeklyPresenters () {
 	console.log('\x1b[33m', 'Picking Presenters...', '\x1b[0m');
+	var currentWeek = getWeekNumber(d);
+
+	// Special function that resets the Presentation amount of every user for the new year (happens yearly)
+	if (currentWeek[1] === 1) {
+		pool.getConnection(async function (err, connection) {
+			if (err) {
+				console.log(err);
+				return res.status(400).send("Couldn't get a connection");
+			}
+			await connection.query(`UPDATE users SET Amount_A = 0, Amount_B = 0, Amount_C = 0`, async function (err, result) {
+				if (err) console.log(err);
+			});
+			connection.release();
+		});
+	}
+
 	//Check if enough people are present, regardless of if they had a presentation last week
 	let MissingPeople = await getMissingPeople();
 	let NewPresentations = await getNewPresentations();
 	await GetPresentPeople(MissingPeople, NewPresentations);
-
 	if (IDmap.length <= 3) {
 		mail(-1);
-		await connection.query(`INSERT INTO presentation_status (Year, Calendar_Week, Status) VALUES ("${currentWeek[0]}","${currentWeek[1]}","-1")`, async function (err, result) {
-			if (err) console.log(err)
-		})
+		pool.getConnection(async function (err, connection) {
+			if (err) {
+				console.log(err);
+				return res.status(400).send("Couldn't get a connection");
+			}
+			await connection.query(`INSERT INTO presentation_status (Year, Calendar_Week, Status) VALUES ("${currentWeek[0]}","${currentWeek[1]}","-1")`, async function (
+				err,
+				result
+			) {
+				if (err) console.log(err);
+			});
+			connection.release();
+		});
 	} else {
 		const USER_AMOUNT = IDmap.length;
 		let Presenter1;
@@ -247,7 +291,10 @@ async function PickWeeklyPresenters() {
 		}
 		let IdIndex3 = await getModerator(IDmap);
 		let Moderator = IDmap[IdIndex3];
-		let users = [Presenter1, Presenter2];
+		let users = [
+			Presenter1,
+			Presenter2
+		];
 		mail(0, users, Moderator);
 		console.log('\x1b[33m', 'Success!', '\x1b[0m');
 	}

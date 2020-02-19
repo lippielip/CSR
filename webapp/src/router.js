@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { Redirect } from 'react-router';
 import { Router, Link, Route, Switch } from 'react-router-dom';
+import 'react-table/react-table.css';
 import * as history from 'history';
 import checkToken from './methods/checktoken';
 import loadingScreen from './methods/loadingscreen';

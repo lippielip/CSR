@@ -89,12 +89,12 @@ class AdminPanel extends React.Component {
 								<div className="card-body ">
 									<h5 className="card-title">
 										<Icon path={mdiAccount} size={1} color={'white'} />
-										User Deletion
+										User Listing
 									</h5>
-									<p className="card-text">Remove a user with this utility.</p>
+									<p className="card-text">View, Modify or Remove Users</p>
 									<Router history={browserHistory}>
 										<Link to={'adminPanel/users'}>
-											<button className="btn btn-primary">Delete a user</button>
+											<button className="btn btn-primary">View Users</button>
 										</Link>
 									</Router>
 								</div>

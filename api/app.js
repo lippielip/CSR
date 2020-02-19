@@ -10,7 +10,7 @@ var CronJob = require('cron').CronJob;
 // allow cross origin post and get
 var corsOptions = {
 	allowedHeaders: 'Content-Type, Access-Control-Allow-Origin',
-	orgin: '*',
+	origin: 'http://localhost:3000', //change to webapp domain name
 	allowedMethods: 'POST,GET'
 };
 // import of all routes
@@ -30,11 +30,14 @@ var CancelPresentation = require('./routes/update/cancelPresentation');
 var NewUserRouter = require('./routes/authentication/newUser');
 var ForgotPassword = require('./routes/authentication/forgotPassword');
 var ForgotPasswordSubmit = require('./routes/authentication/forgotPasswordSubmit');
+var ChangePasswordSubmit = require('./routes/authentication/ChangePasswordSubmit');
+var ChangeUsernameSubmit = require('./routes/authentication/ChangeUsernameSubmit');
+var ChangeEmailSubmit = require('./routes/authentication/ChangeEmailSubmit');
 var checkResetToken = require('./routes/authentication/checkResetToken');
 var app = express();
 
-const job1 = new CronJob(
-	'0 5 * * mon',
+new CronJob(
+	'00 5 * * mon',
 	async function () {
 		console.log('executing weekly event...');
 		PickWeeklyPresenters();
@@ -44,19 +47,16 @@ const job1 = new CronJob(
 	'Europe/Berlin'
 );
 
-//const job2 = new CronJob(
-//	'30 5 * * *',
-function test() {
-	console.log('Fetching Presentation Status...');
-	CheckPresentationStatus();
-}//,
-//	null,
-//	true,
-//	'Europe/Berlin'
-//);
-test();
-//job1.start();
-//job2.start();
+new CronJob(
+	'30 5 * * *',
+	async function () {
+		console.log('Fetching Presentation Status...');
+		CheckPresentationStatus();
+	},
+	null,
+	true,
+	'Europe/Berlin'
+);
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -85,6 +85,9 @@ app.use('/cancel', CancelPresentation);
 app.use('/NewUser', NewUserRouter);
 app.use('/forgot', ForgotPassword);
 app.use('/forgotPasswordSubmit', ForgotPasswordSubmit);
+app.use('/changePasswordSubmit', ChangePasswordSubmit);
+app.use('/changeEmailSubmit', ChangeEmailSubmit);
+app.use('/changeUsernameSubmit', ChangeUsernameSubmit);
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
 	next(createError(404));

@@ -16,7 +16,7 @@ router.post('/', async function (req, res) {
 			console.log(err);
 			return res.status(400).send("Couldn't get a connection");
 		}
-		connection.query(`SELECT E_Mail from users WHERE E_Mail = '${req.body.E_Mail}' AND Authentication_Level >= 5`, function (err, result, fields) {
+		connection.query(`SELECT Username, E_Mail from users WHERE E_Mail = '${req.body.E_Mail}' AND Authentication_Level >= 5`, function (err, result, fields) {
 			if (err) {
 				console.log(err);
 				res.status(404).send();
@@ -31,6 +31,7 @@ router.post('/', async function (req, res) {
 					length: 64,
 					numbers: true
 				});
+				var Username = result[0].Username;
 				var Salt = bcrypt.genSaltSync(10);
 				var Hash = bcrypt.hashSync(password, Salt);
 				connection.query(`Update users SET ResetToken = '${Hash}' WHERE E_Mail= '${req.body.E_Mail}' `, function (err, result, fields) {
@@ -43,7 +44,7 @@ router.post('/', async function (req, res) {
 							to: `${req.body.E_Mail}`,
 							subject: 'Password Reset',
 							text: `HTML Mail not available. Use this link to reset your Password: ${DOMAIN_NAME + '/forgotPassword?token=' + Hash}`,
-							html: `${html(DOMAIN_NAME, Hash)}`
+							html: `${html(DOMAIN_NAME, Hash, Username)}`
 						};
 
 						mg.messages().send(data, function (error, body) {

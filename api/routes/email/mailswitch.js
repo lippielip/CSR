@@ -5,11 +5,11 @@ const SENDER_MAIL = mailgun.sender;
 const mg = mailgun.mg;
 let emails = '';
 
-function getEmails() {
+function getEmails () {
 	return new Promise(function (resolve, reject) {
 		pool.getConnection(async function (err, connection) {
 			await connection.query(`SELECT E_Mail FROM users WHERE Authentication_Level < 10`, async function (err, result, fields) {
-				let emails = "philipp.braun@telekom.de"//result.map((x) => Object.values(x)).join(', ');
+				let emails = result.map((x) => Object.values(x)).join(', ');
 				resolve(emails);
 			});
 			connection.release();
@@ -19,7 +19,7 @@ function getEmails() {
 	});
 }
 
-async function sendMail(caseVar, users, moderator, Presentations) {
+async function sendMail (caseVar, users, moderator, Presentations) {
 	emails = await getEmails();
 	switch (caseVar) {
 		case -1:
@@ -52,8 +52,7 @@ async function sendMail(caseVar, users, moderator, Presentations) {
 	}
 }
 
-function monday(users, moderator) {
-	console.log(emails);
+function monday (users, moderator) {
 	console.log(`User ${users[0].Username} und ${users[1].Username} wurden für das Colloquium gewählt. Bitte eintragen!`);
 
 	const data = {
@@ -81,7 +80,7 @@ Bitte tragt eure Presentationen zeitnah ein!`,
 	});
 }
 
-function onTime() {
+function onTime () {
 	console.log('Beide Nutzer haben erfolgreich ihre Präsentation eingetragen!');
 
 	const data = {
@@ -100,8 +99,8 @@ function onTime() {
 	});
 }
 
-function onelate(lateUser, goodUser) {
-	console.log(`Vortrag von ${goodUser} wurde eingetragen. User: ${lateUser} muss noch seinen Vortrag eintragen.`);
+function onelate (lateUser, goodUser) {
+	console.log(`Vortrag von ${goodUser} wurde eingetragen. ${lateUser} muss noch seinen Vortrag eintragen.`);
 
 	const data = {
 		from: SENDER_MAIL,
@@ -119,15 +118,15 @@ function onelate(lateUser, goodUser) {
 	});
 }
 
-function bothlate(users) {
-	console.log(`User ${users[0].Username} und User ${users[1].Username} haben noch keine Vorträge eingetragen!`);
+function bothlate (users) {
+	console.log(` ${users[0].Username} und ${users[1].Username} haben noch keine Vorträge eingetragen!`);
 
 	const data = {
 		from: SENDER_MAIL,
 		to: emails,
 		subject: 'Colloquium Planning',
 		html: `${html(
-			`<p>${users[0].FirstName} und User ${users[1].FirstName} haben noch keine Vorträge eingetragen!</p>
+			`<p>${users[0].FirstName} und ${users[1].FirstName} haben noch keine Vorträge eingetragen!</p>
 			<p> Bitte zeitnah einen Vortrag eintragen!`
 		)}`
 	};
@@ -137,7 +136,7 @@ function bothlate(users) {
 		console.log(body);
 	});
 }
-function wednesday(users, moderator, Presentations) {
+function wednesday (users, moderator, Presentations) {
 	const data = {
 		from: SENDER_MAIL,
 		to: emails,
@@ -172,7 +171,7 @@ function wednesday(users, moderator, Presentations) {
 	});
 }
 
-function canceled() {
+function canceled () {
 	console.log('Colloquium findet nicht statt. Nicht genug Leute anwesend!');
 
 	const data = {

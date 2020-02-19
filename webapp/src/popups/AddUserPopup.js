@@ -7,24 +7,25 @@ class AddUserPopup extends React.Component {
 	constructor (props) {
 		super(props);
 		this.state = {
-			wrongField : [],
-			isLoading  : true
+			wrongField: [],
+			isLoading: true
 		};
+		this.handleOnChange = this.handleOnChange.bind(this);
 	}
 
 	async fetchData () {
 		// get all data
 		try {
 			await fetch(API_URL + '/getter', {
-				method  : 'POST',
-				headers : {
-					'Content-Type' : 'application/json'
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
 				},
-				body    : JSON.stringify({
-					username  : sessionStorage.getItem('username'),
-					token     : sessionStorage.getItem('token'),
-					tableName : 'auth_level',
-					select    : 'Auth_Level_ID, Definition'
+				body: JSON.stringify({
+					username: sessionStorage.getItem('username'),
+					token: sessionStorage.getItem('token'),
+					tableName: 'auth_level',
+					select: 'Auth_Level_ID, Definition'
 				})
 			})
 				.then((response) => response.json())
@@ -39,19 +40,19 @@ class AddUserPopup extends React.Component {
 			alert(`Please Check your Input in ${this.state.wrongField.join(', ').replace(/_/g, ' ')}`);
 		} else {
 			fetch(API_URL + '/newUser', {
-				method  : 'POST',
-				headers : {
-					'Content-Type' : 'application/json'
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
 				},
-				body    : JSON.stringify({
-					username : sessionStorage.getItem('username'),
-					token    : sessionStorage.getItem('token'),
-					newUser  : {
-						E_Mail               : document.getElementById('AddUser_E_Mail').value,
-						FirstName            : document.getElementById('AddUser_FirstName').value,
-						LastName             : document.getElementById('AddUser_LastName').value,
-						Username             : document.getElementById('AddUser_Username').value, // change to new User or something else
-						Authentication_Level : document.getElementById('AddUser_Authentication_Level').value
+				body: JSON.stringify({
+					username: sessionStorage.getItem('username'),
+					token: sessionStorage.getItem('token'),
+					newUser: {
+						E_Mail: document.getElementById('AddUser_E_Mail').value,
+						FirstName: document.getElementById('AddUser_FirstName').value,
+						LastName: document.getElementById('AddUser_LastName').value,
+						Username: document.getElementById('AddUser_Username').value, // change to new User or something else
+						Authentication_Level: document.getElementById('AddUser_Authentication_Level').value
 					}
 				})
 			}).then((response) => {
@@ -70,6 +71,9 @@ class AddUserPopup extends React.Component {
 					}
 					if (response.status === 401) {
 						document.getElementById('AddUserError').innerHTML = 'Error: Duplicate E-Mails detected';
+					}
+					if (response.status === 402) {
+						document.getElementById('AddUserError').innerHTML = 'Error: Authentication failed';
 					}
 				}
 			});

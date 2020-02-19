@@ -14,7 +14,6 @@ const DOMAIN_NAME = process.env.DOMAIN_NAME;
 // username = admin username
 // Username = new User username  !! case sensitive
 router.post('/', async function (req, res) {
-	console.log(req)
 	if ((await checkToken(req)) >= 10) {
 		pool.getConnection(function (err, connection) {
 			if (err) {
@@ -54,8 +53,8 @@ router.post('/', async function (req, res) {
 					// encrytion on password
 					if (req.body.newUser.Authentication_Level >= 5) {
 						var password = generator.generate({
-							length  : 64,
-							numbers : true
+							length: 64,
+							numbers: true
 						});
 
 						var Salt = bcrypt.genSaltSync(10);
@@ -77,15 +76,15 @@ router.post('/', async function (req, res) {
 						} else {
 							if (req.body.newUser.Authentication_Level >= 5) {
 								const data = {
-									from    : SENDER_MAIL,
-									to      : `${req.body.newUser.E_Mail}`,
-									subject : 'Create a password',
-									text    : `HTML Mail not available. Use this link to set your Password: ${DOMAIN_NAME + '/forgotPassword?token=' + Hash}`,
-									html    : `${html(DOMAIN_NAME, Hash)}`
+									from: SENDER_MAIL,
+									to: `${req.body.newUser.E_Mail}`,
+									subject: 'Create a password',
+									text: `HTML Mail not available. Use this link to set your Password: ${DOMAIN_NAME + '/forgotPassword?token=' + Hash}`,
+									html: `${html(DOMAIN_NAME, Hash, req.body.newUser.Username)}`
 								};
 								mg.messages().send(data, function (error, body) {
 									if (error) console.log(error);
-									console.log(body);
+									console.log(error);
 								});
 							}
 							res.status(200).send('User added Successfully');
@@ -97,7 +96,7 @@ router.post('/', async function (req, res) {
 			if (err) console.log(err);
 		});
 	} else {
-		res.status(401).send('authentication error');
+		res.status(402).send('authentication error');
 	}
 });
 
