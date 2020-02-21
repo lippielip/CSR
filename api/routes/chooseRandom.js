@@ -2,12 +2,20 @@ var pool = require('./database');
 var mail = require('./email/mailswitch');
 var getMissingPeople = require('./get/getMissingPeople');
 var getNewPresentations = require('./get/getNewPresentations');
+
 /* Random Function weighting of different Presentation Types */
+/*************************************************************/
+/************************MODIFIERS****************************/
 
 const A_WEIGHT = 1;
 const B_WEIGHT = 1.5;
 const C_WEIGHT = 2;
 const WEIGHT_FACTOR = 10000;
+//define what Authentication levels have to present (everything inside these two values have to present)
+const AUTHENTICATION_UPPER_LIMIT = 6;
+const AUTHENTICATION_LOWER_LIMIT = 4;
+
+/*************************************************************/
 
 let probability;
 let IDmap = [];
@@ -134,11 +142,11 @@ async function GetPresentPeople (MissingPeople, NewPresentations) {
 				async function (err, result, fields) {
 					if (err) console.log(err);
 					for (let i = 0; i < result.length; i++) {
-						if (result[i].Authentication_Level > 5) {
+						if (result[i].Authentication_Level > AUTHENTICATION_UPPER_LIMIT) {
 							console.log('\x1b[35m', 'Ignoring User with preferred Matchmaking: ' + result[i].Username, '\x1b[0m');
 							continue;
 						}
-						if (result[i].Authentication_Level < 5) {
+						if (result[i].Authentication_Level < AUTHENTICATION_LOWER_LIMIT) {
 							console.log('\x1b[35m', 'Ignoring Guest User: ' + result[i].Username, '\x1b[0m');
 							continue;
 						}

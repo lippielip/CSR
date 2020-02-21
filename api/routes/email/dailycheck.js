@@ -128,7 +128,7 @@ async function dailyCheck () {
 						//Both Presenters filled in Presentation
 						if (users[0].Pending_Presentation === 10 && users[1].Pending_Presentation === 10) {
 							console.log('Both Presenters are on Time. Sending out official mail early.');
-							mail(1, users);
+							//mail(1, users); // too much
 							mail(4, users, moderator, Presentations);
 							connection.query(`UPDATE presentation_status SET Status = 1 WHERE Year = ${currentWeek[0]} AND Calendar_Week = ${currentWeek[1]}`, async function (
 								err,

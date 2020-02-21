@@ -55,12 +55,30 @@ PROXY
 DOMAIN (default: mail.domain.tld)
 HOST (default: api.eu.mailgun.net)
 SENDER_MAIL
+
+api/app.js
+
+app.use(logger('dev')); comment out for production
+
+var corsOptions = {
+	allowedHeaders: 'Content-Type, Access-Control-Allow-Origin',
+	origin: 'http://localhost:3000', // change to webapp domain name
+	allowedMethods: 'POST,GET'
+};
+
+
+
 ```
 
 Webapp
 ```
 NODE_ENV (default: development)
+
+
+variables.js
+
 API_URL (default: http://localhost:8000/)
+
 ```
 ## Build Version
 Webapp

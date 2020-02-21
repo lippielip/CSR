@@ -48,7 +48,7 @@ new CronJob(
 );
 
 new CronJob(
-	'30 5 * * *',
+	'00 11 * * *',
 	async function () {
 		console.log('Fetching Presentation Status...');
 		CheckPresentationStatus();
@@ -62,7 +62,9 @@ new CronJob(
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 
+// comment out for production build
 app.use(logger('dev'));
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
