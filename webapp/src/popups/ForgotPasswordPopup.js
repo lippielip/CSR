@@ -3,28 +3,19 @@ import jQuery from 'jquery';
 import API_URL from '../variables';
 // class for creating a first time password / new password
 class PasswordPopup extends React.Component {
-	constructor (props) {
-		super(props);
-		this.state = {
-			wrongField : []
-		};
-		this.handleSubmit = this.handleSubmit.bind(this);
-		this.handleOnChange = this.handleOnChange.bind(this);
-	}
-
-	async handleSubmit (email) {
+	async handleSubmit () {
 		if (document.getElementById('email').className.includes('invalid')) {
 			document.getElementById('ForgotPasswordError').innerHTML = 'Forbidden Characters detected.';
 		} else {
 			await fetch(API_URL + '/forgot', {
-				method  : 'POST',
-				headers : {
-					'Content-Type' : 'application/json'
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
 				},
-				body    : JSON.stringify({
-					username : sessionStorage.getItem('username'),
-					token    : sessionStorage.getItem('token'),
-					E_Mail   : document.getElementById('email').value
+				body: JSON.stringify({
+					username: sessionStorage.getItem('username'),
+					token: sessionStorage.getItem('token'),
+					E_Mail: document.getElementById('email').value
 				})
 			}).then((response) => {
 				if (response.status === 200) {

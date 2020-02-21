@@ -10,11 +10,11 @@ export default class Login extends React.Component {
 		super(props);
 
 		this.state = {
-			wrongField    : [],
-			isLoading     : true,
-			username      : '',
-			passwordInput : '',
-			email         : ''
+			wrongField: [],
+			isLoading: true,
+			username: '',
+			passwordInput: '',
+			email: ''
 		};
 		this.handleOnChange = this.handleOnChange.bind(this);
 		this.handleSubmit = this.handleSubmit.bind(this);
@@ -22,16 +22,16 @@ export default class Login extends React.Component {
 
 	async handleSubmit () {
 		if (!(this.state.wrongField.length === 0)) {
-			alert(`Please Check your Input in ${this.state.wrongField.join(', ').replace(/_/g, ' ')}`);
+			document.getElementById('error').innerHTML = 'Invalid Characters detected';
 		} else {
 			await fetch(API_URL + '/users', {
-				method  : 'POST',
-				headers : {
-					'Content-Type' : 'application/json'
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
 				},
-				body    : JSON.stringify({
-					username : this.state.username,
-					password : this.state.passwordInput
+				body: JSON.stringify({
+					username: this.state.username,
+					password: this.state.passwordInput
 				})
 			})
 				.then((response) => response.json()) //Authentication
@@ -45,7 +45,7 @@ export default class Login extends React.Component {
 						sessionStorage.setItem('Pending_Presentation', response.Pending_Presentation);
 						sessionStorage.setItem('authenticated', response.authenticated);
 						this.setState({
-							passwordInput : ''
+							passwordInput: ''
 						});
 						window.location.reload();
 					}

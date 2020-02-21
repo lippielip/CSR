@@ -12,9 +12,10 @@ router.post('/', async function (req, res, next) {
 			}
 			// if admin privileges and token are correct, delete entry
 			console.log(`Deleting Entry from ${req.body.DeleteTable} ...`);
-			console.log(`DELETE FROM ${req.body.DeleteTable} WHERE ${req.body.IDName}= ${req.body.tableID}`);
 			connection.query(`DELETE FROM ${req.body.DeleteTable} WHERE ${req.body.IDName}= ${req.body.tableID}`, function (err, result, fields) {
-				if (err) res.status(500).send(err);
+				if (err) {
+					console.log(err)
+					res.status(500).send(err);}
 			});
 			console.log('Success!');
 			res.status(200).send();
@@ -32,7 +33,6 @@ router.post('/', async function (req, res, next) {
 					if (err) res.status(500).send(err);
 					if (result[0].Username === req.body.deleteUser && req.body.IDName === 'Missing_ID') {
 						console.log(`Deleting Entry from ${req.body.DeleteTable} ...`);
-						console.log(`DELETE FROM ${req.body.DeleteTable} WHERE ${req.body.IDName}= ${req.body.tableID}`);
 						connection.query(`DELETE FROM ${req.body.DeleteTable} WHERE ${req.body.IDName}= ${req.body.tableID}`, function (err, result, fields) {
 							if (err) res.status(500).send(err);
 						});

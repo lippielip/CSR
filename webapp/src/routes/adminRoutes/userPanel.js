@@ -1,7 +1,6 @@
 import * as React from 'react';
 import ReactTable from 'react-table';
 import jQuery from 'jquery'
-import 'react-table/react-table.css';
 import API_URL from '../../variables'
 import loadingScreen from '../../methods/loadingscreen';
 import {Trash, Edit } from 'react-feather';
@@ -28,18 +27,6 @@ export default class UserTable extends React.Component {
         document.getElementById('Topic').value = this.state.rowVal.original.Topic;
         document.getElementById('Category').value = this.state.rowVal.original.Presentation_Category;
       document.getElementById('start').value = this.state.rowVal.original.Date;
-      if (this.state.rowVal.original.Pending_Presentation === 10 || this.state.rowVal.original.Pending_Presentation === 1) {
-        document.getElementById('start').readOnly = true;
-        document.getElementById('start').className = "form-control disabled"
-      } else {
-        document.getElementById('start').readOnly = false;
-        document.getElementById('start').className = "form-control"
-      }
-        if (this.state.rowVal.original.Presentation_Held === 1 || this.state.rowVal.original.Pending_Presentation !== 10) {
-            document.getElementById('tokenChanger').className = "d-none"
-        } else {
-            document.getElementById('tokenChanger').className = ""
-        }
         (function($){
           $('#EditPopup').modal('toggle');
            })(jQuery);
@@ -80,7 +67,7 @@ export default class UserTable extends React.Component {
            })(jQuery);
         
     };
-
+//cancel a presentation => maybe remove or change 
     async handleCancel() {
         await fetch(API_URL + "/cancel", {
             method: 'POST',
@@ -116,27 +103,13 @@ export default class UserTable extends React.Component {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          DeleteTable: ['presentations'],
-          IDName: ['Presentation_ID'],
-          tableID: [this.state.rowVal.original.Presentation_ID],
+          DeleteTable: ['users'],
+          IDName: ['User_ID'],
+          tableID: [this.state.rowVal.original.User_ID],
           username: sessionStorage.getItem('username'),
           token: sessionStorage.getItem('token'),
-          held: this.state.rowVal.original.Pending_Presentation
         })
         })
-        if (this.state.rowVal.original.Presentation_Held === 1) {
-            await fetch(API_URL + "/change", {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-              body: JSON.stringify({
-                    categoryName: `Amount_${this.state.rowVal.original.Presentation_Category}`,
-                    sign: "-",
-                    Id: this.state.rowVal.original.User_ID
-                })
-            })
-    }
         await this.fetchTable();
         this.toggleDeletePopup();
     }
@@ -151,7 +124,7 @@ export default class UserTable extends React.Component {
          body: JSON.stringify({
            username: sessionStorage.getItem('username'),
            token: sessionStorage.getItem('token'),
-           select:'User_ID, Username, E_Mail, FirstName, LastName, CancelTokens, Pending_Presentation, Last_Probability, Amount_A, Amount_B, Amount_C, Authentication_Level',
+           select:'User_ID, Username, E_Mail, FirstName, LastName, CancelTokens, Pending_Presentation, Last_Probability, Amount_A, Amount_B, Amount_C, Authentication_Level, Password',
            tableName: 'users'
           })
         })
@@ -201,14 +174,20 @@ render() {
         filterAll: true
       },
       {
-        id: "Cancel Tokens",
-        Header: "CancelTokens",
+        Header: "Cancel Tokens",
+        accessor:"CancelTokens",
         style: { whiteSpace: "unset" },
         filterAll: true
       },
       {
-        id: "Pending Presentation",
-        Header: "Pending_Presentation",
+        Header: "Pending Presentation",
+        accessor:"Pending_Presentation",
+        style: { whiteSpace: "unset" },
+        filterAll: true
+      },
+      {
+        Header: "Authentication Level",
+        accessor:"Authentication_Level",
         style: { whiteSpace: "unset" },
         filterAll: true
       },
@@ -242,12 +221,6 @@ render() {
     ]}
     filterable={true}
     resizable={false}
-    defaultSorted={[
-      {
-        id: "date",
-        desc: true
-      }
-    ]}
   ></ReactTable>
 
   <div
@@ -375,7 +348,10 @@ render() {
         </div>
         <div className="modal-body">
           <br />
-          <div>Are you sure you want to delete this Entry?</div>
+          <h2>CAUTION!</h2>
+          <br/>
+          <div>This Action is irreversible and will remove the user and everything associated with them.</div>
+          <div>Are you sure you want to continue?</div>
           <br />
         </div>
         <div className="modal-footer">

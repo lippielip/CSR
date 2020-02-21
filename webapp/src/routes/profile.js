@@ -1,13 +1,17 @@
 import * as React from 'react';
 import { Redirect } from 'react-router';
+import jQuery from 'jquery';
 import notAuthenticated from '../methods/notAuthenticated';
 import API_URL from '../variables';
 import loadingScreen from '../methods/loadingscreen';
+import ChangePasswordPopup from '../popups/ChangePasswordPopup';
+import ChangeEmailPopup from '../popups/ChangeEmailPopup';
+import ChangeUsernamePopup from '../popups/ChangeUsernamePopup';
 
 let event = {
-	title                 : '',
-	start                 : '',
-	Presentation_Category : 'A'
+	title: '',
+	start: '',
+	Presentation_Category: 'A'
 };
 
 class User extends React.Component {
@@ -15,25 +19,26 @@ class User extends React.Component {
 		super(props);
 
 		this.state = {
-			isLoading             : true,
-			redirect              : false,
-			showPresentationPopup : false,
-			data                  : ''
+			isLoading: true,
+			redirect: false,
+			showPresentationPopup: false,
+			data: ''
 		};
+		this.fetchTable = this.fetchTable.bind(this);
 	}
 
 	async fetchTable () {
 		await fetch(API_URL + '/getter', {
-			method  : 'POST',
-			headers : {
-				'Content-Type' : 'application/json'
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
 			},
-			body    : JSON.stringify({
-				username     : sessionStorage.getItem('username'),
-				token        : sessionStorage.getItem('token'),
-				select       : 'User_ID, Pending_Presentation, Amount_A, Amount_B, Amount_C ',
-				tableName    : 'users',
-				selectiveGet : `WHERE Username = '${sessionStorage.getItem('username')}'`
+			body: JSON.stringify({
+				username: sessionStorage.getItem('username'),
+				token: sessionStorage.getItem('token'),
+				select: 'User_ID, Username, E_Mail, Pending_Presentation, Amount_A, Amount_B, Amount_C, Last_Probability, CancelTokens, Authentication_Level ',
+				tableName: 'users',
+				selectiveGet: `WHERE Username = '${sessionStorage.getItem('username')}'`
 			})
 		})
 			.then((response) => response.json())
@@ -43,10 +48,6 @@ class User extends React.Component {
 		}
 	}
 
-	handleOnChange (e) {
-		event[e.target.getAttribute('name')] = e.target.value;
-	}
-
 	getNextDayOfWeek (date, dayOfWeek) {
 		var resultDate = date;
 		resultDate.setDate(date.getDate() + (7 + dayOfWeek - date.getDay()) % 7);
@@ -54,40 +55,50 @@ class User extends React.Component {
 		return resultDate;
 	}
 
-	async componentDidMount () {
-		await this.fetchTable();
-		event.start = await this.getNextDayOfWeek(new Date(), 5).toISOString().split('T')[0];
-		await this.setState({ isLoading: false });
-	}
-
 	async handleSubmit () {
 		await await fetch(API_URL + '/add', {
-			method  : 'POST',
-			headers : {
-				'Content-Type' : 'application/json'
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
 			},
-			body    : JSON.stringify({
-				username     : sessionStorage.getItem('username'),
-				token        : sessionStorage.getItem('token'),
-				presentation : {
-					Topic                 : event.title,
-					Presenter             : sessionStorage.getItem('username'),
-					Presentation_Category : event.Presentation_Category,
-					Date                  : event.start
+			body: JSON.stringify({
+				username: sessionStorage.getItem('username'),
+				token: sessionStorage.getItem('token'),
+				presentation: {
+					Topic: event.title,
+					Presenter: sessionStorage.getItem('username'),
+					Presentation_Category: event.Presentation_Category,
+					Date: event.start
 				}
 			})
 		});
 		await fetch(API_URL + '/PendingState', {
-			method  : 'POST',
-			headers : {
-				'Content-Type' : 'application/json'
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
 			},
-			body    : JSON.stringify({
-				username : sessionStorage.getItem('username'),
-				token    : sessionStorage.getItem('token')
+			body: JSON.stringify({
+				username: sessionStorage.getItem('username'),
+				token: sessionStorage.getItem('token')
 			})
 		});
 		this.setState({ redirect: true });
+	}
+
+	togglePopups (e) {
+		(function ($) {
+			$(`#${e.target.name}`).modal('toggle');
+		})(jQuery);
+	}
+
+	handleOnChange (e) {
+		event[e.target.getAttribute('name')] = e.target.value;
+	}
+
+	async componentDidMount () {
+		await this.fetchTable();
+		event.start = await this.getNextDayOfWeek(new Date(), 5).toISOString().split('T')[0];
+		this.setState({ isLoading: false });
 	}
 
 	render () {
@@ -146,6 +157,60 @@ class User extends React.Component {
 				return (
 					<div className="container-fluid">
 						<h1 className="">My Profile</h1>
+						<br />
+						<br />
+						<div className="row">
+							<div className="col-md-5">
+								<h2>Stats</h2>
+								<h5 className="biggerMargin">Username: {this.state.data.Username}</h5>
+								<h5 className="biggerMargin">E-Mail: {this.state.data.E_Mail}</h5>
+								<h5 className="biggerMargin">
+									A Presentations: {this.state.data.Amount_A} | B Presentations: {this.state.data.Amount_B} | C Presentations: {this.state.data.Amount_C}
+								</h5>
+							</div>
+							<div className="col-sm">
+								<div className="card bg-dark">
+									<div className="card-body">
+										<h5 className="card-title">Change your E-Mail</h5>
+										<p className="card-text">Want to use a different E-Mail?</p>
+										<button className="btn btn-primary" name="ChangeEmailPopup" onClick={this.togglePopups}>
+											Confirm
+										</button>
+										<ChangeEmailPopup fetchTable={this.fetchTable} />
+									</div>
+								</div>
+							</div>
+							<div className="col-sm">
+								<div className="card bg-dark">
+									<div className="card-body">
+										<h5 className="card-title">Change your Username</h5>
+										<p className="card-text">Want a different Username?</p>
+										<button className="btn btn-primary" name="ChangeUsernamePopup" onClick={this.togglePopups}>
+											Confirm
+										</button>
+										<ChangeUsernamePopup fetchTable={() => this.fetchTable()} />
+									</div>
+								</div>
+							</div>
+						</div>
+						<div className="row">
+							<div className="col-md-5">
+								<h5 className="biggerMargin">Cancel Tokens left: {this.state.data.CancelTokens}</h5>
+								<h5 className="biggerMargin">Last Probability: {this.state.data.Last_Probability}% </h5>
+							</div>
+							<div className="col-sm">
+								<div className="card bg-dark">
+									<div className="card-body">
+										<h5 className="card-title">Change your Password</h5>
+										<p className="card-text">Want a new Password?</p>
+										<button className="btn btn-primary" name="ChangePasswordPopup" onClick={this.togglePopups}>
+											Confirm
+										</button>
+										<ChangePasswordPopup fetchTable={() => this.fetchTable()} />
+									</div>
+								</div>
+							</div>
+						</div>
 					</div>
 				);
 			}

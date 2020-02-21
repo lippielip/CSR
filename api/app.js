@@ -9,9 +9,9 @@ var CronJob = require('cron').CronJob;
 
 // allow cross origin post and get
 var corsOptions = {
-	allowedHeaders : 'Content-Type, Access-Control-Allow-Origin',
-	orgin          : '*',
-	allowedMethods : 'POST,GET'
+	allowedHeaders: 'Content-Type, Access-Control-Allow-Origin',
+	origin: 'https://3dstudis.net', //change to webapp domain name
+	allowedMethods: 'POST,GET'
 };
 // import of all routes
 var MariaDbGetter = require('./routes/get/getter');
@@ -30,11 +30,14 @@ var CancelPresentation = require('./routes/update/cancelPresentation');
 var NewUserRouter = require('./routes/authentication/newUser');
 var ForgotPassword = require('./routes/authentication/forgotPassword');
 var ForgotPasswordSubmit = require('./routes/authentication/forgotPasswordSubmit');
+var ChangePasswordSubmit = require('./routes/authentication/ChangePasswordSubmit');
+var ChangeUsernameSubmit = require('./routes/authentication/ChangeUsernameSubmit');
+var ChangeEmailSubmit = require('./routes/authentication/ChangeEmailSubmit');
 var checkResetToken = require('./routes/authentication/checkResetToken');
 var app = express();
 
-const job1 = new CronJob(
-	'0 5 * * mon',
+new CronJob(
+	'00 5 * * mon',
 	async function () {
 		console.log('executing weekly event...');
 		PickWeeklyPresenters();
@@ -44,9 +47,9 @@ const job1 = new CronJob(
 	'Europe/Berlin'
 );
 
-const job2 = new CronJob(
-	'30 5 * * *',
-	function () {
+new CronJob(
+	'00 11 * * *',
+	async function () {
 		console.log('Fetching Presentation Status...');
 		CheckPresentationStatus();
 	},
@@ -55,14 +58,13 @@ const job2 = new CronJob(
 	'Europe/Berlin'
 );
 
-job1.start();
-job2.start();
-
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 
+// comment out for production build
 app.use(logger('dev'));
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
@@ -85,6 +87,9 @@ app.use('/cancel', CancelPresentation);
 app.use('/NewUser', NewUserRouter);
 app.use('/forgot', ForgotPassword);
 app.use('/forgotPasswordSubmit', ForgotPasswordSubmit);
+app.use('/changePasswordSubmit', ChangePasswordSubmit);
+app.use('/changeEmailSubmit', ChangeEmailSubmit);
+app.use('/changeUsernameSubmit', ChangeUsernameSubmit);
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
 	next(createError(404));

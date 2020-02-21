@@ -11,44 +11,52 @@ class forgotPassword extends React.Component {
 		super(props);
 
 		this.state = {
-			isLoading  : true,
-			statusCode : ''
+			isLoading: true,
+			statusCode: ''
 		};
 	}
-	handleChange () {
+	handleChange (e) {
 		document.getElementById('ResetPasswordError').innerHTML = '';
+		if (e.target.value.includes("'")) {
+			if (!e.target.classList.contains('invalid')) e.target.classList.add('invalid');
+		} else {
+			if (e.target.classList.contains('invalid')) e.target.classList.remove('invalid');
+		}
 	}
 	async handleSubmit () {
-		if (document.getElementById('forgotPasswordInput').value === document.getElementById('forgotConfirmPasswordInput').value) {
-			if (document.getElementById('forgotPasswordInput').value === '') {
-				document.getElementById('ResetPasswordError').innerHTML = 'Nothing to submit';
-			} else {
-				await fetch(API_URL + '/forgotPasswordSubmit', {
-					method  : 'POST',
-					headers : {
-						'Content-Type' : 'application/json'
-					},
-					body    : JSON.stringify({
-						password        : document.getElementById('forgotPasswordInput').value,
-						confirmPassword : document.getElementById('forgotConfirmPasswordInput').value,
-						token           : new URLSearchParams(window.location.search).get('token')
-					})
-				}).then((response) => {
-					if (response.status === 200) {
-						document.getElementById('ResetPasswordSuccess').innerHTML = 'Password successfully changed!';
-				window.setTimeout(function () {
-					browserHistory.push('/');
-				}, 1500);
-					} else {
-						if (response.status === 404) {
-							document.getElementById('ResetPasswordError').innerHTML = "Password was not changed!";
-						}
-					}
-				});
-				
-			}
+		if (document.getElementById('forgotPasswordInput').className.includes('invalid')) {
+			document.getElementById('ResetPasswordError').innerHTML = 'Forbidden Characters detected.';
 		} else {
-			document.getElementById('ResetPasswordError').innerHTML = "Passwords don't match";
+			if (document.getElementById('forgotPasswordInput').value === document.getElementById('forgotConfirmPasswordInput').value) {
+				if (document.getElementById('forgotPasswordInput').value === '') {
+					document.getElementById('ResetPasswordError').innerHTML = 'Nothing to submit';
+				} else {
+					await fetch(API_URL + '/forgotPasswordSubmit', {
+						method: 'POST',
+						headers: {
+							'Content-Type': 'application/json'
+						},
+						body: JSON.stringify({
+							password: document.getElementById('forgotPasswordInput').value,
+							confirmPassword: document.getElementById('forgotConfirmPasswordInput').value,
+							token: new URLSearchParams(window.location.search).get('token')
+						})
+					}).then((response) => {
+						if (response.status === 200) {
+							document.getElementById('ResetPasswordSuccess').innerHTML = 'Password successfully changed!';
+							window.setTimeout(function () {
+								browserHistory.push('/');
+							}, 1500);
+						} else {
+							if (response.status === 404) {
+								document.getElementById('ResetPasswordError').innerHTML = 'Password was not changed!';
+							}
+						}
+					});
+				}
+			} else {
+				document.getElementById('ResetPasswordError').innerHTML = "Passwords don't match";
+			}
 		}
 	}
 

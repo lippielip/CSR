@@ -20,25 +20,10 @@ router.post('/', async function (req, res, next) {
 						res.status(304).send();
 					} else {
 						var proplength = Object.values(req.body[category]).length; // category amount
-						console.log('\x1b[31m', `Property Amount for Category ${category}: ${proplength}`, '\x1b[0m');
 						for (let j = 0; j < proplength; j++) {
 							// loop through all properties
 							values = Object.values(req.body[category])[j];
 							keys = Object.keys(req.body[category])[j];
-							console.log(
-								'\x1b[34m',
-								`UPDATE`,
-								'\x1b[0m',
-								` ${category}`,
-								'\x1b[32m',
-								`SET`,
-								'\x1b[0m',
-								`${keys} = '${values}'`,
-								'\x1b[32m',
-								`WHERE`,
-								'\x1b[0m',
-								`${req.body.idInfo.idName} = ${req.body.idInfo.id}`
-							);
 							connection.query(`UPDATE ${category} SET ${keys} = '${values}' WHERE ${req.body.idInfo.idName} = ${req.body.idInfo.id} `, function (
 								err,
 								result,
@@ -52,25 +37,10 @@ router.post('/', async function (req, res, next) {
 				});
 			} else {
 				var proplength = Object.values(req.body[category]).length; // category amount
-				console.log('\x1b[31m', `Property Amount for Category ${category}: ${proplength}`, '\x1b[0m');
 				for (let j = 0; j < proplength; j++) {
 					// loop through all properties
 					values = Object.values(req.body[category])[j];
 					keys = Object.keys(req.body[category])[j];
-					console.log(
-						'\x1b[34m',
-						`UPDATE`,
-						'\x1b[0m',
-						` ${category}`,
-						'\x1b[32m',
-						`SET`,
-						'\x1b[0m',
-						`${keys} = '${values}'`,
-						'\x1b[32m',
-						`WHERE`,
-						'\x1b[0m',
-						`${req.body.idInfo.idName} = ${req.body.idInfo.id}`
-					);
 					connection.query(`UPDATE ${category} SET ${keys} = '${values}' WHERE ${req.body.idInfo.idName} = ${req.body.idInfo.id} `, function (err, result, fields) {
 						if (err) console.log(err);
 					});

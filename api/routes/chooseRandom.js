@@ -2,15 +2,42 @@ var pool = require('./database');
 var mail = require('./email/mailswitch');
 var getMissingPeople = require('./get/getMissingPeople');
 var getNewPresentations = require('./get/getNewPresentations');
+
 /* Random Function weighting of different Presentation Types */
+/*************************************************************/
+/************************MODIFIERS****************************/
+
 const A_WEIGHT = 1;
 const B_WEIGHT = 1.5;
 const C_WEIGHT = 2;
 const WEIGHT_FACTOR = 10000;
+//define what Authentication levels have to present (everything inside these two values have to present)
+const AUTHENTICATION_UPPER_LIMIT = 6;
+const AUTHENTICATION_LOWER_LIMIT = 4;
+
+/*************************************************************/
 
 let probability;
 let IDmap = [];
 let voluntaryCount = 0;
+var d = new Date();
+
+function getWeekNumber (d) {
+	// Copy date so don't modify original
+	d = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+	// Set to nearest Thursday: current date + 4 - current day number
+	// Make Sunday's day number 7
+	d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay() || 7));
+	// Get first day of year
+	var yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+	// Calculate full weeks to nearest Thursday
+	var weekNo = Math.ceil(((d - yearStart) / 86400000 + 1) / 7);
+	// Return array of year and week number
+	return [
+		d.getUTCFullYear(),
+		weekNo
+	];
+}
 
 function rand (min, max) {
 	return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -115,11 +142,11 @@ async function GetPresentPeople (MissingPeople, NewPresentations) {
 				async function (err, result, fields) {
 					if (err) console.log(err);
 					for (let i = 0; i < result.length; i++) {
-						if (result[i].Authentication_Level > 5) {
+						if (result[i].Authentication_Level > AUTHENTICATION_UPPER_LIMIT) {
 							console.log('\x1b[35m', 'Ignoring User with preferred Matchmaking: ' + result[i].Username, '\x1b[0m');
 							continue;
 						}
-						if (result[i].Authentication_Level < 5) {
+						if (result[i].Authentication_Level < AUTHENTICATION_LOWER_LIMIT) {
 							console.log('\x1b[35m', 'Ignoring Guest User: ' + result[i].Username, '\x1b[0m');
 							continue;
 						}
@@ -141,12 +168,12 @@ async function GetPresentPeople (MissingPeople, NewPresentations) {
 									if (err) console.log(err);
 								});
 								IDmap.push({
-									User_ID            : result[i].User_ID,
-									Username           : result[i].Username,
-									Presentations_held : result[i].Amount_A * A_WEIGHT + result[i].Amount_B * B_WEIGHT + result[i].Amount_C * C_WEIGHT,
-									E_Mail             : result[i].E_Mail,
-									FirstName          : result[i].FirstName,
-									LastName           : result[i].LastName
+									User_ID: result[i].User_ID,
+									Username: result[i].Username,
+									Presentations_held: result[i].Amount_A * A_WEIGHT + result[i].Amount_B * B_WEIGHT + result[i].Amount_C * C_WEIGHT,
+									E_Mail: result[i].E_Mail,
+									FirstName: result[i].FirstName,
+									LastName: result[i].LastName
 								});
 							} else {
 								/*if someoneone is present, then if they havent held a presentation last week, get the sum of the presentations they have held this year
@@ -154,12 +181,12 @@ async function GetPresentPeople (MissingPeople, NewPresentations) {
 								  normal probability*/
 								if (result[i].Pending_Presentation != 10) {
 									IDmap.push({
-										User_ID            : result[i].User_ID,
-										Username           : result[i].Username,
-										Presentations_held : result[i].Amount_A * A_WEIGHT + result[i].Amount_B * B_WEIGHT + result[i].Amount_C * C_WEIGHT,
-										E_Mail             : result[i].E_Mail,
-										FirstName          : result[i].FirstName,
-										LastName           : result[i].LastName
+										User_ID: result[i].User_ID,
+										Username: result[i].Username,
+										Presentations_held: result[i].Amount_A * A_WEIGHT + result[i].Amount_B * B_WEIGHT + result[i].Amount_C * C_WEIGHT,
+										E_Mail: result[i].E_Mail,
+										FirstName: result[i].FirstName,
+										LastName: result[i].LastName
 									});
 									connection.query(`UPDATE users SET Pending_Presentation = 0 WHERE User_ID = ${result[i].User_ID} `, function (err, result, fields) {
 										if (err) console.log(err);
@@ -168,12 +195,12 @@ async function GetPresentPeople (MissingPeople, NewPresentations) {
 									//low prob of getting picked
 									console.log('\x1b[36m', 'Ignoring user: ' + result[i].Username + ' (last presenter)', '\x1b[0m');
 									IDmap.push({
-										User_ID            : result[i].User_ID,
-										Username           : result[i].Username,
-										Presentations_held : 100,
-										E_Mail             : result[i].E_Mail,
-										FirstName          : result[i].FirstName,
-										LastName           : result[i].LastName
+										User_ID: result[i].User_ID,
+										Username: result[i].Username,
+										Presentations_held: 100,
+										E_Mail: result[i].E_Mail,
+										FirstName: result[i].FirstName,
+										LastName: result[i].LastName
 									});
 									connection.query(`UPDATE users SET Pending_Presentation = 0 WHERE User_ID = ${result[i].User_ID} `, function (err, result, fields) {
 										if (err) console.log(err);
@@ -193,13 +220,41 @@ async function GetPresentPeople (MissingPeople, NewPresentations) {
 
 async function PickWeeklyPresenters () {
 	console.log('\x1b[33m', 'Picking Presenters...', '\x1b[0m');
+	var currentWeek = getWeekNumber(d);
+
+	// Special function that resets the Presentation amount of every user for the new year (happens yearly)
+	if (currentWeek[1] === 1) {
+		pool.getConnection(async function (err, connection) {
+			if (err) {
+				console.log(err);
+				return res.status(400).send("Couldn't get a connection");
+			}
+			await connection.query(`UPDATE users SET Amount_A = 0, Amount_B = 0, Amount_C = 0`, async function (err, result) {
+				if (err) console.log(err);
+			});
+			connection.release();
+		});
+	}
+
 	//Check if enough people are present, regardless of if they had a presentation last week
 	let MissingPeople = await getMissingPeople();
 	let NewPresentations = await getNewPresentations();
 	await GetPresentPeople(MissingPeople, NewPresentations);
-
 	if (IDmap.length <= 3) {
 		mail(-1);
+		pool.getConnection(async function (err, connection) {
+			if (err) {
+				console.log(err);
+				return res.status(400).send("Couldn't get a connection");
+			}
+			await connection.query(`INSERT INTO presentation_status (Year, Calendar_Week, Status) VALUES ("${currentWeek[0]}","${currentWeek[1]}","-1")`, async function (
+				err,
+				result
+			) {
+				if (err) console.log(err);
+			});
+			connection.release();
+		});
 	} else {
 		const USER_AMOUNT = IDmap.length;
 		let Presenter1;
@@ -244,7 +299,10 @@ async function PickWeeklyPresenters () {
 		}
 		let IdIndex3 = await getModerator(IDmap);
 		let Moderator = IDmap[IdIndex3];
-		let users = [ Presenter1, Presenter2 ];
+		let users = [
+			Presenter1,
+			Presenter2
+		];
 		mail(0, users, Moderator);
 		console.log('\x1b[33m', 'Success!', '\x1b[0m');
 	}
