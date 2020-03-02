@@ -139,7 +139,7 @@ export default class Login extends React.Component {
 								</div>
 							</div>
 							<div id="error" className="text-danger" />
-							<button type="submit" className="btn btn-danger col-lg-2" style={{ marginTop: '20px' }}>
+							<button type="submit" id="loginButton" className="btn col-lg-2" style={{ marginTop: '20px' }}>
 								Login
 							</button>
 							<div className="input-group centered">

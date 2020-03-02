@@ -1,3 +1,3 @@
-const API_URL = 'https://3dstudis.net';
+const API_URL = 'http://localhost:8000';
 
 module.exports = API_URL;

@@ -2,6 +2,7 @@ const pool = require('../database');
 const html = require('./mailtemplate');
 const mailgun = require('../mailgun');
 const SENDER_MAIL = mailgun.sender;
+const DOMAIN_NAME = process.env.DOMAIN_NAME;
 const mg = mailgun.mg;
 let emails = '';
 let data;
@@ -24,23 +25,25 @@ async function sendMail (caseVar, users, moderator, Presentations) {
 	emails = await getEmails();
 	switch (caseVar) {
 		case -1:
+			//canceled Mail
 			data = {
 				from: SENDER_MAIL,
 				to: emails,
 				subject: 'Colloquium Planning',
 				html: `${html(
-					`<p>Das Colloquium wird diese Woche nicht stattfinden, da nicht genug Leute anwesend sind.</p>
+					`<p>Das nächste Colloquium wird nicht stattfinden, da nicht genug Leute anwesend sind.</p>
 					<p>Wir wünschen euch noch eine schöne Woche!</p>
 					`
 				)}`
 			};
 			mg.messages().send(data, function (error, body) {
 				if (error) console.log(error);
-				console.log(body);
+				//console.log(body);
 			});
 			break;
 
 		case 0:
+			// Choose Random Mail
 			data = {
 				from: SENDER_MAIL,
 				to: emails,
@@ -64,101 +67,75 @@ async function sendMail (caseVar, users, moderator, Presentations) {
 				console.log(body);
 			});
 			break;
-
 		case 1:
 			data = {
 				from: SENDER_MAIL,
 				to: emails,
 				subject: 'Colloquium Planning',
 				html: `${html(
-					`<p>Beide Presentationen wurden eingetragen.</p>
-			<p>Die Rundmail wird in kürze verschickt!</p>`
+					`<p>Es wurden noch keine Präsentationen für den nächsten Termin eingetragen.</p>
+					<p>Wir wünschen euch noch eine schöne Woche!</p>
+					`
 				)}`
 			};
-
 			mg.messages().send(data, function (error, body) {
 				if (error) console.log(error);
-				console.log(body);
+				//console.log(body);
 			});
 			break;
 
 		case 2:
-			if (users[0].Pending_Presentation === 1) {
-				onelate(users[0].FirstName, users[1].FirstName);
-			} else {
-				onelate(users[1].FirstName, users[0].FirstName);
-			}
-			break;
-
-		case 3:
+			//canceled Mail
 			data = {
 				from: SENDER_MAIL,
-				to: emails,
+				to: users,
 				subject: 'Colloquium Planning',
 				html: `${html(
-					`<p>${users[0].FirstName} und ${users[1].FirstName} haben noch keine Vorträge eingetragen!</p>
-					<p> Bitte zeitnah einen Vortrag eintragen!`
+					`<p>Das nächste Colloquium wird am ${Presentations} stattfinden. Ist dieser Termin warnehmbar?</p>
+					<a href="${DOMAIN_NAME}/confirmattendance?token=${moderator}&answer=1" class="btn-primary" itemprop="url" style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; color: #FFF; text-decoration: none; line-height: 2em; font-weight: bold; text-align: center; cursor: pointer; display: inline-block; border-radius: 5px; text-transform: capitalize; background-color: #348eda; margin: 0; border-color: #348eda; border-style: solid; border-width: 10px 20px;">Ja</a>
+					<a href="${DOMAIN_NAME}/confirmattendance?token=${moderator}&answer=0" class="btn-primary" itemprop="url" style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; color: #FFF; text-decoration: none; line-height: 2em; font-weight: bold; text-align: center; cursor: pointer; display: inline-block; border-radius: 5px; text-transform: capitalize; background-color: #348eda; margin: 0; border-color: #348eda; border-style: solid; border-width: 10px 20px;">Nein</a>
+					`
 				)}`
 			};
-
 			mg.messages().send(data, function (error, body) {
 				if (error) console.log(error);
-				console.log(body);
+				//console.log(body);
 			});
 			break;
 
 		case 4:
+			//Broad Info mail
+			let htmlBlock = '';
+			for (let i = 0; i < users.length; i++) {
+				htmlBlock += `<tr>\
+<td>${users[i].User_ID === Presentations[i].Presenter ? Presentations[i].Topic : 'Nicht eingetragen'}</td>\
+<td>${users[i].FirstName}</td>\
+<td>${users[i].User_ID === Presentations[i].Presenter ? Presentations[i].Presentation_Category : 'Nicht eingetragen'}</td>\
+</tr>`;
+			}
+			console.dir(htmlBlock);
 			data = {
 				from: SENDER_MAIL,
 				to: emails,
 				subject: 'Colloquium Planning',
 				html: `${html(
-					`<p>hier die Themen des Colloquiums der aktuellen Woche:</p>
+					`<p>hier die eingetragenen Themen des nächsten Colloquiums:</p>
 				<table>
 						<tr>
 						  <th>Thema</th>
 						  <th>Vortragender</th>
 						  <th>Kategorie</th>
 						</tr>
-						<tr>
-						  <td>${users[0].User_ID === Presentations[0].Presenter ? Presentations[0].Topic : Presentations[1].Topic || 'Nicht eingetragen'}</td>
-						  <td>${users[0].FirstName}</td>
-						  <td>${users[0].User_ID === Presentations[0].Presenter ? Presentations[0].Presentation_Category : Presentations[1].Presentation_Category || 'Nicht eingetragen'}</td>
-						</tr>
-						<tr>
-						  <td>${users[1].User_ID === Presentations[1].Presenter ? Presentations[1].Topic : Presentations[0].Topic || 'Nicht eingetragen'}</td>
-						  <td>${users[1].FirstName}</td>
-						  <td>${users[1].User_ID === Presentations[1].Presenter ? Presentations[1].Presentation_Category : Presentations[0].Presentation_Category || 'Nicht eingetragen'}</td>
-						</tr>
-					  </table>
-					  <br>
-					  <p>Der Moderator dieser Woche ist : <b>${moderator.FirstName}</b></p>`
+						${htmlBlock}
+					  </table>`
 				)}`
 			};
-
 			mg.messages().send(data, function (error, body) {
 				if (error) console.log(error);
-				console.log(body);
+				//console.log(body);
 			});
 			break;
 	}
-}
-
-function onelate (lateUser, goodUser) {
-	data = {
-		from: SENDER_MAIL,
-		to: emails,
-		subject: 'Colloquium Planning',
-		html: `${html(
-			`<p>Vortrag von ${goodUser} wurde eingetragen.</p>
-			<p>${lateUser} muss noch einen Vortrag eintragen.</p>`
-		)}`
-	};
-
-	mg.messages().send(data, function (error, body) {
-		if (error) console.log(error);
-		console.log(body);
-	});
 }
 
 module.exports = sendMail;
