@@ -1,8 +1,8 @@
 -- --------------------------------------------------------
 -- Host:                         127.0.0.1
--- Server Version:               10.4.6-MariaDB - mariadb.org binary distribution
+-- Server Version:               10.5.0-MariaDB - mariadb.org binary distribution
 -- Server Betriebssystem:        Win64
--- HeidiSQL Version:             10.2.0.5599
+-- HeidiSQL Version:             10.3.0.5771
 -- --------------------------------------------------------
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
@@ -23,15 +23,35 @@ CREATE TABLE IF NOT EXISTS `auth_level` (
   PRIMARY KEY (`Auth_Level_ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
--- Exportiere Daten aus Tabelle csr_db.auth_level: ~3 rows (ungefähr)
-DELETE FROM `auth_level`;
+-- Exportiere Daten aus Tabelle csr_db.auth_level: ~4 rows (ungefähr)
 /*!40000 ALTER TABLE `auth_level` DISABLE KEYS */;
-INSERT INTO `auth_level` (`Auth_Level_ID`, `Definition`) VALUES
+REPLACE INTO `auth_level` (`Auth_Level_ID`, `Definition`) VALUES
 	(1, 'Guest'),
 	(5, 'Standard\r\n'),
 	(7, 'Business Expert'),
 	(10, 'Super Admin');
 /*!40000 ALTER TABLE `auth_level` ENABLE KEYS */;
+
+-- Exportiere Struktur von Tabelle csr_db.options
+CREATE TABLE IF NOT EXISTS `options` (
+  `Option_ID` int(11) NOT NULL AUTO_INCREMENT,
+  `Name` text DEFAULT NULL,
+  `Selected` bit(1) NOT NULL DEFAULT b'0' COMMENT 'Determine which option is selected',
+  `Choose_Random` int(11) DEFAULT NULL COMMENT 'Enable or disable choose random cors job (changes chooseRandom function)',
+  `Email_Frequency` int(11) DEFAULT NULL COMMENT 'Email frequency in days (changes dailyCheck function)',
+  `Colloquium_Frequency` int(11) DEFAULT NULL COMMENT 'Min time between last and next Colloquium (changes dailyCheck date lookahead/ compare)',
+  `Comment` text DEFAULT NULL,
+  `Next_Colloquium` date DEFAULT NULL,
+  PRIMARY KEY (`Option_ID`)
+) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=latin1;
+
+-- Exportiere Daten aus Tabelle csr_db.options: ~4 rows (ungefähr)
+/*!40000 ALTER TABLE `options` DISABLE KEYS */;
+REPLACE INTO `options` (`Option_ID`, `Name`, `Selected`, `Choose_Random`, `Email_Frequency`, `Colloquium_Frequency`, `Comment`, `Next_Colloquium`) VALUES
+	(1, 'Default', b'1', 1, 1, 7, 'default option (One colloquium every week with a daily check)', NULL),
+	(2, 'no random', b'0', 0, 1, 7, 'no random choosing but still every week with daily mail (voluntary colloquium)', NULL),
+	(3, 'monthly', b'0', 0, 7, 30, 'no random choosing and only monthly', '2020-03-30');
+/*!40000 ALTER TABLE `options` ENABLE KEYS */;
 
 -- Exportiere Struktur von Tabelle csr_db.outofoffice
 CREATE TABLE IF NOT EXISTS `outofoffice` (
@@ -41,11 +61,10 @@ CREATE TABLE IF NOT EXISTS `outofoffice` (
   `end` text DEFAULT NULL,
   PRIMARY KEY (`Missing_ID`),
   KEY `User_ID` (`User`),
-  CONSTRAINT `FK_outofoffice_users` FOREIGN KEY (`User`) REFERENCES `users` (`User_ID`)
-) ENGINE=InnoDB AUTO_INCREMENT=71 DEFAULT CHARSET=latin1;
+  CONSTRAINT `FK_outofoffice_users` FOREIGN KEY (`User`) REFERENCES `users` (`User_ID`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=82 DEFAULT CHARSET=latin1;
 
--- Exportiere Daten aus Tabelle csr_db.outofoffice: ~0 rows (ungefähr)
-DELETE FROM `outofoffice`;
+-- Exportiere Daten aus Tabelle csr_db.outofoffice: ~1 rows (ungefähr)
 /*!40000 ALTER TABLE `outofoffice` DISABLE KEYS */;
 /*!40000 ALTER TABLE `outofoffice` ENABLE KEYS */;
 
@@ -56,10 +75,9 @@ CREATE TABLE IF NOT EXISTS `pending_definition` (
   PRIMARY KEY (`Pending_ID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=latin1;
 
--- Exportiere Daten aus Tabelle csr_db.pending_definition: ~5 rows (ungefähr)
-DELETE FROM `pending_definition`;
+-- Exportiere Daten aus Tabelle csr_db.pending_definition: ~4 rows (ungefähr)
 /*!40000 ALTER TABLE `pending_definition` DISABLE KEYS */;
-INSERT INTO `pending_definition` (`Pending_ID`, `Definition`) VALUES
+REPLACE INTO `pending_definition` (`Pending_ID`, `Definition`) VALUES
 	(0, 'Not Presenting'),
 	(1, 'Presentation not filled in'),
 	(2, 'Moderator'),
@@ -77,11 +95,10 @@ CREATE TABLE IF NOT EXISTS `presentations` (
   `Presentation_Held` tinyint(3) unsigned DEFAULT 0,
   PRIMARY KEY (`Presentation_ID`),
   KEY `FK_presentations_users` (`Presenter`),
-  CONSTRAINT `FK_presentations_users` FOREIGN KEY (`Presenter`) REFERENCES `users` (`User_ID`)
-) ENGINE=InnoDB AUTO_INCREMENT=220 DEFAULT CHARSET=latin1;
+  CONSTRAINT `FK_presentations_users` FOREIGN KEY (`Presenter`) REFERENCES `users` (`User_ID`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=272 DEFAULT CHARSET=latin1;
 
 -- Exportiere Daten aus Tabelle csr_db.presentations: ~1 rows (ungefähr)
-DELETE FROM `presentations`;
 /*!40000 ALTER TABLE `presentations` DISABLE KEYS */;
 /*!40000 ALTER TABLE `presentations` ENABLE KEYS */;
 
@@ -102,19 +119,19 @@ CREATE TABLE IF NOT EXISTS `users` (
   `Password` text DEFAULT NULL,
   `token` tinytext DEFAULT NULL,
   `ResetToken` text DEFAULT NULL,
+  `ConfirmToken` text DEFAULT NULL,
   PRIMARY KEY (`User_ID`),
   KEY `Username` (`Username`(3072)),
   KEY `FK_users_pending_definition` (`Pending_Presentation`),
   KEY `FK_users_auth_level` (`Authentication_Level`),
   CONSTRAINT `FK_users_auth_level` FOREIGN KEY (`Authentication_Level`) REFERENCES `auth_level` (`Auth_Level_ID`),
   CONSTRAINT `FK_users_pending_definition` FOREIGN KEY (`Pending_Presentation`) REFERENCES `pending_definition` (`Pending_ID`)
-) ENGINE=InnoDB AUTO_INCREMENT=34 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=53 DEFAULT CHARSET=latin1;
 
--- Exportiere Daten aus Tabelle csr_db.users: ~1 rows (ungefähr)
-DELETE FROM `users`;
+-- Exportiere Daten aus Tabelle csr_db.users: ~8 rows (ungefähr)
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` (`User_ID`, `Username`, `E_Mail`, `FirstName`, `LastName`, `CancelTokens`, `Pending_Presentation`, `Last_Probability`, `Amount_A`, `Amount_B`, `Amount_C`, `Authentication_Level`, `Password`, `token`, `ResetToken`) VALUES
-	(0, 'SuperAdmin', 'postmaster@mail.3dstudis.net\r\n', 'Admin', 'Admin', 2, 0, 0, 0, 0, 0, 10, '$2a$10$N84RHqbQZR8tlR8UCpvH8emde6PoWyClUWvv1HiPkW6hWVQtci.9a', NULL, NULL);
+REPLACE INTO `users` (`User_ID`, `Username`, `E_Mail`, `FirstName`, `LastName`, `CancelTokens`, `Pending_Presentation`, `Last_Probability`, `Amount_A`, `Amount_B`, `Amount_C`, `Authentication_Level`, `Password`, `token`, `ResetToken`, `ConfirmToken`) VALUES
+	(0, 'SuperAdmin', NULL, 'Admin', 'Admin', 2, 0, 0, 0, 0, 0, 10, '$2a$10$svDNxUxvcSr6pTa7uAjGa.HQpw5TfFJvUfxS7HzqyEn94y5E33Jx2', 'b2qPuBOy3z7c2rIwKEf44kpfaMTMjAeHeJwacpbnt5lgzh7r2duIAdxjHWalZCsc', NULL, NULL);
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
