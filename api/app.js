@@ -11,9 +11,9 @@ var CronTime = require('cron').CronTime;
 
 // allow cross origin post and get
 var corsOptions = {
-	allowedHeaders: 'Content-Type, Access-Control-Allow-Origin',
-	origin: 'http://localhost:3000', //origin: 'https://3dstudis.net', //change to webapp domain name
-	allowedMethods: 'POST,GET'
+	allowedHeaders : 'Content-Type, Access-Control-Allow-Origin',
+	origin         : 'http://localhost:3000', //origin: 'https://3dstudis.net', //change to webapp domain name
+	allowedMethods : 'POST,GET'
 };
 // import of all routes
 var MariaDbGetter = require('./routes/get/getter');
@@ -39,26 +39,12 @@ var ChangeSettingsSubmit = require('./routes/authentication/ChangeSettingsSubmit
 var checkResetToken = require('./routes/authentication/checkResetToken');
 var checkConfirmToken = require('./routes/update/setPendingEmailState');
 var instantCheck = require('./routes/email/instantCheck');
+var changeNextColloquium = require('./routes/update/changeNextColloquium');
 var app = express();
 
-const schedule = new CronJob(
-	'*/4 * * * * *',
-	async function () {
-		let Colloquium = await ColloquiumFrequency();
-		let Email = await EmailFrequency();
-		ChooseRandom.setTime(new CronTime(Colloquium));
-		EmailJob.setTime(new CronTime(Email));
-		ChooseRandom.start();
-		//EmailJob.start();
-		//instantCheck();
-	},
-	null,
-	false
-);
-
-const ChooseRandom = new CronJob(
-	'*/4 * * * * *',
-	async function () {
+let ChooseRandom = new CronJob(
+	'0 5 * * mon-fri',
+	async function() {
 		PickWeeklyPresenters();
 	},
 	null,
@@ -66,58 +52,29 @@ const ChooseRandom = new CronJob(
 	'Europe/Berlin'
 );
 
-const EmailJob = new CronJob(
-	'*/4 * * * * *',
-	async function () {
+let EmailJob = new CronJob(
+	'30 5 * * mon-fri',
+	async function() {
 		CheckPresentationStatus();
+	},
+	null,
+	true,
+	'Europe/Berlin'
+);
+
+let schedule = new CronJob(
+	'*/60 * * * * *',
+	async function() {
+		instantCheck();
 	},
 	null,
 	false,
 	'Europe/Berlin'
 );
-
-let ColloquiumFrequency = () => {
-	return new Promise(function (resolve, reject) {
-		pool.getConnection(function (err, connection) {
-			if (err) {
-				console.log(err);
-				resolve('0 0 5 31 2');
-				return;
-			}
-			connection.query(`SELECT Colloquium_Frequency FROM options WHERE Selected = 1`, function (err, result, fields) {
-				if (err) {
-					console.log(err);
-					resolve('0 0 5 31 2');
-					return;
-				}
-				resolve(`0 5 */${result[0].Colloquium_Frequency} * * `);
-			});
-			connection.release();
-		});
-	});
-};
-
-let EmailFrequency = () => {
-	return new Promise(function (resolve, reject) {
-		pool.getConnection(function (err, connection) {
-			if (err) {
-				console.log(err);
-				resolve('0 0 5 31 2');
-				return;
-			}
-			connection.query(`SELECT Email_Frequency FROM options WHERE Selected = 1`, function (err, result, fields) {
-				if (err) {
-					console.log(err);
-					resolve('0 0 5 31 2');
-					return;
-				}
-				resolve(`0 8 */${result[0].Email_Frequency} * * `);
-			});
-			connection.release();
-		});
-	});
-};
-
+ChooseRandom.setTime(new CronTime('0 * * * * *'));
+EmailJob.setTime(new CronTime('5 * * * * *'));
+ChooseRandom.start();
+EmailJob.start();
 schedule.start();
 
 // view engine setup
@@ -154,13 +111,14 @@ app.use('/changeEmailSubmit', ChangeEmailSubmit);
 app.use('/changeSettingsSubmit', ChangeSettingsSubmit);
 app.use('/changeUsernameSubmit', ChangeUsernameSubmit);
 app.use('/confirmattendance', checkConfirmToken);
+app.use('/changenextColloquium', changeNextColloquium);
 // catch 404 and forward to error handler
-app.use(function (req, res, next) {
+app.use(function(req, res, next) {
 	next(createError(404));
 });
 
 // error handler
-app.use(function (err, req, res, next) {
+app.use(function(err, req, res, next) {
 	// set locals, only providing error in development
 	res.locals.message = err.message;
 	res.locals.error = req.app.get('env') === 'development' ? err : {};

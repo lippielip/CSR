@@ -8,7 +8,6 @@ class ChangeSettingsPopup extends React.Component {
 		super(props);
 		this.state = {
 			isLoading: true,
-			selected: ''
 		};
 		this.handleChange = this.handleChange.bind(this);
 		this.handleSubmit = this.handleSubmit.bind(this);
@@ -49,7 +48,7 @@ class ChangeSettingsPopup extends React.Component {
 						'Content-Type': 'application/json'
 					},
 					body: JSON.stringify({
-						Option_ID: this.state.selected,
+						Option_ID: document.getElementById('ChangePresetInput').value,
 						Name: document.getElementById('NameInput').value,
 						Choose_Random: document.getElementById('Choose_RandomInput').value,
 						Email_Frequency: document.getElementById('Email_FrequencyInput').value,
@@ -94,16 +93,13 @@ class ChangeSettingsPopup extends React.Component {
 			if (e.target.classList.contains('invalid')) e.target.classList.remove('invalid');
 		}
 		if (e.target.id === 'ChangePresetInput') {
-			console.dir(document.getElementById('Choose_RandomInput').value);
-			console.dir(this.state.options[e.target.selectedIndex].Choose_Random);
+			document.getElementById('ChangePresetInput').value = this.state.options[e.target.selectedIndex].Option_ID;
 			document.getElementById('NameInput').value = this.state.options[e.target.selectedIndex].Name;
 			document.getElementById('Choose_RandomInput').value = this.state.options[e.target.selectedIndex].Choose_Random;
 			document.getElementById('Email_FrequencyInput').value = this.state.options[e.target.selectedIndex].Email_Frequency;
 			document.getElementById('Colloquium_FrequencyInput').value = this.state.options[e.target.selectedIndex].Colloquium_Frequency;
 			document.getElementById('CommentInput').value = this.state.options[e.target.selectedIndex].Comment;
-			this.setState({ selected: this.state.options[e.target.selectedIndex].Option_ID });
 		} else {
-			this.setState({ selected: '' });
 			document.getElementById('ChangePresetInput').value = '';
 		}
 	}
@@ -150,7 +146,7 @@ class ChangeSettingsPopup extends React.Component {
 												<select className="form-control" id="ChangePresetInput" name="Preset" onChange={this.handleChange}>
 													{this.getDropdownTemplate('options', 'Option_ID', 'Name', 'Comment')}
 													<option disabled hidden value="">
-														Custom Setting
+														Custom
 													</option>
 												</select>
 											</div>

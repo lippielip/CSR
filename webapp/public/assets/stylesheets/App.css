@@ -140,10 +140,14 @@
 .biggerMargin {
 	margin-bottom: 20px;
 }
-
-.card {
-	min-height: 20vh;
+.fullMargin {
+	margin-right: 10px;
+	margin-bottom: 10px;
 }
+.adminCard {
+	min-height: 24vh;
+}
+
 #loginButton {
 	background-color: #ca4a2a;
 	border-color: #ca4a2a;

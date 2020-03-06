@@ -43,7 +43,7 @@ DB_USER (default: root)
 DB_PASSWORD 
 DB_DATABASE_NAME (default: csr_db)
 DB_PORT (default: 3306)
-FRONTEND_URL (default: http://localhost:3000/)
+DOMAIN_NAME (default: http://localhost:3000/)
 
     Mailgun
 

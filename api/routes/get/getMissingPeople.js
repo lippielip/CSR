@@ -1,34 +1,31 @@
 var pool = require('../database');
 
-function getNextDayOfWeek (date, dayOfWeek) {
-	var resultDate = date;
-	resultDate.setDate(date.getDate() + (7 + dayOfWeek - date.getDay()) % 7);
-
-	return resultDate;
-}
-
-async function getMissingPeople () {
-	return new Promise(function (resolve, reject) {
+async function getMissingPeople() {
+	return new Promise(function(resolve, reject) {
 		let missingID = [];
 
-		var friday = Date.parse(getNextDayOfWeek(new Date(), 5).toISOString().split('T')[0]);
-		pool.getConnection(async function (err, connection) {
+		pool.getConnection(async function(err, connection) {
 			if (err) {
 				console.log(err);
 				return res.status(400).send("Couldn't get a connection");
 			}
-			connection.query(`SELECT User, start, end FROM outofoffice `, function (err, result, fields) {
-				if (err) return reject(err);
-				for (let i = 0; i < result.length; i++) {
-					start = Date.parse(result[i].start);
-					end = Date.parse(result[i].end);
-					if (start <= friday && friday <= end) {
-						missingID.push(result[i].User);
+			connection.query(`SELECT Next_Colloquium from options WHERE selected = 1`, function(err, result, fields) {
+				let Colloquium_Date = new Date(result[0].Next_Colloquium);
+				Colloquium_Date.setMinutes(Colloquium_Date.getMinutes() + 300);
+				Colloquium_Date = Colloquium_Date.toISOString();
+				Colloquium_Date = Colloquium_Date.split('T')[0];
+				connection.query(`SELECT User, start, end FROM outofoffice `, function(err, result, fields) {
+					if (err) return reject(err);
+					for (let i = 0; i < result.length; i++) {
+						start = result[i].start;
+						end = result[i].end;
+						if (start <= Colloquium_Date && Colloquium_Date <= end) {
+							missingID.push(result[i].User);
+						}
 					}
-				}
-				resolve(missingID);
+					resolve(missingID);
+				});
 			});
-
 			connection.release();
 		});
 	});

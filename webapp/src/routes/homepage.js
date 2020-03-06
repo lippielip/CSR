@@ -9,7 +9,7 @@ class Home extends React.Component {
 		super(props);
 
 		this.state = {
-			isLoading: true
+			isLoading : true
 		};
 	}
 
@@ -28,13 +28,7 @@ class Home extends React.Component {
 				<div className="container-fluid">
 					<br />
 					<h1>Powerpoint is suffering, Powerpoint is Colloquium</h1>
-					<img src={logo} className="App-link" alt="logo" style={{ maxHeight: '70vh', marginTop: '30px', marginBottom: '50px' }} />
-					<br />
-					<br />
-					<br />
-					<small className="text-danger small">When Life gives you Lemons... BLOOD FOR THE BLOOD GOD!</small>
-					<br />
-					<small className="text-danger">SKULLS FOR THE SKULL THRONE</small>
+					<img src={logo} className="App-link" alt="logo" style={{ height: '80vh', maxWidth: '80vw' }} />
 				</div>
 			);
 		}
