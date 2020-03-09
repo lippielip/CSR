@@ -1,6 +1,10 @@
 import * as React from 'react';
 import { Redirect } from 'react-router';
 import jQuery from 'jquery';
+import Icon from '@mdi/react';
+import { mdiEmail } from '@mdi/js';
+import { mdiAccount } from '@mdi/js';
+import { mdiKeyVariant } from '@mdi/js';
 import notAuthenticated from '../methods/notAuthenticated';
 import API_URL from '../variables';
 import loadingScreen from '../methods/loadingscreen';
@@ -22,7 +26,8 @@ class User extends React.Component {
 			isLoading: true,
 			redirect: false,
 			showPresentationPopup: false,
-			data: ''
+			data: '',
+			date: ''
 		};
 		this.fetchTable = this.fetchTable.bind(this);
 	}
@@ -43,8 +48,27 @@ class User extends React.Component {
 		})
 			.then((response) => response.json())
 			.then((res) => this.setState({ data: res[0] }));
+		await fetch(API_URL + '/getter', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({
+				username: sessionStorage.getItem('username'),
+				token: sessionStorage.getItem('token'),
+				select: 'Next_Colloquium, Choose_Random',
+				tableName: 'options',
+				selectiveGet: `WHERE Selected = 1`
+			})
+		})
+			.then((response) => response.json())
+			.then((res) => this.setState({ date: res[0] }));
 		if (this.state.data.Pending_Presentation === 1) {
 			this.setState({ showPresentationPopup: true });
+			var EventDate = new Date(this.state.date.Next_Colloquium);
+			EventDate.setMinutes(EventDate.getMinutes() + 300);
+			EventDate = EventDate.toISOString();
+			event.start = EventDate.split('T')[0];
 		}
 	}
 
@@ -97,7 +121,6 @@ class User extends React.Component {
 
 	async componentDidMount () {
 		await this.fetchTable();
-		event.start = await this.getNextDayOfWeek(new Date(), 5).toISOString().split('T')[0];
 		this.setState({ isLoading: false });
 	}
 
@@ -113,9 +136,10 @@ class User extends React.Component {
 			}
 			if (this.state.showPresentationPopup) {
 				return (
-					<div>
+					<div className="container ">
 						<h1>You have been chosen to hold a Presentation.</h1>
-						<h2>Please fill in your Topic and Presentation Category</h2>
+						<br />
+						<h3>Please fill in your Topic and Presentation Category</h3>
 						<form
 							onSubmit={(e) => {
 								e.preventDefault();
@@ -161,52 +185,53 @@ class User extends React.Component {
 						<br />
 						<div className="row">
 							<div className="col-md-5">
-								<h2>Stats</h2>
 								<h5 className="biggerMargin">Username: {this.state.data.Username}</h5>
 								<h5 className="biggerMargin">E-Mail: {this.state.data.E_Mail}</h5>
-								<h5 className="biggerMargin">
-									A Presentations: {this.state.data.Amount_A} | B Presentations: {this.state.data.Amount_B} | C Presentations: {this.state.data.Amount_C}
-								</h5>
-							</div>
-							<div className="col-sm">
-								<div className="card bg-dark">
-									<div className="card-body">
-										<h5 className="card-title">Change your E-Mail</h5>
-										<p className="card-text">Want to use a different E-Mail?</p>
-										<button className="btn btn-primary" name="ChangeEmailPopup" onClick={this.togglePopups}>
-											Confirm
-										</button>
-										<ChangeEmailPopup fetchTable={this.fetchTable} />
-									</div>
-								</div>
-							</div>
-							<div className="col-sm">
-								<div className="card bg-dark">
-									<div className="card-body">
-										<h5 className="card-title">Change your Username</h5>
-										<p className="card-text">Want a different Username?</p>
-										<button className="btn btn-primary" name="ChangeUsernamePopup" onClick={this.togglePopups}>
-											Confirm
-										</button>
-										<ChangeUsernamePopup fetchTable={() => this.fetchTable()} />
-									</div>
-								</div>
-							</div>
-						</div>
-						<div className="row">
-							<div className="col-md-5">
+								<h5 className="biggerMargin">A Presentations: {this.state.data.Amount_A}</h5>
+								<h5 className="biggerMargin">B Presentations: {this.state.data.Amount_B}</h5>
+								<h5 className="biggerMargin">C Presentations: {this.state.data.Amount_C}</h5>
 								<h5 className="biggerMargin">Cancel Tokens left: {this.state.data.CancelTokens}</h5>
 								<h5 className="biggerMargin">Last Probability: {this.state.data.Last_Probability}% </h5>
 							</div>
-							<div className="col-sm">
-								<div className="card bg-dark">
-									<div className="card-body">
-										<h5 className="card-title">Change your Password</h5>
-										<p className="card-text">Want a new Password?</p>
-										<button className="btn btn-primary" name="ChangePasswordPopup" onClick={this.togglePopups}>
-											Confirm
-										</button>
-										<ChangePasswordPopup fetchTable={() => this.fetchTable()} />
+							<div className="col-md-6">
+								<div className="row ">
+									<div className="card bg-dark col-md fullMargin">
+										<div className="card-body">
+											<h5 className="card-title">
+												<Icon path={mdiEmail} size={1} color={'white'} /> Change your E-Mail
+											</h5>
+											<p className="card-text">Want to use a different E-Mail?</p>
+											<button className="btn btn-primary" name="ChangeEmailPopup" onClick={this.togglePopups}>
+												Confirm
+											</button>
+											<ChangeEmailPopup fetchTable={this.fetchTable} />
+										</div>
+									</div>
+									<div className="card bg-dark col-md fullMargin">
+										<div className="card-body">
+											<h5 className="card-title">
+												<Icon path={mdiAccount} size={1} color={'white'} /> Change your Username
+											</h5>
+											<p className="card-text">Want a different Username?</p>
+											<button className="btn btn-primary" name="ChangeUsernamePopup" onClick={this.togglePopups}>
+												Confirm
+											</button>
+											<ChangeUsernamePopup fetchTable={() => this.fetchTable()} />
+										</div>
+									</div>
+								</div>
+								<div className="row">
+									<div className="card bg-dark col-md fullMargin">
+										<div className="card-body ">
+											<h5 className="card-title">
+												<Icon path={mdiKeyVariant} size={1} color={'white'} /> Change your Password
+											</h5>
+											<p className="card-text">Want a new Password?</p>
+											<button className="btn btn-primary" name="ChangePasswordPopup" onClick={this.togglePopups}>
+												Confirm
+											</button>
+											<ChangePasswordPopup fetchTable={() => this.fetchTable()} />
+										</div>
 									</div>
 								</div>
 							</div>

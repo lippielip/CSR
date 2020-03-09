@@ -13,16 +13,16 @@ const DOMAIN_NAME = process.env.DOMAIN_NAME;
 // function to create new user
 // username = admin username
 // Username = new User username  !! case sensitive
-router.post('/', async function (req, res) {
+router.post('/', async function(req, res) {
 	if ((await checkToken(req)) >= 10) {
-		pool.getConnection(function (err, connection) {
+		pool.getConnection(function(err, connection) {
 			if (err) {
 				console.log(err);
 				return res.status(400).send("Couldn't get a connection");
 			}
 			connection.query(
 				`SELECT Username, E_Mail FROM users`, // get all usernames to compare with
-				function (err, result, fields) {
+				function(err, result, fields) {
 					console.log(`\x1b[36mAdding User...\x1b[0m`);
 
 					if (
@@ -53,8 +53,8 @@ router.post('/', async function (req, res) {
 					// encrytion on password
 					if (req.body.newUser.Authentication_Level >= 5) {
 						var password = generator.generate({
-							length: 64,
-							numbers: true
+							length  : 64,
+							numbers : true
 						});
 
 						var Salt = bcrypt.genSaltSync(10);
@@ -64,27 +64,26 @@ router.post('/', async function (req, res) {
 					}
 					var Keys = Object.keys(req.body.newUser).toString(); // get all filled in Propertys
 					var Values = Object.values(req.body.newUser); // get corresponding values
-					Values = Values.map(function (e) {
+					Values = Values.map(function(e) {
 						return JSON.stringify(e);
 					}); // formatting for SQL so a for Loop isnt needed
 					Values = Values.join(',');
 
-					connection.query(`INSERT INTO users (${Keys}) VALUES (${Values}) `, function (err, result, fields) {
+					connection.query(`INSERT INTO users (${Keys}) VALUES (${Values}) `, function(err, result, fields) {
 						if (err) {
 							console.log(err);
 							res.status(404).send();
 						} else {
 							if (req.body.newUser.Authentication_Level >= 5) {
 								const data = {
-									from: SENDER_MAIL,
-									to: `${req.body.newUser.E_Mail}`,
-									subject: 'Create a password',
-									text: `HTML Mail not available. Use this link to set your Password: ${DOMAIN_NAME + '/forgotPassword?token=' + Hash}`,
-									html: `${html(DOMAIN_NAME, Hash, req.body.newUser.Username)}`
+									from    : SENDER_MAIL,
+									to      : `${req.body.newUser.E_Mail}`,
+									subject : 'Create a password',
+									text    : `HTML Mail not available. Use this link to set your Password: ${DOMAIN_NAME + '/forgotPassword?token=' + Hash}`,
+									html    : `${html(DOMAIN_NAME, Hash, req.body.newUser.Username)}`
 								};
-								mg.messages().send(data, function (error, body) {
+								mg.messages().send(data, function(error, body) {
 									if (error) console.log(error);
-									console.log(error);
 								});
 							}
 							res.status(200).send('User added Successfully');

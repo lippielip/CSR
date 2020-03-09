@@ -137,6 +137,24 @@
 	color: #ff0000;
 	transition: all 150ms cubic-bezier(.445, .05, .55, .95);
 }
-.biggerMargin{
+.biggerMargin {
 	margin-bottom: 20px;
+}
+.fullMargin {
+	margin-right: 10px;
+	margin-bottom: 10px;
+}
+.adminCard {
+	justify-content: center;
+	height: 90%;
+}
+
+#loginButton {
+	background-color: #ca4a2a;
+	border-color: #ca4a2a;
+	color: white;
+}
+#loginButton:hover {
+	background-color: #aa3f24;
+	border-color: #aa3f24;
 }

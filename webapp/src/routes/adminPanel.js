@@ -2,26 +2,30 @@ import * as React from 'react';
 import jQuery from 'jquery';
 import Icon from '@mdi/react';
 import { mdiAccount } from '@mdi/js';
+import { mdiCogs } from '@mdi/js';
+import { mdiCalendarRange } from '@mdi/js';
+import { mdiAccountGroup } from '@mdi/js';
 import checkToken from '../methods/checktoken';
 import { Router, Link } from 'react-router-dom';
 import notAuthenticated from '../methods/notAuthenticated';
 import AddUserPopup from '../popups/AddUserPopup';
+import ChangeSettingsPopup from '../popups/ChangeSettingsPopup';
 import loadingScreen from '../methods/loadingscreen';
 import { browserHistory } from '../router';
+import ChangeColloquiumPopup from '../popups/ManualChangeColloquiumDate';
 
 class AdminPanel extends React.Component {
 	constructor (props) {
 		super(props);
 		this.state = {
-			wrongField           : [],
-			authorized           : false,
-			isLoading            : true,
-			Authentication_Level : '0',
-			showAddUserPopup     : false,
-			E_Mail               : '',
-			FirstName            : '',
-			LastName             : '',
-			Username             : ''
+			wrongField: [],
+			authorized: false,
+			isLoading: true,
+			Authentication_Level: '0',
+			E_Mail: '',
+			FirstName: '',
+			LastName: '',
+			Username: ''
 		};
 		this.handleOnChange = this.handleOnChange.bind(this);
 	}
@@ -50,6 +54,16 @@ class AdminPanel extends React.Component {
 			$('#AddUserPopup').modal('toggle');
 		})(jQuery);
 	}
+	toggleChangeSettingsPopup () {
+		(function ($) {
+			$('#ChangeSettingsPopup').modal('toggle');
+		})(jQuery);
+	}
+	toggleChangeColloquiumPopup () {
+		(function ($) {
+			$('#ChangeColloquiumPopup').modal('toggle');
+		})(jQuery);
+	}
 
 	async componentDidMount () {
 		await checkToken();
@@ -64,17 +78,15 @@ class AdminPanel extends React.Component {
 				return notAuthenticated();
 			}
 			return (
-				<div className="container mt-2">
+				<div className="container-fluid w-75">
 					<h1>Admin Panel</h1>
-
 					{/*Row 1*/}
-					<div className="row mt-5">
-						<div className="col-sm-6">
-							<div className="card bg-dark">
-								<div className="card-body ">
+					<div className="row">
+						<div className="col-md ">
+							<div className="adminCard card bg-dark biggerMargin">
+								<div className="card-body">
 									<h5 className="card-title">
-										<Icon path={mdiAccount} size={1} color={'white'} />
-										User Creation
+										<Icon path={mdiAccount} size={1} color={'white'} /> User Creation
 									</h5>
 									<p className="card-text">Add a user with this utility. Make sure their E-Mail is set correctly, so they can receive the activation password.</p>
 									<button className="btn btn-primary" onClick={this.toggleAddUserPopup}>
@@ -84,14 +96,14 @@ class AdminPanel extends React.Component {
 								</div>
 							</div>
 						</div>
-						<div className="col-sm-6">
-							<div className="card bg-dark">
+						<div className="col-md">
+							<div className="adminCard card bg-dark biggerMargin">
 								<div className="card-body ">
 									<h5 className="card-title">
-										<Icon path={mdiAccount} size={1} color={'white'} />
-										User Listing
+										<Icon path={mdiAccountGroup} size={1} color={'white'} /> User Listing
 									</h5>
 									<p className="card-text">View, Modify or Remove Users</p>
+									<br />
 									<Router history={browserHistory}>
 										<Link to={'adminPanel/users'}>
 											<button className="btn btn-primary">View Users</button>
@@ -101,70 +113,35 @@ class AdminPanel extends React.Component {
 							</div>
 						</div>
 					</div>
-
 					{/*Row 2*/}
-					<div className="row mt-5">
-						<div className="col-sm-6">
-							<div className="card bg-dark">
-								<div className="card-body ">
+					<div className="row">
+						<div className="col-md">
+							<div className="adminCard card bg-dark biggerMargin">
+								<div className="card-body">
 									<h5 className="card-title">
-										<Icon path={mdiAccount} size={1} color={'white'} />
-										User Creation
+										<Icon path={mdiCogs} size={1} color={'white'} /> Application Settings
 									</h5>
-									<p className="card-text">Add a user with this utility. Make sure their E-Mail is set correctly, so they can receive the activation password.</p>
-									<button className="btn btn-primary" onClick={this.toggleAddUserPopup}>
-										Add a user
+									<p className="card-text">Change the Webapp settings to fit your own Colloquium need</p>
+									<br />
+									<button className="btn btn-primary" onClick={this.toggleChangeSettingsPopup}>
+										Change Settings
 									</button>
-									<AddUserPopup />
+									<ChangeSettingsPopup />
 								</div>
 							</div>
 						</div>
-						<div className="col-sm-6">
-							<div className="card bg-dark">
-								<div className="card-body ">
+						<div className="col-md">
+							<div className="adminCard card bg-dark biggerMargin">
+								<div className="card-body">
 									<h5 className="card-title">
-										<Icon path={mdiAccount} size={1} color={'white'} />
-										User Creation
+										<Icon path={mdiCalendarRange} size={1} color={'white'} /> Change Colloquium Date
 									</h5>
-									<p className="card-text">Add a user with this utility. Make sure their E-Mail is set correctly, so they can receive the activation password.</p>
-									<button className="btn btn-primary" onClick={this.toggleAddUserPopup}>
-										Add a user
+									<p className="card-text">Want to set a Colloquium manually? Do it here.</p>
+									<br />
+									<button className="btn btn-primary" onClick={this.toggleChangeColloquiumPopup}>
+										Change Date
 									</button>
-									<AddUserPopup />
-								</div>
-							</div>
-						</div>
-					</div>
-
-					{/*Row 3*/}
-					<div className="row mt-5">
-						<div className="col-sm-6">
-							<div className="card bg-dark">
-								<div className="card-body ">
-									<h5 className="card-title">
-										<Icon path={mdiAccount} size={1} color={'white'} />
-										User Creation
-									</h5>
-									<p className="card-text">Add a user with this utility. Make sure their E-Mail is set correctly, so they can receive the activation password.</p>
-									<button className="btn btn-primary" onClick={this.toggleAddUserPopup}>
-										Add a user
-									</button>
-									<AddUserPopup />
-								</div>
-							</div>
-						</div>
-						<div className="col-sm-6">
-							<div className="card bg-dark">
-								<div className="card-body ">
-									<h5 className="card-title">
-										<Icon path={mdiAccount} size={1} color={'white'} />
-										User Creation
-									</h5>
-									<p className="card-text">Add a user with this utility. Make sure their E-Mail is set correctly, so they can receive the activation password.</p>
-									<button className="btn btn-primary" onClick={this.toggleAddUserPopup}>
-										Add a user
-									</button>
-									<AddUserPopup />
+									<ChangeColloquiumPopup />
 								</div>
 							</div>
 						</div>

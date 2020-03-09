@@ -1,9 +1,6 @@
 # Colloquium Selector Robot
 > Automating tedious planning.
 
-[![NPM Version][npm-image]][npm-url]
-[![Build Status][travis-image]][travis-url]
-[![Downloads Stats][npm-downloads]][npm-url]
 
 CSR is designed to simplify the process of planning and scheduling Presentations.
 It helps by automating the process of picking a presenter, tracking Presentation amount + Type, while also being fair to everyone and 
@@ -46,7 +43,7 @@ DB_USER (default: root)
 DB_PASSWORD 
 DB_DATABASE_NAME (default: csr_db)
 DB_PORT (default: 3306)
-FRONTEND_URL (default: http://localhost:3000/)
+DOMAIN_NAME (default: http://localhost:3000/)
 
     Mailgun
 

@@ -2,175 +2,116 @@ var pool = require('../database');
 var mail = require('./mailswitch');
 var getPresentations = require('./getPresentations');
 
-var d = new Date();
-var weekday = new Array(7);
-weekday[0] = 'Sunday';
-weekday[1] = 'Monday';
-weekday[2] = 'Tuesday';
-weekday[3] = 'Wednesday';
-weekday[4] = 'Thursday';
-weekday[5] = 'Friday';
-weekday[6] = 'Saturday';
+const AUTHENTICATION_UPPER_LIMIT = 8;
+const AUTHENTICATION_LOWER_LIMIT = 4;
 
-let status;
 let users;
 let moderator;
-let canceledUser = {
-	Username: '',
-	User_ID: 0,
-	E_Mail: '',
-	FirstName: '-gekürztes Colloquium-',
-	LastName: '',
-	Pending_Presentation: 10
-};
 
-function getWeekNumber (d) {
-	// Copy date so don't modify original
-	d = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
-	// Set to nearest Thursday: current date + 4 - current day number
-	// Make Sunday's day number 7
-	d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay() || 7));
-	// Get first day of year
-	var yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
-	// Calculate full weeks to nearest Thursday
-	var weekNo = Math.ceil(((d - yearStart) / 86400000 + 1) / 7);
-	// Return array of year and week number
-	return [
-		d.getUTCFullYear(),
-		weekNo
-	];
+async function checkDate() {
+	return new Promise(function(resolve, reject) {
+		pool.getConnection(function(err, connection) {
+			if (err) {
+				console.log(err);
+				return;
+			}
+			connection.query(`SELECT Email_Frequency, Last_Email FROM options WHERE Selected = 1`, function(err, result, fields) {
+				if (err) {
+					console.log(err);
+				}
+				let DaysSince = new Date();
+				DaysSince.setDate(DaysSince.getDate() - result[0].Email_Frequency);
+				if (Date.parse(result[0].Last_Email) < DaysSince || result[0].Last_Email === null) {
+					console.log(`It has been ${result[0].Email_Frequency} Days. Executing....`);
+					connection.query(`UPDATE options SET Last_Email = curDate() WHERE Selected = 1`, function(err, result, fields) {
+						if (err) {
+							console.log(err);
+						}
+					});
+					resolve(true);
+				} else {
+					console.log('[INFO] Not sending mails yet');
+					resolve(false);
+				}
+			});
+			connection.release();
+		});
+		return;
+	});
+}
+
+async function CheckUserAccountAmount() {
+	return new Promise(function(resolve, reject) {
+		pool.getConnection(function(err, connection) {
+			if (err) {
+				console.log(err);
+				return;
+			}
+			connection.query(
+				`SELECT User_ID FROM users WHERE Authentication_Level > ${AUTHENTICATION_LOWER_LIMIT} && Authentication_Level < ${AUTHENTICATION_UPPER_LIMIT}`,
+				async function(err, result, fields) {
+					if (err) console.log(err);
+					if (result.length > 2) {
+						resolve(true);
+					} else {
+						resolve(false);
+					}
+				}
+			);
+			connection.release();
+		});
+		return;
+	});
 }
 
 //This function checks daily for new Presentation inputs and sends out emails accordingly using the switch in the mailswitch.js file
-async function dailyCheck () {
-	var currentDay = d.getDay();
-	var day = weekday[currentDay];
-	console.log('Today is: ' + day);
+async function dailyCheck() {
+	if (await CheckUserAccountAmount()) {
+		if (await checkDate()) {
+			//fetching Presentation Data and saving it as an object
+			let Presentations = await getPresentations();
 
-	var currentWeek = getWeekNumber(d);
-	console.log('Week: ' + currentWeek[1] + ' Year: ' + currentWeek[0]);
-	//fetching Presentation Data and saving it as an object
-	let Presentations = await getPresentations();
-
-	pool.getConnection(async function (err, connection) {
-		// get the presentation_status every day to check if emails still have to be sent
-		await connection.query(`SELECT * FROM presentation_status WHERE Year = ${currentWeek[0]} AND Calendar_Week = ${currentWeek[1]}`, async function (err, result) {
-			if (err) console.log(err);
-			if (result.length === 0) {
-				//create an entry for the week if it doesn't exist yet (shouldn't be necessary => might indicate a bug in the chooseRandom function)
-				await connection.query(`INSERT INTO presentation_status (Year, Calendar_Week) VALUES ("${currentWeek[0]}","${currentWeek[1]}")`, async function (err, result) {});
-			} else {
-				//if it does exist then fill in the status variable
-				status = result[0].Status;
-			}
-		});
-		// get the moderator by checking if Pending_Presentation value = 2
-		await connection.query(
-			`SELECT Username, User_ID, E_Mail, FirstName, LastName, Pending_Presentation, Last_Probability, Amount_A, Amount_B, Amount_C FROM users WHERE Pending_Presentation = 2`,
-			async function (err, result, fields) {
-				if (err) console.log(err);
-				moderator = result[0];
-			}
-		);
-		//get the presenter by checking if Pending_Presentation value = 1 or 10
-		await connection.query(
-			`SELECT Username, User_ID, E_Mail, FirstName, LastName, Pending_Presentation, Last_Probability, Amount_A, Amount_B, Amount_C FROM users WHERE Pending_Presentation = 1 OR Pending_Presentation = 10`,
-			async function (err, result, fields) {
-				if (err) console.log(err);
-
-				//cant find any people with correct parameters update table accordingly (set status to -1 so the colloquium is canceled)
-				if (result.length === 0 && status !== -1) {
-					console.log('Not enough Presenters!');
-					mail(-1);
-					connection.query(
-						`UPDATE presentation_status SET Status = -1, Presenter1 = NULL, Presenter2 = NULL, Moderator = NULL WHERE Year = ${currentWeek[0]} AND Calendar_Week = ${currentWeek[1]}`,
-						async function (err, result) {
-							if (err) console.log(err);
+			pool.getConnection(async function(err, connection) {
+				// get the moderator by checking if Pending_Presentation value = 2
+				await connection.query(
+					`SELECT Username, User_ID, E_Mail, FirstName, LastName, Pending_Presentation, Last_Probability, Amount_A, Amount_B, Amount_C FROM users WHERE Pending_Presentation = 2`,
+					async function(err, result, fields) {
+						if (err) {
+							console.log(err);
+						} else {
+							moderator = result[0];
 						}
-					);
-					status = -1;
-				}
-				// both canceled == no colloquium
-				if (status !== -1) {
-					//only one person with correct parameter
-					if (result.length === 1) {
-						console.log('Only one Presenter!');
-						users = [
-							result[0],
-							canceledUser
-						];
-						connection.query(
-							`UPDATE presentation_status SET Presenter1 = ${result[0]
-								.User_ID}, Presenter2 = NULL, Moderator = ${moderator.User_ID}  WHERE Year = ${currentWeek[0]} AND Calendar_Week = ${currentWeek[1]}`,
-							async function (err, result) {
-								if (err) console.log(err);
+					}
+				);
+				//get the presenter by checking if upcoming presentations
+				await connection.query(
+					`SELECT U.Username, U.User_ID, U.E_Mail, U.FirstName, U.LastName, U.Pending_Presentation, U.Last_Probability, U.Amount_A, U.Amount_B, U.Amount_C FROM users U JOIN presentations P ON P.Presenter = U.User_ID 
+			WHERE P.Date IN (
+			SELECT MIN(P.DATE) FROM presentations P WHERE P.Date > CURRENT_DATE() )`,
+					async function(err, result, fields) {
+						if (err) {
+							console.log(err);
+						} else {
+							//cant find any people with correct parameters update table accordingly (set status to -1 so the colloquium is canceled)
+							if (result.length === 0) {
+								console.log('No Presentations filled in.');
+								mail(1);
 							}
-						);
-					}
 
-					//both are available and are inserted into the table
-					if (result.length === 2) {
-						console.log('2 Presenters available!');
-						users = [
-							result[0],
-							result[1]
-						];
-						connection.query(
-							`UPDATE presentation_status SET Presenter1 = ${result[0].User_ID}, Presenter2 = ${result[1]
-								.User_ID}, Moderator = ${moderator.User_ID} WHERE Year = ${currentWeek[0]} AND Calendar_Week = ${currentWeek[1]}`,
-							async function (err, result) {
-								if (err) console.log(err);
+							//Presentations are available => send update mail
+							if (result.length >= 1) {
+								console.log(`${result.length} Presentations filled in!`);
+								users = result;
+								mail(4, users, moderator, Presentations);
 							}
-						);
-					}
-					//Tuesday
-					if (currentDay === 2) {
-						//Both Presenters filled in Presentation
-						if (users[0].Pending_Presentation === 10 && users[1].Pending_Presentation === 10) {
-							console.log('Both Presenters are on Time. Sending out official mail early.');
-							//mail(1, users); // too much
-							mail(4, users, moderator, Presentations);
-							connection.query(`UPDATE presentation_status SET Status = 1 WHERE Year = ${currentWeek[0]} AND Calendar_Week = ${currentWeek[1]}`, async function (
-								err,
-								result
-							) {
-								if (err) console.log(err);
-							});
-						}
-						//One Presenter filled in Presentation
-						if (
-							(users[0].Pending_Presentation === 1 && users[1].Pending_Presentation === 10) ||
-							(users[0].Pending_Presentation === 10 && users[1].Pending_Presentation === 1)
-						) {
-							console.log('One Presenter is on Time!');
-							mail(2, users);
-						}
-						//No Presenter filled in Presentation
-						if (users[0].Pending_Presentation === 1 && users[1].Pending_Presentation === 1) {
-							console.log('Both Presenters are late!');
-							mail(3, users);
 						}
 					}
-
-					//Wednesday
-					if (currentDay === 3 && status === 0) {
-						console.log('Sending the offical mail on time!');
-						mail(4, users, moderator, Presentations);
-						connection.query(`UPDATE presentation_status SET Status = 1 WHERE Year = ${currentWeek[0]} AND Calendar_Week = ${currentWeek[1]}`, async function (
-							err,
-							result
-						) {
-							if (err) console.log(err);
-						});
-					}
-				} else {
-					console.log("Not to worry, we're still flying half a ship ( Colloquium already canceled ) ");
-				}
-			}
-		);
-		connection.release();
-		if (err) console.log(err);
-	});
+				);
+				connection.release();
+				if (err) console.log(err);
+			});
+		}
+	}
 }
 
 module.exports = dailyCheck;

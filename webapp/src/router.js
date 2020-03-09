@@ -9,6 +9,7 @@ import NoMatch from './methods/noMatch';
 import ContentPane from './routes/contentpane';
 import Login from './routes/login';
 import forgotPassword from './routes/forgotPassword';
+import confirmattendance from './routes/attendance';
 
 export var browserHistory = history.createBrowserHistory();
 
@@ -17,8 +18,8 @@ class Routes extends React.Component {
 		super(props);
 
 		this.state = {
-			wrongField : [],
-			isLoading  : true
+			wrongField: [],
+			isLoading: true
 		};
 	}
 
@@ -81,7 +82,7 @@ class Routes extends React.Component {
 											) : null}
 										</div>
 										<div className="navbar-nav">
-											<button className="btn btn-outline-success leftMargin10" onClick={() => this.logout()}>
+											<button className="btn btn-outline-danger leftMargin10" onClick={() => this.logout()}>
 												Logout
 											</button>
 										</div>
@@ -96,6 +97,7 @@ class Routes extends React.Component {
 							<Switch>
 								<Route exact={true} path={'/'} component={Login} />
 								<Route exact={true} path={'/forgot'} component={forgotPassword} />
+								<Route exact={false} path={'/confirmattendance'} component={confirmattendance} />
 								<Route component={NoMatch} />
 							</Switch>
 						</Router>

@@ -2,15 +2,17 @@
 var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
+var pool = require('./routes/database');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var cors = require('cors');
 var CronJob = require('cron').CronJob;
+var CronTime = require('cron').CronTime;
 
 // allow cross origin post and get
 var corsOptions = {
 	allowedHeaders: 'Content-Type, Access-Control-Allow-Origin',
-	origin: 'https://3dstudis.net', //change to webapp domain name
+	origin: 'https://3dstudis.net', //origin: 'http://localhost:3000',  //change to webapp domain name
 	allowedMethods: 'POST,GET'
 };
 // import of all routes
@@ -33,13 +35,16 @@ var ForgotPasswordSubmit = require('./routes/authentication/forgotPasswordSubmit
 var ChangePasswordSubmit = require('./routes/authentication/ChangePasswordSubmit');
 var ChangeUsernameSubmit = require('./routes/authentication/ChangeUsernameSubmit');
 var ChangeEmailSubmit = require('./routes/authentication/ChangeEmailSubmit');
+var ChangeSettingsSubmit = require('./routes/authentication/ChangeSettingsSubmit');
 var checkResetToken = require('./routes/authentication/checkResetToken');
+var checkConfirmToken = require('./routes/update/setPendingEmailState');
+var instantCheck = require('./routes/email/instantCheck');
+var changeNextColloquium = require('./routes/update/changeNextColloquium');
 var app = express();
 
-new CronJob(
-	'00 5 * * mon',
+let ChooseRandom = new CronJob(
+	'0 5 * * mon-fri',
 	async function () {
-		console.log('executing weekly event...');
 		PickWeeklyPresenters();
 	},
 	null,
@@ -47,10 +52,9 @@ new CronJob(
 	'Europe/Berlin'
 );
 
-new CronJob(
-	'00 11 * * *',
+let EmailJob = new CronJob(
+	'30 5 * * mon-fri',
 	async function () {
-		console.log('Fetching Presentation Status...');
 		CheckPresentationStatus();
 	},
 	null,
@@ -58,12 +62,28 @@ new CronJob(
 	'Europe/Berlin'
 );
 
+let schedule = new CronJob(
+	'*/60 * * * * *',
+	async function () {
+		instantCheck();
+	},
+	null,
+	false,
+	'Europe/Berlin'
+);
+// Testing Parameter for creating cronjobs
+//ChooseRandom.setTime(new CronTime('0 * * * * *'));
+//EmailJob.setTime(new CronTime('5 * * * * *'));
+ChooseRandom.start();
+EmailJob.start();
+schedule.start();
+
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 
 // comment out for production build
-app.use(logger('dev'));
+//app.use(logger('dev'));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -89,7 +109,10 @@ app.use('/forgot', ForgotPassword);
 app.use('/forgotPasswordSubmit', ForgotPasswordSubmit);
 app.use('/changePasswordSubmit', ChangePasswordSubmit);
 app.use('/changeEmailSubmit', ChangeEmailSubmit);
+app.use('/changeSettingsSubmit', ChangeSettingsSubmit);
 app.use('/changeUsernameSubmit', ChangeUsernameSubmit);
+app.use('/confirmattendance', checkConfirmToken);
+app.use('/changenextColloquium', changeNextColloquium);
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
 	next(createError(404));

@@ -1,33 +1,28 @@
 var pool = require('../database');
 
-function getNextDayOfWeek (date, dayOfWeek) {
-	var resultDate = date;
-	resultDate.setDate(date.getDate() + (7 + dayOfWeek - date.getDay()) % 7);
-
-	return resultDate;
-}
-
-async function getNewPresentations () {
-	return new Promise(function (resolve, reject) {
+async function getNewPresentations() {
+	return new Promise(function(resolve, reject) {
 		let PresenterID = [];
-
-		var friday = Date.parse(getNextDayOfWeek(new Date(), 5).toISOString().split('T')[0]);
-		pool.getConnection(async function (err, connection) {
+		pool.getConnection(async function(err, connection) {
 			if (err) {
 				console.log(err);
 				return res.status(400).send("Couldn't get a connection");
 			}
-			connection.query(`SELECT Presenter, Date FROM presentations WHERE Date != 'NULL'`, function (err, result, fields) {
-				if (err) console.log(err);
-				for (let i = 0; i < result.length; i++) {
-					PresentationDate = Date.parse(result[i].Date.split('T')[0]);
-					if (PresentationDate === friday) {
-						PresenterID.push(result[i].Presenter);
+			connection.query(`SELECT Next_Colloquium from options WHERE selected = 1`, function(err, result, fields) {
+				let Colloquium_Date = new Date(result[0].Next_Colloquium);
+				Colloquium_Date.setMinutes(Colloquium_Date.getMinutes() + 300);
+				Colloquium_Date = Colloquium_Date.toISOString();
+				Colloquium_Date = Colloquium_Date.split('T')[0];
+				connection.query(`SELECT Presenter, Date FROM presentations WHERE Date != 'NULL'`, function(err, result, fields) {
+					if (err) console.log(err);
+					for (let i = 0; i < result.length; i++) {
+						if (result[i].Date === Colloquium_Date) {
+							PresenterID.push(result[i].Presenter);
+						}
 					}
-				}
-				resolve(PresenterID);
+					resolve(PresenterID);
+				});
 			});
-
 			connection.release();
 		});
 	});

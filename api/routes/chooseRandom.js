@@ -2,6 +2,7 @@ var pool = require('./database');
 var mail = require('./email/mailswitch');
 var getMissingPeople = require('./get/getMissingPeople');
 var getNewPresentations = require('./get/getNewPresentations');
+var MakeTokenMails = require('./update/changeEmailStatus');
 
 /* Random Function weighting of different Presentation Types */
 /*************************************************************/
@@ -12,38 +13,15 @@ const B_WEIGHT = 1.5;
 const C_WEIGHT = 2;
 const WEIGHT_FACTOR = 10000;
 //define what Authentication levels have to present (everything inside these two values have to present)
-const AUTHENTICATION_UPPER_LIMIT = 6;
+const AUTHENTICATION_UPPER_LIMIT = 8;
 const AUTHENTICATION_LOWER_LIMIT = 4;
 
 /*************************************************************/
 
 let probability;
-let IDmap = [];
 let voluntaryCount = 0;
-var d = new Date();
 
-function getWeekNumber (d) {
-	// Copy date so don't modify original
-	d = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
-	// Set to nearest Thursday: current date + 4 - current day number
-	// Make Sunday's day number 7
-	d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay() || 7));
-	// Get first day of year
-	var yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
-	// Calculate full weeks to nearest Thursday
-	var weekNo = Math.ceil(((d - yearStart) / 86400000 + 1) / 7);
-	// Return array of year and week number
-	return [
-		d.getUTCFullYear(),
-		weekNo
-	];
-}
-
-function rand (min, max) {
-	return Math.floor(Math.random() * (max - min + 1)) + min;
-}
-
-function getObjectIndex (array, attr, value) {
+function getObjectIndex(array, attr, value) {
 	for (var i = 0; i < array.length; i += 1) {
 		if (array[i][attr] === value) {
 			return i;
@@ -52,7 +30,7 @@ function getObjectIndex (array, attr, value) {
 	return -1;
 }
 
-function generateWeighedList (list, weight) {
+function generateWeighedList(list, weight) {
 	var weighed_list = [];
 	var sum = 0;
 	probability = [];
@@ -75,13 +53,13 @@ function generateWeighedList (list, weight) {
 	return weighed_list;
 }
 
-async function getPresenters (combList, list_length) {
-	return new Promise(function (resolve, reject) {
-		let list = combList.map(function (entry) {
+async function getPresenters(combList, list_length) {
+	return new Promise(function(resolve, reject) {
+		let list = combList.map(function(entry) {
 			return entry.User_ID;
 		});
 
-		let weights = combList.map(function (entry) {
+		let weights = combList.map(function(entry) {
 			if (entry.Presentations_held > 99) {
 				return 0;
 			} else {
@@ -90,17 +68,22 @@ async function getPresenters (combList, list_length) {
 		});
 
 		let weighed_list = generateWeighedList(list, weights);
-		let random_num = rand(0, weighed_list.length - 1);
-		pool.getConnection(function (err, connection) {
+		let random_num = Math.floor(Math.random() * weighed_list.length); // rand(0, weighed_list.length - 1);
+		pool.getConnection(function(err, connection) {
 			if (err) {
 				console.log(err);
-				return res.status(400).send("Couldn't get a connection");
+				return;
 			}
 			connection.query(
 				`UPDATE users SET Pending_Presentation = 1, Last_Probability = ${probability[list.indexOf(weighed_list[random_num])]} WHERE User_ID = ${weighed_list[random_num]} `,
-				function (err, result, fields) {
-					if (err) console.log(err);
-					resolve(list.indexOf(weighed_list[random_num]));
+				function(err, result, fields) {
+					if (err) {
+						console.log(err);
+					} else {
+						console.log('********* PENDING = 1  |' + weighed_list[random_num] + '*********');
+
+						resolve(list.indexOf(weighed_list[random_num]));
+					}
 				}
 			);
 			connection.release();
@@ -109,18 +92,18 @@ async function getPresenters (combList, list_length) {
 	});
 }
 
-async function getModerator (combList) {
-	return new Promise(function (resolve, reject) {
-		let list = combList.map(function (entry) {
+async function getModerator(combList) {
+	return new Promise(function(resolve, reject) {
+		let list = combList.map(function(entry) {
 			return entry.User_ID;
 		});
 		let UserIndex = Math.floor(Math.random() * list.length);
-		pool.getConnection(function (err, connection) {
+		pool.getConnection(function(err, connection) {
 			if (err) {
 				console.log(err);
-				return res.status(400).send("Couldn't get a connection");
+				return;
 			}
-			connection.query(`UPDATE users SET Pending_Presentation = 2 WHERE User_ID = ${list[UserIndex]} `, function (err, result, fields) {
+			connection.query(`UPDATE users SET Pending_Presentation = 2 WHERE User_ID = ${list[UserIndex]} `, function(err, result, fields) {
 				if (err) console.log(err);
 				resolve(UserIndex);
 			});
@@ -130,16 +113,17 @@ async function getModerator (combList) {
 	});
 }
 
-async function GetPresentPeople (MissingPeople, NewPresentations) {
-	return new Promise(function (resolve, reject) {
-		pool.getConnection(async function (err, connection) {
+async function GetPresentPeople(MissingPeople, NewPresentations) {
+	return new Promise(function(resolve, reject) {
+		let IDmap = [];
+		pool.getConnection(async function(err, connection) {
 			if (err) {
 				console.log(err);
-				return res.status(400).send("Couldn't get a connection");
+				return;
 			}
 			connection.query(
 				`SELECT User_ID, Username, E_Mail, Pending_Presentation, Authentication_Level, FirstName, LastName, Amount_A, Amount_B, Amount_C FROM users`,
-				async function (err, result, fields) {
+				async function(err, result, fields) {
 					if (err) console.log(err);
 					for (let i = 0; i < result.length; i++) {
 						if (result[i].Authentication_Level > AUTHENTICATION_UPPER_LIMIT) {
@@ -151,16 +135,17 @@ async function GetPresentPeople (MissingPeople, NewPresentations) {
 							continue;
 						}
 						//if someone is not present, then they are not added to the roulette
-						if (MissingPeople.includes(result[i].User_ID)) {
+						if (await MissingPeople.includes(result[i].User_ID)) {
 							console.log('\x1b[35m', 'Ignoring user: ' + result[i].Username + ' (absent)', '\x1b[0m');
-							connection.query(`UPDATE users SET Pending_Presentation = 0 WHERE User_ID = ${result[i].User_ID} `, function (err, result, fields) {
+							connection.query(`UPDATE users SET Pending_Presentation = 0 WHERE User_ID = ${result[i].User_ID} `, function(err, result, fields) {
 								if (err) console.log(err);
 							});
+							console.log('********* PENDING = 0  |' + result[i].User_ID + '*********');
 						} else {
-							if (NewPresentations.includes(result[i].User_ID)) {
+							if (await NewPresentations.includes(result[i].User_ID)) {
 								voluntaryCount++;
 								console.log('\x1b[35m', 'voluntary Presentation : ' + result[i].Username, '\x1b[0m');
-								connection.query(`UPDATE users SET Pending_Presentation = 10, Last_Probability = 1 WHERE User_ID = ${result[i].User_ID} `, function (
+								connection.query(`UPDATE users SET Pending_Presentation = 10, Last_Probability = 1 WHERE User_ID = ${result[i].User_ID} `, function(
 									err,
 									result,
 									fields
@@ -168,12 +153,12 @@ async function GetPresentPeople (MissingPeople, NewPresentations) {
 									if (err) console.log(err);
 								});
 								IDmap.push({
-									User_ID: result[i].User_ID,
-									Username: result[i].Username,
-									Presentations_held: result[i].Amount_A * A_WEIGHT + result[i].Amount_B * B_WEIGHT + result[i].Amount_C * C_WEIGHT,
-									E_Mail: result[i].E_Mail,
-									FirstName: result[i].FirstName,
-									LastName: result[i].LastName
+									User_ID            : result[i].User_ID,
+									Username           : result[i].Username,
+									Presentations_held : result[i].Amount_A * A_WEIGHT + result[i].Amount_B * B_WEIGHT + result[i].Amount_C * C_WEIGHT,
+									E_Mail             : result[i].E_Mail,
+									FirstName          : result[i].FirstName,
+									LastName           : result[i].LastName
 								});
 							} else {
 								/*if someoneone is present, then if they havent held a presentation last week, get the sum of the presentations they have held this year
@@ -181,35 +166,133 @@ async function GetPresentPeople (MissingPeople, NewPresentations) {
 								  normal probability*/
 								if (result[i].Pending_Presentation != 10) {
 									IDmap.push({
-										User_ID: result[i].User_ID,
-										Username: result[i].Username,
-										Presentations_held: result[i].Amount_A * A_WEIGHT + result[i].Amount_B * B_WEIGHT + result[i].Amount_C * C_WEIGHT,
-										E_Mail: result[i].E_Mail,
-										FirstName: result[i].FirstName,
-										LastName: result[i].LastName
+										User_ID            : result[i].User_ID,
+										Username           : result[i].Username,
+										Presentations_held : result[i].Amount_A * A_WEIGHT + result[i].Amount_B * B_WEIGHT + result[i].Amount_C * C_WEIGHT,
+										E_Mail             : result[i].E_Mail,
+										FirstName          : result[i].FirstName,
+										LastName           : result[i].LastName
 									});
-									connection.query(`UPDATE users SET Pending_Presentation = 0 WHERE User_ID = ${result[i].User_ID} `, function (err, result, fields) {
+									connection.query(`UPDATE users SET Pending_Presentation = 0 WHERE User_ID = ${result[i].User_ID} `, function(err, result, fields) {
 										if (err) console.log(err);
 									});
+									console.log('********* PENDING = 0  |' + result[i].User_ID + '*********');
 								} else {
 									//low prob of getting picked
 									console.log('\x1b[36m', 'Ignoring user: ' + result[i].Username + ' (last presenter)', '\x1b[0m');
 									IDmap.push({
-										User_ID: result[i].User_ID,
-										Username: result[i].Username,
-										Presentations_held: 100,
-										E_Mail: result[i].E_Mail,
-										FirstName: result[i].FirstName,
-										LastName: result[i].LastName
+										User_ID            : result[i].User_ID,
+										Username           : result[i].Username,
+										Presentations_held : 100,
+										E_Mail             : result[i].E_Mail,
+										FirstName          : result[i].FirstName,
+										LastName           : result[i].LastName
 									});
-									connection.query(`UPDATE users SET Pending_Presentation = 0 WHERE User_ID = ${result[i].User_ID} `, function (err, result, fields) {
+									connection.query(`UPDATE users SET Pending_Presentation = 0 WHERE User_ID = ${result[i].User_ID} `, function(err, result, fields) {
 										if (err) console.log(err);
 									});
+									console.log('********* PENDING = 0  |' + result[i].User_ID + '*********');
 								}
 							}
 						}
 					}
-					resolve(IDmap);
+					setTimeout(function() {
+						resolve(IDmap);
+					}, 500);
+				}
+			);
+			connection.release();
+		});
+	});
+}
+
+async function CheckUserAccountAmount() {
+	return new Promise(function(resolve, reject) {
+		pool.getConnection(function(err, connection) {
+			if (err) {
+				console.log(err);
+				return;
+			}
+			connection.query(
+				`SELECT User_ID FROM users WHERE Authentication_Level > ${AUTHENTICATION_LOWER_LIMIT} && Authentication_Level < ${AUTHENTICATION_UPPER_LIMIT}`,
+				async function(err, result, fields) {
+					if (err) console.log(err);
+					if (result.length > 2) {
+						resolve(true);
+					} else {
+						resolve(false);
+					}
+				}
+			);
+			connection.release();
+		});
+		return;
+	});
+}
+async function checkDate() {
+	return new Promise(function(resolve, reject) {
+		pool.getConnection(function(err, connection) {
+			if (err) {
+				console.log(err);
+				return;
+			}
+			connection.query(`SELECT Colloquium_Frequency, Next_Colloquium FROM options WHERE Selected = 1`, function(err, result, fields) {
+				if (err) {
+					console.log(err);
+				}
+				let CurrentDay = new Date();
+				if (result[0].Next_Colloquium <= CurrentDay || result[0].Next_Colloquium === null) {
+					console.log(`It has been ${result[0].Colloquium_Frequency} Days. Executing....`);
+					resolve(true);
+				} else {
+					console.log('[INFO] Not Executing: Next_Colloquium > CurrentDay');
+					resolve(false);
+				}
+			});
+			connection.release();
+		});
+		return;
+	});
+}
+
+async function checkExecution() {
+	return new Promise(function(resolve, reject) {
+		pool.getConnection(function(err, connection) {
+			if (err) {
+				console.log(err);
+				return;
+			}
+			connection.query(`Select Choose_Random from options WHERE Selected = 1`, function(err, result, fields) {
+				if (err) console.log(err);
+				if (result[0].Choose_Random === 1) {
+					resolve(true);
+				} else {
+					resolve(false);
+				}
+			});
+			connection.release();
+		});
+		return;
+	});
+}
+
+async function SetNextColloquium() {
+	return new Promise(function(resolve, reject) {
+		pool.getConnection(function(err, connection) {
+			if (err) {
+				console.log(err);
+				return;
+			}
+			connection.query(
+				`UPDATE options \
+SET Next_Colloquium = \
+IF(DAYOFWEEK(DATE_ADD(CURRENT_DATE(), INTERVAL Colloquium_Frequency DAY)) = 7, (DATE_ADD(CURRENT_DATE(), INTERVAL Colloquium_Frequency + 2 DAY)), \
+IF(DAYOFWEEK(DATE_ADD(CURRENT_DATE(), INTERVAL Colloquium_Frequency DAY)) = 1, (DATE_ADD(CURRENT_DATE(), INTERVAL Colloquium_Frequency + 1 DAY)), \
+(DATE_ADD(CURRENT_DATE(), INTERVAL Colloquium_Frequency DAY)))) \
+WHERE Selected = 1`,
+				async function(err, result) {
+					if (err) console.log(err);
+					resolve(result);
 				}
 			);
 			connection.release();
@@ -218,94 +301,103 @@ async function GetPresentPeople (MissingPeople, NewPresentations) {
 	});
 }
 
-async function PickWeeklyPresenters () {
-	console.log('\x1b[33m', 'Picking Presenters...', '\x1b[0m');
-	var currentWeek = getWeekNumber(d);
-
-	// Special function that resets the Presentation amount of every user for the new year (happens yearly)
-	if (currentWeek[1] === 1) {
-		pool.getConnection(async function (err, connection) {
+async function SetPendingForEveryone(MissingPeople) {
+	let People = await MissingPeople;
+	if (People.length === 0) {
+		People = -1;
+	}
+	return new Promise(function(resolve, reject) {
+		pool.getConnection(function(err, connection) {
 			if (err) {
 				console.log(err);
-				return res.status(400).send("Couldn't get a connection");
+				return;
 			}
-			await connection.query(`UPDATE users SET Amount_A = 0, Amount_B = 0, Amount_C = 0`, async function (err, result) {
-				if (err) console.log(err);
-			});
+			connection.query(
+				`UPDATE users SET Pending_Presentation = 1 WHERE Authentication_Level > ${AUTHENTICATION_LOWER_LIMIT} && Authentication_Level < ${AUTHENTICATION_UPPER_LIMIT} && User_ID NOT IN (${People})`,
+				async function(err, result) {
+					if (err) console.log(err);
+				}
+			);
+			connection.query(
+				`UPDATE users SET Pending_Presentation = 0 WHERE Authentication_Level > ${AUTHENTICATION_LOWER_LIMIT} && Authentication_Level < ${AUTHENTICATION_UPPER_LIMIT} && User_ID IN (${People})`,
+				async function(err, result) {
+					if (err) console.log(err);
+					resolve(result);
+				}
+			);
 			connection.release();
 		});
-	}
-
-	//Check if enough people are present, regardless of if they had a presentation last week
-	let MissingPeople = await getMissingPeople();
-	let NewPresentations = await getNewPresentations();
-	await GetPresentPeople(MissingPeople, NewPresentations);
-	if (IDmap.length <= 3) {
-		mail(-1);
-		pool.getConnection(async function (err, connection) {
-			if (err) {
-				console.log(err);
-				return res.status(400).send("Couldn't get a connection");
-			}
-			await connection.query(`INSERT INTO presentation_status (Year, Calendar_Week, Status) VALUES ("${currentWeek[0]}","${currentWeek[1]}","-1")`, async function (
-				err,
-				result
-			) {
-				if (err) console.log(err);
-			});
-			connection.release();
-		});
-	} else {
-		const USER_AMOUNT = IDmap.length;
-		let Presenter1;
-		let Presenter2;
-
-		if (voluntaryCount === 1) {
-			let IdIndex1 = getObjectIndex(IDmap, 'User_ID', NewPresentations[0]);
-			Presenter1 = IDmap[IdIndex1];
-			Presenter1.probability = 1;
-			IDmap.splice(IdIndex1, 1);
-			let IdIndex2 = await getPresenters(IDmap, USER_AMOUNT);
-			Presenter2 = IDmap[IdIndex2];
-			Presenter2.probability = probability[IdIndex2];
-			IDmap.splice(IdIndex2, 1);
-		}
-
-		if (voluntaryCount >= 2) {
-			let IdIndex1 = getObjectIndex(IDmap, 'User_ID', NewPresentations[0]);
-			Presenter1 = IDmap[IdIndex1];
-			Presenter1.probability = 1;
-			IDmap.splice(IdIndex1, 1);
-
-			let IdIndex2 = getObjectIndex(IDmap, 'User_ID', NewPresentations[1]);
-			Presenter2 = IDmap[IdIndex2];
-			Presenter2.probability = 1;
-			IDmap.splice(IdIndex2, 1);
-			if (voluntaryCount >= 3) {
-				console.log('\x1b[31m', 'ERROR : EXCESSIVE_PRESENTATION_AMOUNT', '\x1b[0m');
-			}
-		}
-
-		if (voluntaryCount === 0) {
-			let IdIndex1 = await getPresenters(IDmap, USER_AMOUNT);
-			Presenter1 = IDmap[IdIndex1];
-			Presenter1.probability = probability[IdIndex1];
-			IDmap.splice(IdIndex1, 1);
-
-			let IdIndex2 = await getPresenters(IDmap, USER_AMOUNT);
-			Presenter2 = IDmap[IdIndex2];
-			Presenter2.probability = probability[IdIndex2];
-			IDmap.splice(IdIndex2, 1);
-		}
-		let IdIndex3 = await getModerator(IDmap);
-		let Moderator = IDmap[IdIndex3];
-		let users = [
-			Presenter1,
-			Presenter2
-		];
-		mail(0, users, Moderator);
-		console.log('\x1b[33m', 'Success!', '\x1b[0m');
-	}
+		return;
+	});
 }
 
+async function PickWeeklyPresenters() {
+	if (await CheckUserAccountAmount()) {
+		if (await checkDate()) {
+			if (await checkExecution()) {
+				console.log('\x1b[33m', 'INFO: Picking Presenters', '\x1b[0m');
+				//Check if enough people are present, regardless of if they had a presentation last week
+				await SetNextColloquium();
+				let NewPresentations = await getNewPresentations();
+				let IDmap = await GetPresentPeople(await getMissingPeople(), NewPresentations);
+
+				if (IDmap.length < 3) {
+					mail(-1);
+				} else {
+					let USER_AMOUNT = IDmap.length;
+					let Presenter1;
+					let Presenter2;
+					if (voluntaryCount === 1) {
+						let IdIndex1 = getObjectIndex(IDmap, 'User_ID', NewPresentations[0]);
+						Presenter1 = IDmap[IdIndex1];
+						Presenter1.probability = 1;
+						IDmap.splice(IdIndex1, 1);
+						let IdIndex2 = await getPresenters(IDmap, USER_AMOUNT);
+						Presenter2 = IDmap[IdIndex2];
+						Presenter2.probability = probability[IdIndex2];
+						IDmap.splice(IdIndex2, 1);
+					}
+
+					if (voluntaryCount >= 2) {
+						let IdIndex1 = getObjectIndex(IDmap, 'User_ID', NewPresentations[0]);
+						Presenter1 = IDmap[IdIndex1];
+						Presenter1.probability = 1;
+						IDmap.splice(IdIndex1, 1);
+
+						let IdIndex2 = getObjectIndex(IDmap, 'User_ID', NewPresentations[1]);
+						Presenter2 = IDmap[IdIndex2];
+						Presenter2.probability = 1;
+						IDmap.splice(IdIndex2, 1);
+						if (voluntaryCount >= 3) {
+							console.log('\x1b[31m', 'ERROR : EXCESSIVE_PRESENTATION_AMOUNT', '\x1b[0m');
+						}
+					}
+
+					if (voluntaryCount === 0) {
+						let IdIndex1 = await getPresenters(IDmap, USER_AMOUNT);
+						Presenter1 = IDmap[IdIndex1];
+						Presenter1.probability = probability[IdIndex1];
+						IDmap.splice(IdIndex1, 1);
+						let IdIndex2 = await getPresenters(IDmap, USER_AMOUNT);
+						Presenter2 = IDmap[IdIndex2];
+						Presenter2.probability = probability[IdIndex2];
+						IDmap.splice(IdIndex2, 1);
+					}
+					let IdIndex3 = await getModerator(IDmap);
+					let Moderator = IDmap[IdIndex3];
+					let users = [ Presenter1, Presenter2 ];
+					mail(0, users, Moderator);
+					console.log('\x1b[33m', 'Success!', '\x1b[0m');
+				}
+			} else {
+				console.log('INFO: Randomizer Disabled');
+				await SetNextColloquium();
+				let MissingPeople = await getMissingPeople();
+				SetPendingForEveryone(MissingPeople);
+				console.log('Random Token Mails');
+				MakeTokenMails();
+			}
+		}
+	}
+}
 module.exports = PickWeeklyPresenters;
