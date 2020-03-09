@@ -11,9 +11,9 @@ var CronTime = require('cron').CronTime;
 
 // allow cross origin post and get
 var corsOptions = {
-	allowedHeaders : 'Content-Type, Access-Control-Allow-Origin',
-	origin         : 'http://localhost:3000', //origin: 'https://3dstudis.net', //change to webapp domain name
-	allowedMethods : 'POST,GET'
+	allowedHeaders: 'Content-Type, Access-Control-Allow-Origin',
+	origin: 'https://3dstudis.net', //origin: 'http://localhost:3000',  //change to webapp domain name
+	allowedMethods: 'POST,GET'
 };
 // import of all routes
 var MariaDbGetter = require('./routes/get/getter');
@@ -44,7 +44,7 @@ var app = express();
 
 let ChooseRandom = new CronJob(
 	'0 5 * * mon-fri',
-	async function() {
+	async function () {
 		PickWeeklyPresenters();
 	},
 	null,
@@ -54,7 +54,7 @@ let ChooseRandom = new CronJob(
 
 let EmailJob = new CronJob(
 	'30 5 * * mon-fri',
-	async function() {
+	async function () {
 		CheckPresentationStatus();
 	},
 	null,
@@ -64,15 +64,16 @@ let EmailJob = new CronJob(
 
 let schedule = new CronJob(
 	'*/60 * * * * *',
-	async function() {
+	async function () {
 		instantCheck();
 	},
 	null,
 	false,
 	'Europe/Berlin'
 );
-ChooseRandom.setTime(new CronTime('0 * * * * *'));
-EmailJob.setTime(new CronTime('5 * * * * *'));
+// Testing Parameter for creating cronjobs
+//ChooseRandom.setTime(new CronTime('0 * * * * *'));
+//EmailJob.setTime(new CronTime('5 * * * * *'));
 ChooseRandom.start();
 EmailJob.start();
 schedule.start();
@@ -82,7 +83,7 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 
 // comment out for production build
-app.use(logger('dev'));
+//app.use(logger('dev'));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -113,12 +114,12 @@ app.use('/changeUsernameSubmit', ChangeUsernameSubmit);
 app.use('/confirmattendance', checkConfirmToken);
 app.use('/changenextColloquium', changeNextColloquium);
 // catch 404 and forward to error handler
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
 	next(createError(404));
 });
 
 // error handler
-app.use(function(err, req, res, next) {
+app.use(function (err, req, res, next) {
 	// set locals, only providing error in development
 	res.locals.message = err.message;
 	res.locals.error = req.app.get('env') === 'development' ? err : {};

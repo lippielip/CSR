@@ -145,7 +145,8 @@
 	margin-bottom: 10px;
 }
 .adminCard {
-	min-height: 24vh;
+	justify-content: center;
+	height: 90%;
 }
 
 #loginButton {

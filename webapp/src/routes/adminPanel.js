@@ -15,22 +15,22 @@ import { browserHistory } from '../router';
 import ChangeColloquiumPopup from '../popups/ManualChangeColloquiumDate';
 
 class AdminPanel extends React.Component {
-	constructor(props) {
+	constructor (props) {
 		super(props);
 		this.state = {
-			wrongField           : [],
-			authorized           : false,
-			isLoading            : true,
-			Authentication_Level : '0',
-			E_Mail               : '',
-			FirstName            : '',
-			LastName             : '',
-			Username             : ''
+			wrongField: [],
+			authorized: false,
+			isLoading: true,
+			Authentication_Level: '0',
+			E_Mail: '',
+			FirstName: '',
+			LastName: '',
+			Username: ''
 		};
 		this.handleOnChange = this.handleOnChange.bind(this);
 	}
 
-	handleOnChange(e) {
+	handleOnChange (e) {
 		this.setState({ [e.target.name]: e.target.value });
 		if (e.target.value.includes("'")) {
 			if (!e.target.className.includes('invalid')) {
@@ -49,28 +49,28 @@ class AdminPanel extends React.Component {
 			}
 		}
 	}
-	toggleAddUserPopup() {
-		(function($) {
+	toggleAddUserPopup () {
+		(function ($) {
 			$('#AddUserPopup').modal('toggle');
 		})(jQuery);
 	}
-	toggleChangeSettingsPopup() {
-		(function($) {
+	toggleChangeSettingsPopup () {
+		(function ($) {
 			$('#ChangeSettingsPopup').modal('toggle');
 		})(jQuery);
 	}
-	toggleChangeColloquiumPopup() {
-		(function($) {
+	toggleChangeColloquiumPopup () {
+		(function ($) {
 			$('#ChangeColloquiumPopup').modal('toggle');
 		})(jQuery);
 	}
 
-	async componentDidMount() {
+	async componentDidMount () {
 		await checkToken();
 		await this.setState({ isLoading: false });
 	}
 
-	render() {
+	render () {
 		if (this.state.isLoading) {
 			return loadingScreen();
 		} else {

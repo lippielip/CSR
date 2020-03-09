@@ -13,52 +13,52 @@ import ChangeEmailPopup from '../popups/ChangeEmailPopup';
 import ChangeUsernamePopup from '../popups/ChangeUsernamePopup';
 
 let event = {
-	title                 : '',
-	start                 : '',
-	Presentation_Category : 'A'
+	title: '',
+	start: '',
+	Presentation_Category: 'A'
 };
 
 class User extends React.Component {
-	constructor(props) {
+	constructor (props) {
 		super(props);
 
 		this.state = {
-			isLoading             : true,
-			redirect              : false,
-			showPresentationPopup : false,
-			data                  : '',
-			date                  : ''
+			isLoading: true,
+			redirect: false,
+			showPresentationPopup: false,
+			data: '',
+			date: ''
 		};
 		this.fetchTable = this.fetchTable.bind(this);
 	}
 
-	async fetchTable() {
+	async fetchTable () {
 		await fetch(API_URL + '/getter', {
-			method  : 'POST',
-			headers : {
-				'Content-Type' : 'application/json'
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
 			},
-			body    : JSON.stringify({
-				username     : sessionStorage.getItem('username'),
-				token        : sessionStorage.getItem('token'),
-				select       : 'User_ID, Username, E_Mail, Pending_Presentation, Amount_A, Amount_B, Amount_C, Last_Probability, CancelTokens, Authentication_Level ',
-				tableName    : 'users',
-				selectiveGet : `WHERE Username = '${sessionStorage.getItem('username')}'`
+			body: JSON.stringify({
+				username: sessionStorage.getItem('username'),
+				token: sessionStorage.getItem('token'),
+				select: 'User_ID, Username, E_Mail, Pending_Presentation, Amount_A, Amount_B, Amount_C, Last_Probability, CancelTokens, Authentication_Level ',
+				tableName: 'users',
+				selectiveGet: `WHERE Username = '${sessionStorage.getItem('username')}'`
 			})
 		})
 			.then((response) => response.json())
 			.then((res) => this.setState({ data: res[0] }));
 		await fetch(API_URL + '/getter', {
-			method  : 'POST',
-			headers : {
-				'Content-Type' : 'application/json'
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
 			},
-			body    : JSON.stringify({
-				username     : sessionStorage.getItem('username'),
-				token        : sessionStorage.getItem('token'),
-				select       : 'Next_Colloquium, Choose_Random',
-				tableName    : 'options',
-				selectiveGet : `WHERE Selected = 1`
+			body: JSON.stringify({
+				username: sessionStorage.getItem('username'),
+				token: sessionStorage.getItem('token'),
+				select: 'Next_Colloquium, Choose_Random',
+				tableName: 'options',
+				selectiveGet: `WHERE Selected = 1`
 			})
 		})
 			.then((response) => response.json())
@@ -72,59 +72,59 @@ class User extends React.Component {
 		}
 	}
 
-	getNextDayOfWeek(date, dayOfWeek) {
+	getNextDayOfWeek (date, dayOfWeek) {
 		var resultDate = date;
 		resultDate.setDate(date.getDate() + (7 + dayOfWeek - date.getDay()) % 7);
 
 		return resultDate;
 	}
 
-	async handleSubmit() {
+	async handleSubmit () {
 		await await fetch(API_URL + '/add', {
-			method  : 'POST',
-			headers : {
-				'Content-Type' : 'application/json'
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
 			},
-			body    : JSON.stringify({
-				username     : sessionStorage.getItem('username'),
-				token        : sessionStorage.getItem('token'),
-				presentation : {
-					Topic                 : event.title,
-					Presenter             : sessionStorage.getItem('username'),
-					Presentation_Category : event.Presentation_Category,
-					Date                  : event.start
+			body: JSON.stringify({
+				username: sessionStorage.getItem('username'),
+				token: sessionStorage.getItem('token'),
+				presentation: {
+					Topic: event.title,
+					Presenter: sessionStorage.getItem('username'),
+					Presentation_Category: event.Presentation_Category,
+					Date: event.start
 				}
 			})
 		});
 		await fetch(API_URL + '/PendingState', {
-			method  : 'POST',
-			headers : {
-				'Content-Type' : 'application/json'
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
 			},
-			body    : JSON.stringify({
-				username : sessionStorage.getItem('username'),
-				token    : sessionStorage.getItem('token')
+			body: JSON.stringify({
+				username: sessionStorage.getItem('username'),
+				token: sessionStorage.getItem('token')
 			})
 		});
 		this.setState({ redirect: true });
 	}
 
-	togglePopups(e) {
-		(function($) {
+	togglePopups (e) {
+		(function ($) {
 			$(`#${e.target.name}`).modal('toggle');
 		})(jQuery);
 	}
 
-	handleOnChange(e) {
+	handleOnChange (e) {
 		event[e.target.getAttribute('name')] = e.target.value;
 	}
 
-	async componentDidMount() {
+	async componentDidMount () {
 		await this.fetchTable();
 		this.setState({ isLoading: false });
 	}
 
-	render() {
+	render () {
 		if (this.state.redirect) {
 			return <Redirect to="/calendar" />;
 		}
@@ -144,8 +144,7 @@ class User extends React.Component {
 							onSubmit={(e) => {
 								e.preventDefault();
 								this.handleSubmit();
-							}}
-						>
+							}}>
 							<div className="modal-body text-left" id="presentation">
 								<div className="form-group ">
 									<label>Topic</label>
@@ -188,9 +187,9 @@ class User extends React.Component {
 							<div className="col-md-5">
 								<h5 className="biggerMargin">Username: {this.state.data.Username}</h5>
 								<h5 className="biggerMargin">E-Mail: {this.state.data.E_Mail}</h5>
-								<h5 className="biggerMargin">
-									A Presentations: {this.state.data.Amount_A} | B Presentations: {this.state.data.Amount_B} | C Presentations: {this.state.data.Amount_C}
-								</h5>
+								<h5 className="biggerMargin">A Presentations: {this.state.data.Amount_A}</h5>
+								<h5 className="biggerMargin">B Presentations: {this.state.data.Amount_B}</h5>
+								<h5 className="biggerMargin">C Presentations: {this.state.data.Amount_C}</h5>
 								<h5 className="biggerMargin">Cancel Tokens left: {this.state.data.CancelTokens}</h5>
 								<h5 className="biggerMargin">Last Probability: {this.state.data.Last_Probability}% </h5>
 							</div>

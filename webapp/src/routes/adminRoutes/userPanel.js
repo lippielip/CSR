@@ -3,19 +3,19 @@ import ReactTable from 'react-table';
 import jQuery from 'jquery';
 import API_URL from '../../variables';
 import loadingScreen from '../../methods/loadingscreen';
-import { Trash, Edit } from 'react-feather';
+import { Trash /*Edit*/ } from 'react-feather';
 import { browserHistory } from '../../router';
 import notAuthenticated from '../../methods/notAuthenticated';
 import checkToken from '../../methods/checktoken';
 
 export default class UserTable extends React.Component {
-	constructor(props) {
+	constructor (props) {
 		super(props);
 
 		this.state = {
-			tableData : [],
-			rowVal    : {},
-			isLoading : true
+			tableData: [],
+			rowVal: {},
+			isLoading: true
 		};
 	}
 	/*
@@ -81,55 +81,61 @@ export default class UserTable extends React.Component {
 */
 	toggleDeletePopup = (row) => {
 		this.setState({ rowVal: row });
-		(function($) {
+		(function ($) {
 			$('#DeletePopup').modal('toggle');
 		})(jQuery);
 	};
-	async handleDelete() {
+	async handleDelete () {
 		await fetch(API_URL + '/delete', {
-			method  : 'POST',
-			headers : {
-				'Content-Type' : 'application/json'
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
 			},
-			body    : JSON.stringify({
-				DeleteTable : [ 'users' ],
-				IDName      : [ 'User_ID' ],
-				tableID     : [ this.state.rowVal.original.User_ID ],
-				username    : sessionStorage.getItem('username'),
-				token       : sessionStorage.getItem('token')
+			body: JSON.stringify({
+				DeleteTable: [
+					'users'
+				],
+				IDName: [
+					'User_ID'
+				],
+				tableID: [
+					this.state.rowVal.original.User_ID
+				],
+				username: sessionStorage.getItem('username'),
+				token: sessionStorage.getItem('token')
 			})
 		});
 		await this.fetchTable();
 		this.toggleDeletePopup();
 	}
 
-	async fetchTable() {
+	async fetchTable () {
 		try {
 			await fetch(API_URL + '/getter', {
-				method  : 'POST',
-				headers : {
-					'Content-Type' : 'application/json'
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
 				},
-				body    : JSON.stringify({
-					username  : sessionStorage.getItem('username'),
-					token     : sessionStorage.getItem('token'),
-					select    :
+				body: JSON.stringify({
+					username: sessionStorage.getItem('username'),
+					token: sessionStorage.getItem('token'),
+					select:
 						'User_ID, Username, E_Mail, FirstName, LastName, CancelTokens, Pending_Presentation, Last_Probability, Amount_A, Amount_B, Amount_C, Authentication_Level',
-					tableName : 'users'
+					tableName: 'users'
 				})
 			})
 				.then((response) => response.json())
 				.then((res) => this.setState({ tableData: res }));
 			await fetch(API_URL + '/getter', {
-				method  : 'POST',
-				headers : {
-					'Content-Type' : 'application/json'
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
 				},
-				body    : JSON.stringify({
-					username  : sessionStorage.getItem('username'),
-					token     : sessionStorage.getItem('token'),
-					tableName : 'auth_level',
-					select    : 'Auth_Level_ID, Definition'
+				body: JSON.stringify({
+					username: sessionStorage.getItem('username'),
+					token: sessionStorage.getItem('token'),
+					tableName: 'auth_level',
+					select: 'Auth_Level_ID, Definition'
 				})
 			})
 				.then((response) => response.json())
@@ -139,7 +145,7 @@ export default class UserTable extends React.Component {
 		}
 	}
 
-	getDropdownTemplate(tableName, IdName, definerName) {
+	getDropdownTemplate (tableName, IdName, definerName) {
 		return this.state[tableName].map((v) => (
 			<option key={v[IdName]} value={v[IdName]}>
 				{v[definerName]}
@@ -147,13 +153,13 @@ export default class UserTable extends React.Component {
 		));
 	}
 
-	async componentDidMount() {
+	async componentDidMount () {
 		await checkToken();
 		await this.fetchTable();
 		await this.setState({ isLoading: false });
 	}
 
-	render() {
+	render () {
 		if (this.state.isLoading) {
 			return loadingScreen();
 		} else {
@@ -166,53 +172,53 @@ export default class UserTable extends React.Component {
 						data={this.state.tableData}
 						columns={[
 							{
-								Header    : 'User',
-								accessor  : 'Username',
-								style     : { whiteSpace: 'unset' },
-								filterAll : true
+								Header: 'User',
+								accessor: 'Username',
+								style: { whiteSpace: 'unset' },
+								filterAll: true
 							},
 							{
-								id        : 'Name',
-								Header    : 'Full Name',
-								accessor  : (d) => `${d.FirstName} ${d.LastName}`,
-								style     : { whiteSpace: 'unset' },
-								filterAll : true
+								id: 'Name',
+								Header: 'Full Name',
+								accessor: (d) => `${d.FirstName} ${d.LastName}`,
+								style: { whiteSpace: 'unset' },
+								filterAll: true
 							},
 							{
-								Header    : 'E-Mail',
-								accessor  : 'E_Mail',
-								style     : { whiteSpace: 'unset' },
-								filterAll : true
+								Header: 'E-Mail',
+								accessor: 'E_Mail',
+								style: { whiteSpace: 'unset' },
+								filterAll: true
 							},
 							{
-								Header    : 'Cancel Tokens',
-								accessor  : 'CancelTokens',
-								style     : { whiteSpace: 'unset' },
-								filterAll : true
+								Header: 'Cancel Tokens',
+								accessor: 'CancelTokens',
+								style: { whiteSpace: 'unset' },
+								filterAll: true
 							},
 							{
-								Header    : 'Pending Presentation',
-								accessor  : 'Pending_Presentation',
-								style     : { whiteSpace: 'unset' },
-								filterAll : true
+								Header: 'Pending Presentation',
+								accessor: 'Pending_Presentation',
+								style: { whiteSpace: 'unset' },
+								filterAll: true
 							},
 							{
-								Header    : 'Last Probability',
-								accessor  : 'Last_Probability',
-								style     : { whiteSpace: 'unset' },
-								filterAll : true
+								Header: 'Last Probability',
+								accessor: 'Last_Probability',
+								style: { whiteSpace: 'unset' },
+								filterAll: true
 							},
 							{
-								Header    : 'Authentication Level',
-								accessor  : 'Authentication_Level',
-								style     : { whiteSpace: 'unset' },
-								filterAll : true
+								Header: 'Authentication Level',
+								accessor: 'Authentication_Level',
+								style: { whiteSpace: 'unset' },
+								filterAll: true
 							},
 							{
-								Header   : 'Actions',
-								Filter   : <div />,
-								sortable : false,
-								Cell     : (row) => (
+								Header: 'Actions',
+								Filter: <div />,
+								sortable: false,
+								Cell: (row) => (
 									<div>
 										{/*
 										<button
@@ -300,8 +306,7 @@ export default class UserTable extends React.Component {
 								onSubmit={(e) => {
 									this.handleDelete();
 									e.preventDefault();
-								}}
-							>
+								}}>
 								<div className="modal-header">
 									<h5 className="modal-title" id="DeletePopupTitle">
 										Delete
