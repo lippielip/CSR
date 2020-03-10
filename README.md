@@ -47,11 +47,11 @@ DOMAIN_NAME (default: http://localhost:3000/)
 
     Mailgun
 
-API_KEY
-PROXY
-DOMAIN (default: mail.domain.tld)
-HOST (default: api.eu.mailgun.net)
-SENDER_MAIL
+MAIL_API_KEY
+MAIL_PROXY
+MAIL_DOMAIN (default: mail.domain.tld)
+MAIL_HOST (default: api.eu.mailgun.net)
+MAIL_SENDER
 
 api/app.js
 

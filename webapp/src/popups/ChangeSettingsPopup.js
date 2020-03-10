@@ -7,7 +7,7 @@ class ChangeSettingsPopup extends React.Component {
 	constructor (props) {
 		super(props);
 		this.state = {
-			isLoading: true,
+			isLoading: true
 		};
 		this.handleChange = this.handleChange.bind(this);
 		this.handleSubmit = this.handleSubmit.bind(this);
@@ -25,7 +25,7 @@ class ChangeSettingsPopup extends React.Component {
 					username: sessionStorage.getItem('username'),
 					token: sessionStorage.getItem('token'),
 					tableName: 'options',
-					select: 'Option_ID, Name, Choose_Random, Email_Frequency, Colloquium_Frequency, Comment'
+					select: 'Option_ID, Name, Selected, Choose_Random, Email_Frequency, Colloquium_Frequency, Comment'
 				})
 			})
 				.then((response) => response.json())
@@ -107,11 +107,17 @@ class ChangeSettingsPopup extends React.Component {
 	async componentDidMount () {
 		await this.fetchData();
 		this.setState({ isLoading: false });
-		document.getElementById('NameInput').value = this.state.options[0].Name;
-		document.getElementById('Choose_RandomInput').value = this.state.options[0].Choose_Random;
-		document.getElementById('Email_FrequencyInput').value = this.state.options[0].Email_Frequency;
-		document.getElementById('Colloquium_FrequencyInput').value = this.state.options[0].Colloquium_Frequency;
-		document.getElementById('CommentInput').value = this.state.options[0].Comment;
+		for (let i = 0; i < this.state.options.length; i++) {
+			if (this.state.options[i].Selected.data[0] === 1) {
+				document.getElementById('ChangePresetInput').value = this.state.options[i].Option_ID;
+				document.getElementById('NameInput').value = this.state.options[i].Name;
+				document.getElementById('Choose_RandomInput').value = this.state.options[i].Choose_Random;
+				document.getElementById('Email_FrequencyInput').value = this.state.options[i].Email_Frequency;
+				document.getElementById('Colloquium_FrequencyInput').value = this.state.options[i].Colloquium_Frequency;
+				document.getElementById('CommentInput').value = this.state.options[i].Comment;
+				break;
+			}
+		}
 	}
 
 	render () {
