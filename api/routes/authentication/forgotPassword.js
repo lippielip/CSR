@@ -42,7 +42,7 @@ router.post('/', async function (req, res) {
 						const data = {
 							from: SENDER_MAIL,
 							to: `${req.body.E_Mail}`,
-							subject: 'Password Reset',
+							subject: 'CSR Passwort ändern',
 							text: `HTML Mail not available. Use this link to reset your Password: ${DOMAIN_NAME + '/forgotPassword?token=' + Hash}`,
 							html: `${html(DOMAIN_NAME, Hash, Username)}`
 						};

@@ -112,7 +112,7 @@ async function sendMail (caseVar, users, moderator, Presentations) {
 			break;
 
 		case 2:
-			//canceled Mail
+			//Decision Mail
 			let myDate = new Date(Presentations);
 			myDate.setMinutes(myDate.getMinutes() + 300);
 			myDate = myDate.toISOString();
@@ -128,45 +128,14 @@ async function sendMail (caseVar, users, moderator, Presentations) {
 				to: users,
 				subject: 'Colloquium Planning',
 				html: `${html(
-					`  
-					<!--[if mso]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding-right: 10px; padding-left: 10px; padding-top: 10px; padding-bottom: 10px; font-family: Arial, sans-serif"><![endif]-->
-					<div style="color:#555555;font-family:Arial, Helvetica Neue, Helvetica, sans-serif;line-height:1.5;padding-top:10px;padding-right:10px;padding-bottom:10px;padding-left:10px;">
-					<div style="font-size: 14px; line-height: 1.5; color: #555555; font-family: Arial, Helvetica Neue, Helvetica, sans-serif; mso-line-height-alt: 21px;"><span style="font-size: 16px;">Das nächste Colloquium wird am <b>${myDate}</b> stattfinden. Ist dieser Termin warnehmbar?</span></div>
-					</div>
-					<!--[if (mso)|(IE)]></td></tr></table><![endif]-->
-					<!--[if (mso)|(IE)]></td><td align="center" width="125" style="background-color:transparent;width:125px; border-top: 0px solid transparent; border-left: 0px solid transparent; border-bottom: 0px solid transparent; border-right: 0px solid transparent;" valign="top"><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding-right: 0px; padding-left: 0px; padding-top:5px; padding-bottom:5px;"><![endif]-->
-					<div class="col num3" style="max-width: 320px; min-width: 125px; display: table-cell; vertical-align: top; width: 125px;">
-					<div style="width:100% !important;">
-					<!--[if (!mso)&(!IE)]><!-->
-					<div style="border-top:0px solid transparent; border-left:0px solid transparent; border-bottom:0px solid transparent; border-right:0px solid transparent; padding-top:5px; padding-bottom:5px; padding-right: 0px; padding-left: 0px;">
-					<!--<![endif]-->
-					<div align="center" class="button-container" style="padding-top:10px;padding-right:10px;padding-bottom:10px;padding-left:10px;">
-
-					<!--[if mso]></td></tr></table><![endif]-->
-					<!--[if mso]><table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-spacing: 0; border-collapse: collapse; mso-table-lspace:0pt; mso-table-rspace:0pt;"><tr><td style="padding-top: 10px; padding-right: 10px; padding-bottom: 10px; padding-left: 10px" align="center"><v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" href="${DOMAIN_NAME}/confirmattendance?token=${moderator}&answer=1" style="height:31.5pt; width:94.5pt; v-text-anchor:middle;" arcsize="10%" stroke="false" fillcolor="#3AAEE0"><w:anchorlock/><v:textbox inset="0,0,0,0"><center style="color:#ffffff; font-family:Arial, sans-serif; font-size:16px"><![endif]--><a href="${DOMAIN_NAME}/confirmattendance?token=${moderator}&answer=1" style="-webkit-text-size-adjust: none; text-decoration: none; display: inline-block; color: #ffffff; background-color: #3AAEE0; border-radius: 4px; -webkit-border-radius: 4px; -moz-border-radius: 4px; width: auto; width: auto; border-top: 1px solid #3AAEE0; border-right: 1px solid #3AAEE0; border-bottom: 1px solid #3AAEE0; border-left: 1px solid #3AAEE0; padding-top: 5px; padding-bottom: 5px; font-family: Arial, Helvetica Neue, Helvetica, sans-serif; text-align: center; mso-border-alt: none; word-break: keep-all;" target="_blank"><span style="padding-left:20px;padding-right:20px;font-size:16px;display:inline-block;"><span style="font-size: 16px; line-height: 2; mso-line-height-alt: 32px;">Yes</span></span></a>
-					<!--[if mso]></center></v:textbox></v:roundrect></td></tr></table><![endif]-->
-					</div>
-					<!--[if (!mso)&(!IE)]><!-->
-					</div>
-					<!--<![endif]-->
-					</div>
-					</div>
-					<!--[if (mso)|(IE)]></td></tr></table><![endif]-->
-					<!--[if (mso)|(IE)]></td><td align="center" width="125" style="background-color:transparent;width:125px; border-top: 0px solid transparent; border-left: 0px solid transparent; border-bottom: 0px solid transparent; border-right: 0px solid transparent;" valign="top"><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding-right: 0px; padding-left: 0px; padding-top:5px; padding-bottom:5px;"><![endif]-->
-					<div class="col num3" style="max-width: 320px; min-width: 125px; display: table-cell; vertical-align: top; width: 125px;">
-					<div style="width:100% !important;">
-					<!--[if (!mso)&(!IE)]><!-->
-					<div style="border-top:0px solid transparent; border-left:0px solid transparent; border-bottom:0px solid transparent; border-right:0px solid transparent; padding-top:5px; padding-bottom:5px; padding-right: 0px; padding-left: 0px;">
-					<!--<![endif]-->
-					<div align="center" class="button-container" style="padding-top:10px;padding-right:10px;padding-bottom:10px;padding-left:10px;">
-					<!--[if mso]><table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-spacing: 0; border-collapse: collapse; mso-table-lspace:0pt; mso-table-rspace:0pt;"><tr><td style="padding-top: 10px; padding-right: 10px; padding-bottom: 10px; padding-left: 10px" align="center"><v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" href="${DOMAIN_NAME}/confirmattendance?token=${moderator}&answer=0" style="height:31.5pt; width:94.5pt; v-text-anchor:middle;" arcsize="10%" stroke="false" fillcolor="#3AAEE0"><w:anchorlock/><v:textbox inset="0,0,0,0"><center style="color:#ffffff; font-family:Arial, sans-serif; font-size:16px"><![endif]--><a href="${DOMAIN_NAME}/confirmattendance?token=${moderator}&answer=0" style="-webkit-text-size-adjust: none; text-decoration: none; display: inline-block; color: #ffffff; background-color: #3AAEE0; border-radius: 4px; -webkit-border-radius: 4px; -moz-border-radius: 4px; width: auto; width: auto; border-top: 1px solid #3AAEE0; border-right: 1px solid #3AAEE0; border-bottom: 1px solid #3AAEE0; border-left: 1px solid #3AAEE0; padding-top: 5px; padding-bottom: 5px; font-family: Arial, Helvetica Neue, Helvetica, sans-serif; text-align: center; mso-border-alt: none; word-break: keep-all;" target="_blank"><span style="padding-left:20px;padding-right:20px;font-size:16px;display:inline-block;"><span style="font-size: 16px; line-height: 2; mso-line-height-alt: 32px;">No</span></span></a>
-					<!--[if mso]></center></v:textbox></v:roundrect></td></tr></table><![endif]-->
-					</div>
-					<!--[if (!mso)&(!IE)]><!-->
-					</div>
-					<!--<![endif]-->
-					</div>
-					</div>`
+					`
+					Das nächste Colloquium wird am <b>${myDate}</b> stattfinden. Ist dieser Termin warnehmbar?<br>
+					<br>
+					<br>
+					<a class="x_btn" href="${DOMAIN_NAME}/confirmattendance?token=${moderator}&answer=1" style="display:block; margin-left:auto; margin-right:auto; font-family:'TeleGrotesk Next','Arial','Helvetica',sans-serif; background:#ededed; border:1px solid #b2b2b2; border-radius:4px; color:#383838!important; display:block; font-size:18px; line-height:18px; margin-top:12px; padding:8px 0; text-align:center; text-decoration:none!important; width:151px">
+					 Ja</a>
+					 <a class="x_btn" href="${DOMAIN_NAME}/confirmattendance?token=${moderator}&answer=0" style="display:block; margin-left:auto; margin-right:auto; font-family:'TeleGrotesk Next','Arial','Helvetica',sans-serif; background:#ededed; border:1px solid #b2b2b2; border-radius:4px; color:#383838!important; display:block; font-size:18px; line-height:18px; margin-top:12px; padding:8px 0; text-align:center; text-decoration:none!important; width:151px">
+					 Nein</a><br>`
 				)}`
 			};
 			mg.messages().send(data, function (error, body) {
