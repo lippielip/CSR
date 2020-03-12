@@ -9,6 +9,7 @@ import adminPanel from './adminPanel';
 import NoMatch from '../methods/noMatch';
 import notAuthenticated from '../methods/notAuthenticated';
 import UserTable from './adminRoutes/userPanel';
+import confirmattendance from '../routes/attendance';
 
 class ContentPane extends React.Component {
 	render () {
@@ -21,6 +22,7 @@ class ContentPane extends React.Component {
 				<Route exact={true} path={'/adminPanel/'} component={adminPanel} />
 				<Route exact={true} path={'/adminPanel/users'} component={UserTable} />
 				<Route exact={true} path={'/User/'} component={User} />
+				<Route exact={false} path={'/confirmattendance'} component={confirmattendance} />
 				<Route exact={true} path={'/NoAuth'} component={notAuthenticated} />
 				<Route component={NoMatch} />
 			</Switch>
