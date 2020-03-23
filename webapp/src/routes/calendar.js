@@ -15,14 +15,14 @@ import API_URL from '../variables';
 
 // must manually import the stylesheets for each plugin
 let event = {
-	title: '',
-	start: '',
-	Presentation_Category: 'A'
+	title                 : '',
+	start                 : '',
+	Presentation_Category : 'A'
 };
 let missing_event = {
-	start: '',
-	end: '',
-	Pending: ''
+	start   : '',
+	end     : '',
+	Pending : ''
 };
 let clickedDate;
 let unformattedEvents;
@@ -30,69 +30,68 @@ let unformattedLeaves;
 let deleteValue;
 
 export default class Calendar extends React.Component {
-	constructor (props) {
+	constructor(props) {
 		super(props);
 
 		this.state = {
-			presentationOverflow: false,
-			user: '',
-			calendarWeekends: true,
-			showStartEnd: false,
-			isLoading: true,
-			clickedDate: '',
-			calendarEvents: []
+			user             : '',
+			calendarWeekends : true,
+			showStartEnd     : false,
+			isLoading        : true,
+			clickedDate      : '',
+			calendarEvents   : []
 		};
 		this.handleOnChange = this.handleOnChange.bind(this);
 		this.handleSubmit = this.handleSubmit.bind(this);
 		this.handleSelect = this.handleSelect.bind(this);
-		this.checkPresentationAmount = this.checkPresentationAmount.bind(this);
 		this.handleDateClick = this.handleDateClick.bind(this);
 		this.handleEventDrop = this.handleEventDrop.bind(this);
 	}
 
-	async fetchEvents () {
+	async fetchEvents() {
 		this.setState({ calendarEvents: [] });
 		await fetch(API_URL + '/getter', {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json'
+			method  : 'POST',
+			headers : {
+				'Content-Type' : 'application/json'
 			},
-			body: JSON.stringify({
-				username: sessionStorage.getItem('username'),
-				token: sessionStorage.getItem('token'),
-				select: 'Presentation_ID, Topic, Presentation_Category, Presentation_Held, Date, FirstName, LastName, User_ID, Username, Pending_Presentation',
-				tableName: 'presentations',
-				selectiveGet: 'INNER JOIN users ON presentations.Presenter = users.User_ID' // comment out this line if you want everyone to see everything
+			body    : JSON.stringify({
+				username     : sessionStorage.getItem('username'),
+				token        : sessionStorage.getItem('token'),
+				select       : 'Presentation_ID, Topic, Presentation_Category, Presentation_Held, Date, FirstName, LastName, User_ID, Username, Pending_Presentation',
+				tableName    : 'presentations',
+				selectiveGet : 'INNER JOIN users ON presentations.Presenter = users.User_ID' // comment out this line if you want everyone to see everything
 			})
 		})
 			.then((response) => response.json())
 			.then((res) => (unformattedEvents = res));
 		for (let i = 0; i < unformattedEvents.length; i++) {
 			this.setState({
-				calendarEvents: this.state.calendarEvents.concat({
-					title: unformattedEvents[i].Topic + ` (${unformattedEvents[i].Presentation_Category}) - ${unformattedEvents[i].FirstName} ${unformattedEvents[i].LastName}`,
-					start: unformattedEvents[i].Date,
-					allDay: true,
-					type: unformattedEvents[i].Presentation_Category,
-					Presentation_Held: unformattedEvents[i].Presentation_Held,
-					User_ID: unformattedEvents[i].User_ID,
-					username: unformattedEvents[i].Username,
-					id: unformattedEvents[i].Presentation_ID,
-					Pending_Presentation: unformattedEvents[i].Pending_Presentation
+				calendarEvents : this.state.calendarEvents.concat({
+					title                :
+						unformattedEvents[i].Topic + ` (${unformattedEvents[i].Presentation_Category}) - ${unformattedEvents[i].FirstName} ${unformattedEvents[i].LastName}`,
+					start                : unformattedEvents[i].Date,
+					allDay               : true,
+					type                 : unformattedEvents[i].Presentation_Category,
+					Presentation_Held    : unformattedEvents[i].Presentation_Held,
+					User_ID              : unformattedEvents[i].User_ID,
+					username             : unformattedEvents[i].Username,
+					id                   : unformattedEvents[i].Presentation_ID,
+					Pending_Presentation : unformattedEvents[i].Pending_Presentation
 				})
 			});
 		}
 		await fetch(API_URL + '/getter', {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json'
+			method  : 'POST',
+			headers : {
+				'Content-Type' : 'application/json'
 			},
-			body: JSON.stringify({
-				username: sessionStorage.getItem('username'),
-				token: sessionStorage.getItem('token'),
-				select: 'Missing_ID, User_ID, start, end, FirstName, LastName, Username',
-				tableName: 'outofoffice',
-				selectiveGet: `INNER JOIN users ON outofoffice.User = users.User_ID ` //WHERE users.Username = '${this.state.user}' Im Fall das man nur sein eigenes sehen soll in selectiveget einfügen
+			body    : JSON.stringify({
+				username     : sessionStorage.getItem('username'),
+				token        : sessionStorage.getItem('token'),
+				select       : 'Missing_ID, User_ID, start, end, FirstName, LastName, Username',
+				tableName    : 'outofoffice',
+				selectiveGet : `INNER JOIN users ON outofoffice.User = users.User_ID ` //WHERE users.Username = '${this.state.user}' Im Fall das man nur sein eigenes sehen soll in selectiveget einfügen
 			})
 		})
 			.then((response) => response.json())
@@ -100,55 +99,27 @@ export default class Calendar extends React.Component {
 		for (let i = 0; i < unformattedLeaves.length; i++) {
 			var d = new Date(new Date(unformattedLeaves[i].end).setHours(24, 0, 0, 0)); //used to add another day to end date to make end inclusive
 			this.setState({
-				calendarEvents: this.state.calendarEvents.concat({
-					title: `${unformattedLeaves[i].FirstName} ${unformattedLeaves[i].LastName} - Out of Office`,
-					start: unformattedLeaves[i].start,
-					end: d,
-					allDay: true,
-					type: 'missingEvent',
-					id: unformattedLeaves[i].Missing_ID,
-					username: unformattedLeaves[i].Username,
-					color: 'rgb(150, 16,0)'
+				calendarEvents : this.state.calendarEvents.concat({
+					title    : `${unformattedLeaves[i].FirstName} ${unformattedLeaves[i].LastName} - Out of Office`,
+					start    : unformattedLeaves[i].start,
+					end      : d,
+					allDay   : true,
+					type     : 'missingEvent',
+					id       : unformattedLeaves[i].Missing_ID,
+					username : unformattedLeaves[i].Username,
+					color    : 'rgb(150, 16,0)'
 				})
 			});
 		}
 	}
 
-	async checkPresentationAmount (date) {
-		await fetch(API_URL + '/getter', {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json'
-			},
-			body: JSON.stringify({
-				username: sessionStorage.getItem('username'),
-				token: sessionStorage.getItem('token'),
-				select: 'Presentation_ID',
-				tableName: 'presentations',
-				selectiveGet: `WHERE Date = '${date}'`
-			})
-		})
-			.then((response) => response.json())
-			.then((res) => {
-				if (res.length >= 2) {
-					this.setState({
-						presentationOverflow: true
-					});
-				} else {
-					this.setState({
-						presentationOverflow: false
-					});
-				}
-			});
-	}
-
 	toggleCalendarPopup = () => {
-		(function ($) {
+		(function($) {
 			$('#CalendarPopup').modal('toggle');
 		})(jQuery);
 	};
 
-	handleSelect () {
+	handleSelect() {
 		this.setState({ showStartEnd: !this.state.showStartEnd });
 		document.getElementById('missing').classList.toggle('d-none');
 		document.getElementById('presentation').classList.toggle('d-none');
@@ -157,7 +128,7 @@ export default class Calendar extends React.Component {
 		document.getElementById('Topic').required = !document.getElementById('Topic').required;
 	}
 
-	handleEventDrop (info) {
+	handleEventDrop(info) {
 		if (!window.confirm('Are you sure about this change?')) {
 			info.revert();
 		} else {
@@ -165,20 +136,20 @@ export default class Calendar extends React.Component {
 			if (info.event.title.includes('Out of Office')) {
 				var dend = new Date(info.event.end).toISOString().split('T')[0];
 				fetch(API_URL + '/update', {
-					method: 'POST',
-					headers: {
-						'Content-Type': 'application/json'
+					method  : 'POST',
+					headers : {
+						'Content-Type' : 'application/json'
 					},
-					body: JSON.stringify({
-						username: sessionStorage.getItem('username'),
-						token: sessionStorage.getItem('token'),
-						outofoffice: {
-							start: dstart,
-							end: dend
+					body    : JSON.stringify({
+						username    : sessionStorage.getItem('username'),
+						token       : sessionStorage.getItem('token'),
+						outofoffice : {
+							start : dstart,
+							end   : dend
 						},
-						idInfo: {
-							id: info.event.id,
-							idName: 'Missing_ID'
+						idInfo      : {
+							id     : info.event.id,
+							idName : 'Missing_ID'
 						}
 					})
 				});
@@ -188,62 +159,45 @@ export default class Calendar extends React.Component {
 					info.revert();
 				} else {
 					fetch(API_URL + '/update', {
-						method: 'POST',
-						headers: {
-							'Content-Type': 'application/json'
+						method  : 'POST',
+						headers : {
+							'Content-Type' : 'application/json'
 						},
-						body: JSON.stringify({
-							username: sessionStorage.getItem('username'),
-							token: sessionStorage.getItem('token'),
-							presentations: {
-								Date: dstart
+						body    : JSON.stringify({
+							username      : sessionStorage.getItem('username'),
+							token         : sessionStorage.getItem('token'),
+							presentations : {
+								Date : dstart
 							},
-							idInfo: {
-								id: info.event.id,
-								idName: 'Presentation_ID'
+							idInfo        : {
+								id     : info.event.id,
+								idName : 'Presentation_ID'
 							}
 						})
-					})
-						.then((response) => {
-							const statusCode = response.status;
-							return Promise.all([
-								statusCode
-							]);
-						})
-						.then((res) => {
-							if (res[0] === 304) {
-								info.revert();
-								alert('Already 2 Presentations!');
-							}
-						});
+					});
 				}
 			}
 		}
 	}
 
-	async handleDateClick (arg) {
+	async handleDateClick(arg) {
 		this.setState({ clickedDate: arg.dateStr });
-		await this.checkPresentationAmount(this.state.clickedDate);
-		if (this.state.presentationOverflow === false) {
-			clickedDate = this.state.clickedDate;
-			missing_event.start = clickedDate;
-			this.toggleCalendarPopup();
-		} else {
-			alert('Already 2 Presentations!');
-		}
+		clickedDate = this.state.clickedDate;
+		missing_event.start = clickedDate;
+		this.toggleCalendarPopup();
 	}
 
-	handleEventClick (info) {
+	handleEventClick(info) {
 		// TODO: EDIT IN CALENDAR
 	}
 
-	handleEventDragStart () {
-		(function ($) {
+	handleEventDragStart() {
+		(function($) {
 			$('#deleteEventsDiv').fadeIn(500);
 		})(jQuery);
 	}
 
-	handleEventDragStop (info) {
+	handleEventDragStop(info) {
 		var trashEl = jQuery('#deleteEventsDiv');
 		var ofs = trashEl.offset();
 
@@ -252,51 +206,51 @@ export default class Calendar extends React.Component {
 		var y1 = ofs.top;
 		var y2 = ofs.top + trashEl.outerHeight(true);
 		if (info.jsEvent.pageX >= x1 && info.jsEvent.pageX <= x2 && info.jsEvent.pageY >= y1 && info.jsEvent.pageY <= y2) {
-			(function ($) {
+			(function($) {
 				$('#DeletePopup').modal('show');
 			})(jQuery);
 			deleteValue = info.event;
 		}
-		(function ($) {
+		(function($) {
 			$('#deleteEventsDiv').fadeOut(200);
 		})(jQuery);
 	}
 
-	async handleSubmit () {
+	async handleSubmit() {
 		if (document.getElementById('Topic').classList.contains('invalid')) {
 			alert('Bad Characters detected');
 		} else {
 			if (this.state.showStartEnd) {
 				await fetch(API_URL + '/addOOO', {
-					method: 'POST',
-					headers: {
-						'Content-Type': 'application/json'
+					method  : 'POST',
+					headers : {
+						'Content-Type' : 'application/json'
 					},
-					body: JSON.stringify({
-						username: sessionStorage.getItem('username'),
-						token: sessionStorage.getItem('token'),
-						missing: {
-							start: missing_event.start,
-							end: missing_event.end,
-							User: sessionStorage.getItem('username')
+					body    : JSON.stringify({
+						username : sessionStorage.getItem('username'),
+						token    : sessionStorage.getItem('token'),
+						missing  : {
+							start : missing_event.start,
+							end   : missing_event.end,
+							User  : sessionStorage.getItem('username')
 						}
 					})
 				});
 				this.handleSelect();
 			} else {
 				await fetch(API_URL + '/add', {
-					method: 'POST',
-					headers: {
-						'Content-Type': 'application/json'
+					method  : 'POST',
+					headers : {
+						'Content-Type' : 'application/json'
 					},
-					body: JSON.stringify({
-						username: sessionStorage.getItem('username'),
-						token: sessionStorage.getItem('token'),
-						presentation: {
-							Topic: event.title,
-							Presenter: sessionStorage.getItem('username'),
-							Presentation_Category: event.Presentation_Category,
-							Date: event.start
+					body    : JSON.stringify({
+						username     : sessionStorage.getItem('username'),
+						token        : sessionStorage.getItem('token'),
+						presentation : {
+							Topic                 : event.title,
+							Presenter             : sessionStorage.getItem('username'),
+							Presentation_Category : event.Presentation_Category,
+							Date                  : event.start
 						}
 					})
 				});
@@ -307,7 +261,7 @@ export default class Calendar extends React.Component {
 		}
 	}
 
-	async handleDelete () {
+	async handleDelete() {
 		var table = 'presentations';
 		var Id = 'Presentation_ID';
 		if (deleteValue.extendedProps.type === 'missingEvent') {
@@ -318,42 +272,42 @@ export default class Calendar extends React.Component {
 			alert("You don't have the rights to delete Presentations!");
 		} else {
 			await fetch(API_URL + '/delete', {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json'
+				method  : 'POST',
+				headers : {
+					'Content-Type' : 'application/json'
 				},
-				body: JSON.stringify({
-					username: sessionStorage.getItem('username'),
-					token: sessionStorage.getItem('token'),
-					DeleteTable: table,
-					IDName: Id,
-					tableID: deleteValue.id,
-					deleteUser: deleteValue.extendedProps.username
+				body    : JSON.stringify({
+					username    : sessionStorage.getItem('username'),
+					token       : sessionStorage.getItem('token'),
+					DeleteTable : table,
+					IDName      : Id,
+					tableID     : deleteValue.id,
+					deleteUser  : deleteValue.extendedProps.username
 				})
 			});
 			if (deleteValue.extendedProps.Presentation_Held === 1) {
 				await fetch(API_URL + '/change', {
-					method: 'POST',
-					headers: {
-						'Content-Type': 'application/json'
+					method  : 'POST',
+					headers : {
+						'Content-Type' : 'application/json'
 					},
-					body: JSON.stringify({
-						username: sessionStorage.getItem('username'),
-						token: sessionStorage.getItem('token'),
-						categoryName: `Amount_${deleteValue.extendedProps.type}`,
-						sign: '-',
-						Id: deleteValue.extendedProps.User_ID
+					body    : JSON.stringify({
+						username     : sessionStorage.getItem('username'),
+						token        : sessionStorage.getItem('token'),
+						categoryName : `Amount_${deleteValue.extendedProps.type}`,
+						sign         : '-',
+						Id           : deleteValue.extendedProps.User_ID
 					})
 				});
 			}
 		}
 		await this.fetchEvents();
-		(function ($) {
+		(function($) {
 			$('#DeletePopup').modal('hide');
 		})(jQuery);
 	}
 
-	handleOnChange (e) {
+	handleOnChange(e) {
 		// broad function for any kind of change in data
 		if (e.target.value.includes("'")) {
 			if (!e.target.classList.contains('invalid')) e.target.classList.add('invalid');
@@ -368,13 +322,13 @@ export default class Calendar extends React.Component {
 		}
 	}
 
-	async componentDidMount () {
+	async componentDidMount() {
 		await this.setState({ user: sessionStorage.getItem('username') });
 		await checkToken();
 		await this.fetchEvents();
 		await this.setState({ isLoading: false });
 	}
-	render () {
+	render() {
 		if (this.state.isLoading) {
 			return loadingScreen();
 		} else {
@@ -389,20 +343,16 @@ export default class Calendar extends React.Component {
 						<FullCalendar
 							defaultView="dayGridMonth"
 							header={{
-								left: 'prev,next',
-								center: 'title',
-								right: 'today'
+								left   : 'prev,next',
+								center : 'title',
+								right  : 'today'
 							}}
 							editable={true}
 							handleWindowResize={true}
 							weekends={false}
 							eventDurationEditable={false}
 							eventLimit={false}
-							plugins={[
-								dayGridPlugin,
-								timeGridPlugin,
-								interactionPlugin
-							]}
+							plugins={[ dayGridPlugin, timeGridPlugin, interactionPlugin ]}
 							events={this.state.calendarEvents}
 							dateClick={this.handleDateClick}
 							eventClick={this.handleEventClick}
@@ -424,7 +374,8 @@ export default class Calendar extends React.Component {
 								onSubmit={(e) => {
 									this.handleSubmit();
 									e.preventDefault();
-								}}>
+								}}
+							>
 								<div className="modal-header">
 									<h5 className="modal-title" id="CalendarPopupTitle">
 										Add new Event
@@ -497,7 +448,8 @@ export default class Calendar extends React.Component {
 								onSubmit={(e) => {
 									e.preventDefault();
 									this.handleDelete();
-								}}>
+								}}
+							>
 								<div className="modal-header">
 									<h5 className="modal-title" id="DeletePopupTitle">
 										Delete
