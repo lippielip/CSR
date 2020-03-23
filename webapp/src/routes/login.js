@@ -6,32 +6,32 @@ import loadingScreen from '../methods/loadingscreen';
 import ForgotPassword from '../popups/ForgotPasswordPopup';
 import API_URL from '../variables';
 export default class Login extends React.Component {
-	constructor (props) {
+	constructor(props) {
 		super(props);
 
 		this.state = {
-			wrongField: [],
-			isLoading: true,
-			username: '',
-			passwordInput: '',
-			email: ''
+			wrongField    : [],
+			isLoading     : true,
+			username      : '',
+			passwordInput : '',
+			email         : ''
 		};
 		this.handleOnChange = this.handleOnChange.bind(this);
 		this.handleSubmit = this.handleSubmit.bind(this);
 	}
 
-	async handleSubmit () {
+	async handleSubmit() {
 		if (!(this.state.wrongField.length === 0)) {
 			document.getElementById('error').innerHTML = 'Invalid Characters detected';
 		} else {
 			await fetch(API_URL + '/users', {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json'
+				method  : 'POST',
+				headers : {
+					'Content-Type' : 'application/json'
 				},
-				body: JSON.stringify({
-					username: this.state.username,
-					password: this.state.passwordInput
+				body    : JSON.stringify({
+					username : this.state.username,
+					password : this.state.passwordInput
 				})
 			})
 				.then((response) => response.json()) //Authentication
@@ -45,7 +45,7 @@ export default class Login extends React.Component {
 						sessionStorage.setItem('Pending_Presentation', response.Pending_Presentation);
 						sessionStorage.setItem('authenticated', response.authenticated);
 						this.setState({
-							passwordInput: ''
+							passwordInput : ''
 						});
 						window.location.reload();
 					}
@@ -61,7 +61,7 @@ export default class Login extends React.Component {
 		}
 	}
 
-	handleOnChange (e) {
+	handleOnChange(e) {
 		document.getElementById('error').innerHTML = '';
 		sessionStorage.setItem('token', null);
 		this.setState({ authenticated: false });
@@ -84,15 +84,15 @@ export default class Login extends React.Component {
 		}
 	}
 
-	toggleForgotPassword () {
-		(function ($) {
+	toggleForgotPassword() {
+		(function($) {
 			$('#ForgotPasswordPopup').modal('toggle');
 		})(jQuery);
 		document.getElementById('forgotPasswordForm').reset();
 		document.getElementById('ForgotPasswordError').innerHTML = '';
 	}
 
-	async componentDidMount () {
+	async componentDidMount() {
 		await checkToken();
 		await this.setState({ isLoading: false });
 		let ua = navigator.userAgent.toLowerCase();
@@ -106,7 +106,7 @@ export default class Login extends React.Component {
 		}
 	}
 
-	render () {
+	render() {
 		if (this.state.isLoading) {
 			return loadingScreen();
 		} else {
@@ -116,7 +116,8 @@ export default class Login extends React.Component {
 						onSubmit={(e) => {
 							e.preventDefault();
 							this.handleSubmit();
-						}}>
+						}}
+					>
 						<div className="container">
 							<h1 style={{ paddingTop: '40px' }}>Colloquium Selector Robot</h1>
 							<img src={logo} className="App-link " alt="logo" style={{ maxHeight: '180px', marginTop: '30px', marginBottom: '50px' }} />
@@ -152,6 +153,11 @@ export default class Login extends React.Component {
 						</div>
 					</form>
 					<ForgotPassword />
+					<footer className="page-footer font-small fixed-bottom">
+						<div className="text-center navbar-text">
+							{process.env.REACT_APP_NAME.toUpperCase()} : {process.env.REACT_APP_VERSION}
+						</div>
+					</footer>
 				</div>
 			);
 		}

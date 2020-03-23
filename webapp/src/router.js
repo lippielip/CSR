@@ -14,16 +14,16 @@ import confirmattendance from './routes/attendance';
 export var browserHistory = history.createBrowserHistory();
 
 class Routes extends React.Component {
-	constructor (props) {
+	constructor(props) {
 		super(props);
 
 		this.state = {
-			wrongField: [],
-			isLoading: true
+			wrongField : [],
+			isLoading  : true
 		};
 	}
 
-	logout () {
+	logout() {
 		this.setState({ isLoading: true });
 		sessionStorage.setItem('authenticated', false);
 		sessionStorage.setItem('token', null);
@@ -33,12 +33,12 @@ class Routes extends React.Component {
 		this.setState({ isLoading: false });
 	}
 
-	async componentDidMount () {
+	async componentDidMount() {
 		await checkToken();
 		await this.setState({ isLoading: false });
 	}
 
-	render () {
+	render() {
 		if (this.state.isLoading) {
 			return loadingScreen();
 		} else {
@@ -55,7 +55,8 @@ class Routes extends React.Component {
 										data-target="#navbarNav"
 										aria-controls="navbarNav"
 										aria-expanded="false"
-										aria-label="Toggle navigation">
+										aria-label="Toggle navigation"
+									>
 										<span className="navbar-toggler-icon" />
 									</button>
 									<div className="collapse navbar-collapse justify-content-between" id="navbarNav">

@@ -4,7 +4,7 @@ import * as serviceWorker from './serviceWorker';
 import Routes from './router';
 require('bootstrap');
 
-function App () {
+function App() {
 	return (
 		<div className="App">
 			<Routes />
