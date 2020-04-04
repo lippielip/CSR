@@ -11,9 +11,9 @@ var CronTime = require('cron').CronTime;
 
 // allow cross origin post and get
 var corsOptions = {
-	allowedHeaders: 'Content-Type, Access-Control-Allow-Origin',
-	origin: 'https://3dstudis.net', //origin: 'http://localhost:3000',  //change to webapp domain name
-	allowedMethods: 'POST,GET'
+	allowedHeaders : 'Content-Type, Access-Control-Allow-Origin',
+	origin         : 'https://3dstudis.net', //origin: 'http://localhost:3000',  //change to webapp domain name
+	allowedMethods : 'POST,GET'
 };
 // import of all routes
 var MariaDbGetter = require('./routes/get/getter');
@@ -43,8 +43,8 @@ var changeNextColloquium = require('./routes/update/changeNextColloquium');
 var app = express();
 
 let ChooseRandom = new CronJob(
-	'0 5 * * mon-fri',
-	async function () {
+	'0 16 * * mon-fri',
+	async function() {
 		PickWeeklyPresenters();
 	},
 	null,
@@ -53,8 +53,8 @@ let ChooseRandom = new CronJob(
 );
 
 let EmailJob = new CronJob(
-	'30 5 * * mon-fri',
-	async function () {
+	'0 5 * * mon-fri',
+	async function() {
 		CheckPresentationStatus();
 	},
 	null,
@@ -64,7 +64,7 @@ let EmailJob = new CronJob(
 
 let schedule = new CronJob(
 	'*/60 * * * * *',
-	async function () {
+	async function() {
 		instantCheck();
 	},
 	null,
@@ -114,12 +114,12 @@ app.use('/changeUsernameSubmit', ChangeUsernameSubmit);
 app.use('/confirmattendance', checkConfirmToken);
 app.use('/changenextColloquium', changeNextColloquium);
 // catch 404 and forward to error handler
-app.use(function (req, res, next) {
+app.use(function(req, res, next) {
 	next(createError(404));
 });
 
 // error handler
-app.use(function (err, req, res, next) {
+app.use(function(err, req, res, next) {
 	// set locals, only providing error in development
 	res.locals.message = err.message;
 	res.locals.error = req.app.get('env') === 'development' ? err : {};
