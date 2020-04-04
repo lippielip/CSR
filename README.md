@@ -6,6 +6,7 @@ CSR is designed to simplify the process of planning and scheduling Presentations
 It helps by automating the process of picking a presenter, tracking Presentation amount + Type, while also being fair to everyone and 
 spreading Presentations equally. CSR is meant to streamline and make annoying tasks like scheduling easy by taking the burden away from you.
 On top of the features described above you can run CSR at your own k8s cluster easily. Just take a look at the k8s-manifests folder for further reference.
+Visit https://k8s.io for Kubernetes docs.
 
 ![Header Image](header.PNG)
 
