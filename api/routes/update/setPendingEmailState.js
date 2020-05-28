@@ -18,9 +18,8 @@ router.post('/', async function (req, res, next) {
 				} else {
 					res.status(404).send();
 				}
-			});
-
-			connection.release();
+				connection.release();
+			});	
 		});
 	} else {
 		pool.getConnection(function (err, connection) {
@@ -30,9 +29,13 @@ router.post('/', async function (req, res, next) {
 			}
 			connection.query(`UPDATE users SET Pending_Presentation = 0, ConfirmToken = null WHERE ConfirmToken = '${req.body.token}' `, function (err, result, fields) {
 				if (err) console.log(err);
+				if (result.affectedRows === 1) {
+					res.status(200).send();
+				} else {
+					res.status(404).send();
+				}
+				connection.release();
 			});
-			res.status(200).send();
-			connection.release();
 		});
 	}
 });
