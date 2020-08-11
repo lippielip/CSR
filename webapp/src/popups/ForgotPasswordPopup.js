@@ -4,6 +4,7 @@ import API_URL from '../variables';
 // class for creating a first time password / new password
 class PasswordPopup extends React.Component {
 	async handleSubmit () {
+		document.getElementById('submitButton').disabled = true;
 		if (document.getElementById('email').className.includes('invalid')) {
 			document.getElementById('ForgotPasswordError').innerHTML = 'Forbidden Characters detected.';
 		} else {
@@ -18,6 +19,7 @@ class PasswordPopup extends React.Component {
 					E_Mail: document.getElementById('email').value
 				})
 			}).then((response) => {
+
 				if (response.status === 200) {
 					document.getElementById('ForgotPasswordSuccess').innerHTML = 'Password Reset Mail sent!';
 					window.setTimeout(function () {
@@ -26,8 +28,11 @@ class PasswordPopup extends React.Component {
 						})(jQuery);
 						document.getElementById('forgotPasswordForm').reset();
 						document.getElementById('ForgotPasswordSuccess').innerHTML = '';
+						document.getElementById('InputUsername').focus();
+						document.getElementById('submitButton').disabled = false;
 					}, 1500);
 				} else {
+					document.getElementById('submitButton').disabled = false;
 					if (response.status === 403) {
 						document.getElementById('ForgotPasswordError').innerHTML = 'Duplicate E-Mails detected. Aborting.';
 					} else {
@@ -83,7 +88,7 @@ class PasswordPopup extends React.Component {
 																onChange={this.handleOnChange}
 															/>
 														</div>
-														<input className="btn btn-lg btn-primary btn-block" value="Reset My Password" type="submit" />
+														<input className="btn btn-lg btn-primary btn-block" id="submitButton" value="Reset My Password" type="submit" />
 														<div id="ForgotPasswordError" className="mt-3 text-danger" />
 														<div id="ForgotPasswordSuccess" className="mt-3 text-success" />
 													</fieldset>

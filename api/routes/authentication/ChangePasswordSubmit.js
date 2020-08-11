@@ -18,7 +18,7 @@ router.post('/', async function (req, res, next) {
 				if (result.length === 1) {
 					if (req.body.password === req.body.confirmPassword) {
 						if (bcrypt.compareSync(req.body.currentPassword, result[0].Password) === true) {
-							var Salt = bcrypt.genSaltSync(10); //generate Hash
+							var Salt = bcrypt.genSaltSync(14); //generate Hash
 							var Password = bcrypt.hashSync(`${req.body.password}`, Salt);
 							connection.query(`UPDATE users SET Password ='${Password}' WHERE Username = '${req.body.username}' `, function (err, result, fields) {
 								if (err) console.log(err);

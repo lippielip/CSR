@@ -57,7 +57,7 @@ router.post('/', async function(req, res) {
 							numbers : true
 						});
 
-						var Salt = bcrypt.genSaltSync(10);
+						var Salt = bcrypt.genSaltSync(14);
 						var Hash = bcrypt.hashSync(password, Salt);
 						req.body.newUser.ResetToken = Hash;
 						console.log(`Reset Token generated for user ${req.body.newUser.Username}`);

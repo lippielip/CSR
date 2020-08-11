@@ -24,6 +24,7 @@ export default class Login extends React.Component {
 		if (!(this.state.wrongField.length === 0)) {
 			document.getElementById('error').innerHTML = 'Invalid Characters detected';
 		} else {
+			document.getElementById('loginButton').disabled = true;
 			await fetch(API_URL + '/users', {
 				method  : 'POST',
 				headers : {
@@ -50,6 +51,7 @@ export default class Login extends React.Component {
 						window.location.reload();
 					}
 					if (response.authenticated === false) {
+						document.getElementById('loginButton').disabled = false;
 						document.getElementById('error').innerHTML = 'Login failed. Please check your credentials.';
 						sessionStorage.setItem('token', null);
 						sessionStorage.setItem('username', null);

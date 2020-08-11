@@ -32,7 +32,7 @@ router.post('/', async function (req, res) {
 					numbers: true
 				});
 				var Username = result[0].Username;
-				var Salt = bcrypt.genSaltSync(10);
+				var Salt = bcrypt.genSaltSync(14);
 				var Hash = bcrypt.hashSync(password, Salt);
 				connection.query(`Update users SET ResetToken = '${Hash}' WHERE E_Mail= '${req.body.E_Mail}' `, function (err, result, fields) {
 					if (err) {
