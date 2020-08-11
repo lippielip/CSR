@@ -10,7 +10,6 @@ import NoMatch from '../methods/noMatch';
 import notAuthenticated from '../methods/notAuthenticated';
 import UserTable from './adminRoutes/userPanel';
 import confirmattendance from '../routes/attendance';
-
 class ContentPane extends React.Component {
 	render () {
 		return (
