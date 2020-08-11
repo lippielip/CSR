@@ -14,11 +14,21 @@ router.post('/', async function (req, res, next) {
 			//loop through all categories
 			var category = Object.keys(req.body)[2];
 			if (category === 'presentations') {
-				connection.query(`SELECT Date FROM presentations WHERE Date = '${req.body.presentations.Date}'`, function (err, result, fields) {
+				connection.query(`SELECT Next_Colloquium FROM options Where Selected = 1`, function (err, result, fields) {
 					if (err) console.log(err);
-					if (result.length === 2) {
-						res.status(304).send();
-					} else {
+						let Colloquium_Date = new Date(result[0].Next_Colloquium);
+						Colloquium_Date.setMinutes(Colloquium_Date.getMinutes() + 300);
+						Colloquium_Date = Colloquium_Date.toISOString();
+						Colloquium_Date = Colloquium_Date.split('T')[0];
+						if (Colloquium_Date === req.body.presentations.Date){
+							connection.query(`UPDATE users SET Pending_Presentation = 10 WHERE Username = '${req.body.username}'  `, function (
+								err,
+								result,
+								fields
+							) {
+								if (err) console.log(err);
+							});	
+						}
 						var proplength = Object.values(req.body[category]).length; // category amount
 						for (let j = 0; j < proplength; j++) {
 							// loop through all properties
@@ -33,7 +43,6 @@ router.post('/', async function (req, res, next) {
 							});
 						}
 						res.status(200).send();
-					}
 				});
 			} else {
 				var proplength = Object.values(req.body[category]).length; // category amount

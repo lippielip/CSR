@@ -24,17 +24,14 @@ class Table extends React.Component {
 		document.getElementById('Topic').value = this.state.rowVal.original.Topic;
 		document.getElementById('Category').value = this.state.rowVal.original.Presentation_Category;
 		document.getElementById('start').value = this.state.rowVal.original.Date;
-		if (this.state.rowVal.original.Pending_Presentation === 10 || this.state.rowVal.original.Pending_Presentation === 1) {
-			document.getElementById('start').readOnly = true;
+		if (this.state.rowVal.original.Date === this.state.nextDate) {
+			document.getElementById('start').disabled = true;
 			document.getElementById('start').className = 'form-control disabled';
-		} else {
-			document.getElementById('start').readOnly = false;
-			document.getElementById('start').className = 'form-control';
-		}
-		if (this.state.rowVal.original.Presentation_Held === 1 || this.state.rowVal.original.Pending_Presentation !== 10) {
-			document.getElementById('tokenChanger').className = 'd-none';
-		} else {
 			document.getElementById('tokenChanger').className = '';
+		} else {
+			document.getElementById('start').disabled = false;
+			document.getElementById('start').className = 'form-control';
+			document.getElementById('tokenChanger').className = 'd-none';
 		}
 		(function ($) {
 			$('#EditPopup').modal('toggle');
@@ -231,6 +228,28 @@ class Table extends React.Component {
 			})
 				.then((response) => response.json())
 				.then((res) => this.setState({ tableData: res }));
+			await fetch(API_URL + '/getter', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify({
+					username: sessionStorage.getItem('username'),
+					token: sessionStorage.getItem('token'),
+					select:
+						'Next_Colloquium',
+					tableName: 'options',
+					selectiveGet: 'Where Selected=1'
+				})
+			})
+				.then((response) => response.json())
+				.then((res) => {
+					let Colloquium_Date = new Date(res[0].Next_Colloquium);
+					Colloquium_Date.setMinutes(Colloquium_Date.getMinutes() + 300);
+					Colloquium_Date = Colloquium_Date.toISOString();
+					Colloquium_Date = Colloquium_Date.split('T')[0];
+					this.setState({ nextDate: Colloquium_Date })
+				});
 		} catch (error) {
 			browserHistory.push('/NoAuth');
 		}
