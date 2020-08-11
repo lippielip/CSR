@@ -18,7 +18,7 @@ router.post('/', async function (req, res) {
 						`UPDATE users SET Pending_Presentation = ${req.body.number}, CancelTokens = CancelTokens-1 WHERE User_ID = '${req.body.User_ID}' AND CancelTokens >= 1`,
 						function (err, result, fields) {
 							if (err) res.status(400).send(err);
-							connection.query(`UPDATE presentations SET Date = 'NULL' WHERE Presentation_ID = '${req.body.Presentation_ID}' `, function (err, result, fields) {
+							connection.query(`UPDATE presentations SET Date = '1970-01-01' WHERE Presentation_ID = '${req.body.Presentation_ID}' `, function (err, result, fields) {
 								if (err) res.status(400).send(err);
 							});
 						}
