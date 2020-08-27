@@ -97,7 +97,7 @@ API
 Philipp Braun – [@Github](https://github.com/lippielip) – lippiebraun@gmail.com  
 Hannes Norbert Göring – [@Github](https://github.com/pitscher) – mail@hn-goering.com
 
-Distributed under no license yet...
+Distributed under the GNU License
 
 ## Contributing
 
