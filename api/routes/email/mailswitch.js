@@ -161,7 +161,7 @@ async function sendMail (caseVar, users, moderator, Presentations) {
 				subject: 'Colloquium Planning',
 				html: `${html(
 					`<p>hier die bisher eingetragenen Themen des nächsten Colloquiums am: <b>${await getNextColloquium()}</b></p>
-				<table>
+				<table style="margin-left: auto; margin-right: auto; text-align: center" cellspacing="20">
 						<tr>
 						  <th>Thema</th>
 						  <th>Vortragender</th>

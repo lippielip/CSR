@@ -183,7 +183,7 @@ function mailtemplate (textElement) {
 	<td class="x_introText x_hasLeftAndRightSpacers" style="border:0; border-collapse:collapse; border-spacing:0; margin:0; padding:19px 24px 0 24px">
 	<p style="font-size:1.4em; font-weight:900; line-height:140%">Hallo in die Runde,<br>
   </p>
-  <p style="font-family:'TeleGrotesk Next','Arial','Helvetica',sans-serif; margin:0">
+  <p style="font-family:'TeleGrotesk Next','Arial','Helvetica',sans-serif;">
 	${textElement}
   <br>
   <br>
