@@ -3,25 +3,25 @@
 	"version": "1.8.4",
 	"private": true,
 	"dependencies": {
-		"@fullcalendar/core": "^4.2.0",
-		"@fullcalendar/daygrid": "^4.2.0",
-		"@fullcalendar/interaction": "^4.2.0",
-		"@fullcalendar/react": "^4.2.0",
-		"@fullcalendar/timegrid": "^4.2.0",
-		"@mdi/js": "^4.4.95",
-		"@mdi/react": "^1.2.1",
-		"bootstrap": "^4.3.1",
-		"jquery": "^3.4.1",
-		"popper.js": "^1.15.0",
-		"react": "^16.8.6",
-		"react-dom": "^16.8.6",
-		"react-feather": "^2.0.3",
-		"react-router": "^5.0.1",
-		"react-router-dom": "^5.0.1",
-		"react-scripts": "^3.4.0",
-		"react-table": "^6.10.0",
-		"sweetalert2": "^9.10.0",
-		"sweetalert2-react-content": "^3.0.1"
+		"@fullcalendar/core": "^4.4.2",
+		"@fullcalendar/daygrid": "^4.4.2",
+		"@fullcalendar/interaction": "^4.4.2",
+		"@fullcalendar/react": "^4.4.2",
+		"@fullcalendar/timegrid": "^4.4.2",
+		"@mdi/js": "^4.9.95",
+		"@mdi/react": "^1.4.0",
+		"bootstrap": "^4.5.2",
+		"jquery": "^3.5.1",
+		"popper.js": "^1.16.1",
+		"react": "^16.13.1",
+		"react-dom": "^16.13.1",
+		"react-feather": "^2.0.8",
+		"react-router": "^5.2.0",
+		"react-router-dom": "^5.2.0",
+		"react-scripts": "^3.4.3",
+		"react-table": "^6.11.5",
+		"sweetalert2": "^9.17.2",
+		"sweetalert2-react-content": "^3.1.0"
 	},
 	"scripts": {
 		"start": "react-scripts start",
@@ -33,7 +33,15 @@
 		"extends": "react-app"
 	},
 	"browserslist": {
-		"production": [ ">0.2%", "not dead", "not op_mini all" ],
-		"development": [ "last 1 chrome version", "last 1 firefox version", "last 1 safari version" ]
+		"production": [
+			">0.2%",
+			"not dead",
+			"not op_mini all"
+		],
+		"development": [
+			"last 1 chrome version",
+			"last 1 firefox version",
+			"last 1 safari version"
+		]
 	}
 }
