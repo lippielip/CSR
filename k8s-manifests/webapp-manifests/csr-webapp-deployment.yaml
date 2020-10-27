@@ -21,7 +21,7 @@ spec:
     spec:
       containers:
       - name: csr-webapp
-        image: registry.gitlab.com/derpitscher/csr/webapp:1.8
+        image: registry.gitlab.com/derpitscher/csr/webapp:1.8.4
         imagePullPolicy: Always
         ports:
         - containerPort: 80
