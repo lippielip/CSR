@@ -149,11 +149,16 @@ async function sendMail (caseVar, users, moderator, Presentations) {
 			let htmlBlock = '';
 			console.log(await getNextColloquium());
 			for (let i = 0; i < users.length; i++) {
-				htmlBlock += `<tr>\
-<td>${users[i].User_ID === Presentations[i].Presenter ? Presentations[i].Topic : 'Nicht eingetragen'}</td>\
-<td>${users[i].FirstName}</td>\
-<td>${users[i].User_ID === Presentations[i].Presenter ? Presentations[i].Presentation_Category : 'Nicht eingetragen'}</td>\
-</tr>`;
+				for (let j = 0; j < Presentations.length; j++) {
+					if (users[i].User_ID === Presentations[j].Presenter) {
+						htmlBlock += `<tr>\
+						<td>${ Presentations[j].Topic ? Presentations[j].Topic : 'Nicht eingetragen'}</td>\
+						<td>${users[i].FirstName}</td>\
+						<td>${Presentations[j].Presentation_Category ? Presentations[j].Presentation_Category : 'Nicht eingetragen'}</td>\
+						</tr>`;
+					}
+				}
+
 			}
 			data = {
 				from: SENDER_MAIL,
@@ -161,14 +166,12 @@ async function sendMail (caseVar, users, moderator, Presentations) {
 				subject: 'Colloquium Planning',
 				html: `${html(
 					`<p>hier die bisher eingetragenen Themen des nächsten Colloquiums am: <b>${await getNextColloquium()}</b></p>
-				<table style="margin-left: auto; margin-right: auto; text-align: center" cellspacing="20">
 						<tr>
 						  <th>Thema</th>
 						  <th>Vortragender</th>
 						  <th>Kategorie</th>
 						</tr>
-						${htmlBlock}
-					  </table>`
+						${htmlBlock}`
 				)}`
 			};
 			mg.messages().send(data, function (error, body) {
