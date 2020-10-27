@@ -299,20 +299,17 @@ class Table extends React.Component {
 							{
 								id: 'Date',
 								Header: 'Date',
-								accessor: (d) => {
-									var date = new Date(d.Date);
-									return date.toLocaleString('de-DE').split(',')[0];
-								},
+								accessor: 'Date',
 								style: { whiteSpace: 'unset' },
 								filterAll: true
 							},
 							{
 								id: 'Last_Changed',
 								Header: 'Last Changed',
-								accessor: (d) => {
-									var date = new Date(d.Last_Changed);
-									return date.toLocaleString('de-DE');
-								},
+								accessor: 'Last_Changed',
+								Cell: (row) => (
+									<span>{new Date(row.original.Last_Changed).toLocaleString('de-DE')}</span>
+								),
 								style: { whiteSpace: 'unset' },
 								filterAll: true
 							},
@@ -382,7 +379,7 @@ class Table extends React.Component {
 						resizable={false}
 						defaultSorted={[
 							{
-								id: 'date',
+								id: 'Date',
 								desc: true
 							}
 						]}
